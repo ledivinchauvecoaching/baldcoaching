@@ -10,6 +10,11 @@
   status = 404
   force = true
 [[redirects]]
+  from = "/outils/*"
+  to = "/index.html"
+  status = 404
+  force = true
+[[redirects]]
   from = "/supabase/*"
   to = "/index.html"
   status = 404

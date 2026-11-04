@@ -1,0 +1,34 @@
+# Sauvegarde chiffrée de la base, deux fois par semaine.
+# Effet secondaire voulu : le projet Supabase gratuit reste actif (il se met en pause après 7 jours sans activité).
+# Secrets à créer (GitHub › Settings › Secrets and variables › Actions) :
+#   SUPABASE_SERVICE_ROLE_KEY : Supabase › Project Settings › API Keys › Secret key (ne la mets nulle part ailleurs)
+#   BACKUP_PASSPHRASE         : une phrase secrète de ton choix, à garder précieusement (sans elle, la sauvegarde est illisible)
+name: Sauvegarde
+on:
+  schedule:
+    - cron: "17 3 * * 1,4"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sauvegarde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export de la base
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 outils/sauvegarde.py
+      - name: Chiffrement
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          test -n "$BACKUP_PASSPHRASE" || { echo "Secret BACKUP_PASSPHRASE manquant"; exit 1; }
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in sauvegarde.json -out sauvegarde-$(date +%F).json.enc -pass env:BACKUP_PASSPHRASE
+          shred -u sauvegarde.json || rm -f sauvegarde.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sauvegarde-chiffree
+          path: sauvegarde-*.json.enc
+          retention-days: 90
