@@ -2096,6 +2096,7 @@ function showLogin(){
         :/invalid|email address/.test(t)?"Cette adresse e-mail ne semble pas valide."
         :"L'envoi a échoué. Réessaie dans une minute."+(t?" ("+err.message+")":"")}
     finally{b.disabled=false;b.textContent="Recevoir un lien de connexion"}};
+  $("#loginGoogle").hidden=!(window.BALD_CONFIG&&BALD_CONFIG.google===true);
   $("#loginGoogle").onclick=async()=>{try{const r=await SB.auth.signInWithOAuth({provider:"google",options:{redirectTo:redirect}});if(r&&r.error)throw r.error}catch(e){const m=$("#loginMsg");m.hidden=false;m.className="login-msg ko";m.textContent="La connexion Google n'est pas disponible pour le moment."}};
   $("#loginDemo").onclick=()=>{try{sessionStorage.setItem("bald-demo","1")}catch(e){}hideLogin();startLocal()};
 }

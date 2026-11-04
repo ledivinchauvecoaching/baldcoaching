@@ -5,5 +5,7 @@
    qui protègent les données. Ne mets JAMAIS la clé secrète (sb_secret_… / service_role) ici. */
 window.BALD_CONFIG = {
   supabaseUrl: "https://eeuyskeovxjviqslbpth.supabase.co",
-  supabaseAnonKey: "sb_publishable_h5C-AqX7CDaqdN4N3014eA_wiGNgnGg"
+  supabaseAnonKey: "sb_publishable_h5C-AqX7CDaqdN4N3014eA_wiGNgnGg",
+  // Bouton "Continuer avec Google" : passer à true une fois Google activé dans Supabase
+  google: false
 };
