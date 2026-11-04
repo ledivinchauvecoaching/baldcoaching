@@ -2012,12 +2012,19 @@ async function init(){
 function demoChosen(){try{return sessionStorage.getItem("bald-demo")==="1"}catch(e){return false}}
 function showLogin(){
   const L=$("#login");L.hidden=false;document.body.classList.add("locked");
+  try{const q=new URLSearchParams(location.search+"&"+location.hash.replace(/^#/,"")),ec=q.get("error_code")||q.get("error");
+    if(ec){const m=$("#loginMsg");m.hidden=false;m.className="login-msg ko";m.textContent=/expired/.test(ec)?"Ce lien a expiré ou a déjà servi. Demande un nouveau lien ci-dessous.":"La connexion n'a pas abouti. Demande un nouveau lien ci-dessous.";
+      history.replaceState(null,"",location.pathname)}}catch(e){}
   const redirect=location.origin+location.pathname;
   $("#loginForm").onsubmit=async e=>{e.preventDefault();const em=$("#loginEmail").value.trim();if(!em)return;
     const b=$("#loginSend"),m=$("#loginMsg");b.disabled=true;b.textContent="Envoi…";
     try{const r=await SB.auth.signInWithOtp({email:em,options:{emailRedirectTo:redirect}});if(r.error)throw r.error;
       m.hidden=false;m.className="login-msg ok";m.textContent=`Lien envoyé à ${em}. Ouvre l'e-mail sur cet appareil et touche le lien pour te connecter.`}
-    catch(err){m.hidden=false;m.className="login-msg ko";m.textContent="L'envoi a échoué. Vérifie l'adresse et réessaie dans une minute."}
+    catch(err){m.hidden=false;m.className="login-msg ko";const t=String((err&&err.message)||"").toLowerCase(),st=err&&err.status;
+      m.textContent=(st===429||/rate limit|too many/.test(t))?"Trop de liens demandés : l'envoi d'e-mails est limité pour le moment. Réessaie dans une heure, ou connecte-toi avec Google."
+        :/seconds|security purposes/.test(t)?"Un lien vient déjà d'être envoyé. Attends une minute avant d'en redemander un."
+        :/invalid|email address/.test(t)?"Cette adresse e-mail ne semble pas valide."
+        :"L'envoi a échoué. Réessaie dans une minute."+(t?" ("+err.message+")":"")}
     finally{b.disabled=false;b.textContent="Recevoir un lien de connexion"}};
   $("#loginGoogle").onclick=async()=>{try{const r=await SB.auth.signInWithOAuth({provider:"google",options:{redirectTo:redirect}});if(r&&r.error)throw r.error}catch(e){const m=$("#loginMsg");m.hidden=false;m.className="login-msg ko";m.textContent="La connexion Google n'est pas disponible pour le moment."}};
   $("#loginDemo").onclick=()=>{try{sessionStorage.setItem("bald-demo","1")}catch(e){}hideLogin();startLocal()};
