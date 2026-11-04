@@ -85,9 +85,12 @@ try:
     pg.locator('#journal .entry').first.scroll_into_view_if_needed();pg.screenshot(path='/home/claude/rendus/v50-vue-coach-journal.png')
     # programmer depuis les modèles du coach
     pg.evaluate("location.hash='#programme'");pg.wait_for_timeout(500);pg.click('#planFormTitle');pg.wait_for_timeout(200)
-    opts=pg.evaluate("[...document.querySelectorAll('#tplSel option')].map(o=>o.text)")
+    opts=pg.evaluate("[...document.querySelectorAll('#tplBox [data-tpl-id]')].map(o=>o.innerText)")
     ok("modèles du coach proposés",any('UPPER' in o for o in opts),str(len(opts)))
-    pg.select_option('#tplSel',label='UPPER · 9 exercices');pg.wait_for_timeout(300);pg.fill('#pDate',today);pg.click('#planForm button[type=submit]');pg.wait_for_timeout(600)
+    pg.locator('#tplBox [data-tpl-id]',has_text='UPPER').click();pg.wait_for_timeout(300);pg.click(f'#pDays [data-pd="{today}"]');pg.wait_for_timeout(100)
+    ok("planification rapide : bouton « Ajouter » sous la date",pg.is_visible('#pQuick'))
+    pg.screenshot(path='/home/claude/rendus/v59-planifier.png')
+    pg.click('#pQuick');pg.wait_for_timeout(600)
     pp=[r for r in db(pg) if r['user_id']=='paul' and r['collection']=='prevues']
     ok("séance programmée dans le carnet de Paul",len(pp)==1 and pp[0]['data'].get('coach') and pp[0]['data'].get('titre')=='UPPER')
     pg.screenshot(path='/home/claude/rendus/v50-vue-coach-programme.png')

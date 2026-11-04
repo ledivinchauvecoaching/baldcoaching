@@ -22,6 +22,7 @@
   function q(table){
     const st={op:"select",filters:[],row:null};
     const run=()=>{
+      if(LS("mock-offline"))return {data:null,error:{message:"TypeError: Failed to fetch"}};
       const s=session();if(!s)return {data:null,error:{message:"non connecté"}};
       const uid=s.user.id;let all=rows();
       const match=r=>st.filters.every(([c,v])=>r[c]===v);
@@ -47,6 +48,7 @@
     changer_client(me,{p_client,p_actif}){if(!isCoach(me))return null;SET("mock-coaching",links().map(l=>l.client_id===p_client&&l.coach_id===me?{...l,actif:p_actif}:l));return null}
   };
   async function rpc(name,args){
+    if(LS("mock-offline"))return {data:null,error:{message:"TypeError: Failed to fetch"}};
     const s=session();if(!s)return {data:null,error:{message:"permission denied"}};
     if(!coachMode()||!RPC[name])return {data:null,error:{code:"PGRST202",message:"Could not find the function"}};
     try{return {data:RPC[name](s.user.id,args||{}),error:null}}catch(e){return {data:null,error:{message:String(e)}}}

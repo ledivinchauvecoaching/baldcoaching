@@ -375,6 +375,23 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 .inst-b .note{margin:0;padding:8px 10px;border-left:4px solid var(--accent);background:var(--accent-soft);font-size:13.5px;color:var(--brown)}
 .inst-acts{display:flex;gap:8px;padding:0 16px 16px}
 .inst-acts .btn{flex:1}
+.netbar{position:sticky;top:0;z-index:30;background:var(--accent);color:#fff;font-size:13.5px;font-weight:700;padding:7px 12px;text-align:center}
+.netbar.off{background:var(--band)}
+.pstep{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:15.5px}
+.pnum{width:28px;height:28px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink,#fff);font-weight:700;flex:none}
+.tpl-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tpl-chips button{font:inherit;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.tpl-chips button b{font-size:14.5px}
+.tpl-chips button small{color:var(--muted);font-size:12px}
+.tpl-chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.tpl-chips .free{border-style:dashed}
+.dchips{display:flex;flex-wrap:wrap;gap:6px}
+.dchips button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.15;min-width:58px}
+.dchips button small{font-size:11px;color:var(--muted)}
+.dchips button[aria-pressed="true"]{background:var(--band);color:var(--on-band);border-color:var(--band)}
+.dchips button[aria-pressed="true"] small{color:#E8CDB9}
+.dchips button.busy::after{content:"•";color:var(--accent);font-weight:700;line-height:.6}
+.pdate-f{max-width:220px}
 .cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
 .cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
@@ -1183,6 +1200,7 @@ body.locked{overflow:hidden}
     <div class="rc-days" id="rcDays"></div>
     <blockquote class="rc-quote" id="rcQuote"></blockquote>
   </section>
+  <div class="netbar" id="netBar" hidden role="status" aria-live="polite"></div>
   <div class="banner" id="banner" hidden></div>
 
   <section class="week" aria-label="Cette semaine">
@@ -1542,25 +1560,26 @@ body.locked{overflow:hidden}
     </div>
     <div class="panel" id="planPanel">
       <h2 id="planFormTitle">Planifier une séance</h2>
-      <div class="tpl" id="tplBox"></div>
       <form id="planForm">
+        <div class="pstep"><span class="pnum">1</span><b>Quelle séance ?</b></div>
+        <div class="tpl" id="tplBox"></div>
         <div class="row2">
-          <div class="field"><label class="label" for="pDate">Date prévue</label><input type="date" id="pDate" required></div>
-          <div class="field"><label class="label" for="pTitre">Nom (facultatif)</label><input type="text" id="pTitre" placeholder="Jambes, Haut du corps…"></div>
+          <div class="field"><label class="label" for="pTitre">Nom</label><input type="text" id="pTitre" placeholder="Jambes, Haut du corps…"></div>
+          <div class="field"><span class="label">Type</span><div class="chips" id="pTypeChips"></div></div>
         </div>
+        <div class="pstep"><span class="pnum">2</span><b>Quand ?</b></div>
+        <div class="dchips" id="pDays" role="group" aria-label="Date de la séance"></div>
+        <div class="field pdate-f"><label class="label" for="pDate">Autre date</label><input type="date" id="pDate" required></div>
+        <button class="btn" type="submit" id="pQuick" hidden>Ajouter au programme</button>
+        <div class="pstep"><span class="pnum">3</span><b>Exercices</b> <span class="opt">repère et prévu modifiables</span></div>
         <div class="field">
-          <span class="label">Type</span>
-          <div class="chips" id="pTypeChips"></div>
-        </div>
-        <div class="field">
-          <span class="label">Exercices</span>
           <div class="exbox">
             <div id="pRows" style="display:flex;flex-direction:column;gap:12px"></div>
             <button type="button" class="ghost addex" id="pAddEx">+ Ajouter un exercice</button>
           </div>
           <p class="hint">Le repère reprend automatiquement ta dernière séance avec cet exercice. Tu peux le corriger.</p>
         </div>
-        <div class="field"><label class="label" for="pNotes">Consignes</label><textarea id="pNotes" placeholder="Ex. récup 2 min entre les séries, tempo lent à la descente"></textarea></div>
+        <div class="field"><label class="label" for="pNotes">Consignes de la séance</label><textarea id="pNotes" placeholder="Ex. récup 2 min entre les séries, tempo lent à la descente"></textarea></div>
         <button class="btn" type="submit" id="pSubmit">Ajouter au programme</button>
         <button class="ghost" type="button" id="pAsTpl">Enregistrer comme modèle (sans date)</button>
         <button class="ghost" type="button" id="pCancel" hidden>Annuler la modification</button>
@@ -2073,7 +2092,7 @@ function readPlanRows(){
   }).filter(e=>e.nom).map((e,i,a)=>{if(e.ss&&i===a.length-1)e.ss=false;return e});
 }
 function resetPlanForm(){
-  editingPlan=null;editingRec=null;$("#planForm").reset();$("#pDate").value=iso(addDays(today,1));
+  editingPlan=null;editingRec=null;tplPicked=null;$("#planForm").reset();$("#pDate").value=iso(addDays(today,1));setTimeout(()=>{syncDays();syncQuick();renderTpl()},0);
   $("#pRows").innerHTML="";addPlanRow();
   $("#planFormTitle").textContent="Planifier une séance";$("#pSubmit").textContent="Ajouter au programme";$("#pCancel").hidden=true;
 }
@@ -2084,13 +2103,25 @@ $("#goPlan").onclick=()=>{const h=$("#planFormTitle");openPanel(h);h.scrollIntoV
 addPlanRow();
 
 /* ---------- modèles ---------- */
+let tplPicked=null;
+function renderDays(){
+  const box=$("#pDays");if(!box)return;const all=allPlans();
+  box.innerHTML=[...Array(8)].map((_,i)=>{const d=iso(addDays(today,i)),dd=parse(d);const lab=i===0?"Auj.":i===1?"Demain":dd.toLocaleDateString("fr-FR",{weekday:"short"}).replace(".","");
+    const busy=all.some(p=>p.date===d);return `<button type="button" data-pd="${d}" class="${busy?"busy":""}" title="${esc(fmtDay(d))}${busy?" · déjà une séance prévue":""}"><span>${esc(lab)}</span><small>${dd.getDate()} ${esc(dd.toLocaleDateString("fr-FR",{month:"short"}).replace(".",""))}</small></button>`}).join("");
+  box.querySelectorAll("[data-pd]").forEach(b=>b.onclick=()=>{$("#pDate").value=b.dataset.pd;syncDays()});syncDays();
+}
+function syncDays(){const v=$("#pDate").value;document.querySelectorAll("#pDays [data-pd]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pd===v)))}
+$("#pDate").addEventListener("change",()=>{syncDays();syncQuick()});
+function syncQuick(){const q=$("#pQuick");if(q)q.hidden=!(tplPicked&&$("#pDate").value)}
 function renderTpl(){
+  renderDays();
   const M=(COACH_VIEW?MY_MODELES:tset().modeles)||[];const box=$("#tplBox");
-  box.innerHTML=M.length?`<div class="field"><label class="label" for="tplSel">Partir d'un modèle</label><div class="tpl-row"><select id="tplSel"><option value="">Choisir un modèle…</option>${M.map(m=>`<option value="${esc(m.id)}">${esc(m.nom)} · ${(m.exercices||[]).length} exercice${(m.exercices||[]).length>1?"s":""}</option>`).join("")}</select><button type="button" class="btn" id="tplUse">Charger</button></div></div>
+  box.innerHTML=M.length?`<div class="tpl-chips" role="group" aria-label="Partir d'un modèle">${M.map(m=>`<button type="button" data-tpl-id="${esc(m.id)}" aria-pressed="${tplPicked===m.id}"><b>${esc(m.nom)}</b><small>${(m.exercices||[]).length} exercice${(m.exercices||[]).length>1?"s":""}</small></button>`).join("")}<button type="button" class="free" data-tpl-id="" aria-pressed="${tplPicked===""}"><b>Séance libre</b><small>tu choisis les exercices</small></button></div>
     <details class="tpl-manage"><summary>Gérer mes modèles (${M.length})</summary><ul>${M.map(m=>`<li><span>${esc(m.nom)}</span><button type="button" class="ghost" data-tpl-del="${esc(m.id)}">Supprimer</button></li>`).join("")}</ul></details>`
     :`<p class="hint tpl-empty">Astuce : sur une séance planifiée, touche « Enregistrer comme modèle » pour la replanifier ensuite en un clic (Push, Pull, Legs…).</p>`;
-  const u=$("#tplUse");if(u)u.onclick=()=>{const m=M.find(x=>x.id===$("#tplSel").value);if(m)loadTpl(m)};
-  const ts=$("#tplSel");if(ts)ts.onchange=()=>{const m=M.find(x=>x.id===ts.value);if(m)loadTpl(m)};
+  box.querySelectorAll("[data-tpl-id]").forEach(b=>b.onclick=()=>{const id=b.dataset.tplId;tplPicked=id;
+    if(id){const m=M.find(x=>x.id===id);if(m)loadTpl(m)}else{const d=$("#pDate").value;resetPlanForm();$("#pDate").value=d;tplPicked="";syncDays()}
+    renderTpl();syncQuick()});
   box.querySelectorAll("[data-tpl-del]").forEach(b=>confirmBtn(b,()=>{const t=tset();return saveTSet({...t,cibles:{...t.cibles},habitudes:t.habitudes.map(x=>({...x})),modeles:(t.modeles||[]).filter(x=>x.id!==b.dataset.tplDel).map(x=>JSON.parse(JSON.stringify(x)))})}));
 }
 function loadTpl(m){
@@ -2101,7 +2132,7 @@ function loadTpl(m){
     else addPlanRow(e);
   });
   syncSS($("#pRows"));
-  toast(`Modèle « ${esc(m.nom)} » chargé : vérifie la date puis ajoute-le au programme.`);
+  toast(`Modèle « ${esc(m.nom)} » chargé : choisis le jour`);
   $("#pDate").focus();
 }
 function saveAsTpl(p){
@@ -2236,13 +2267,30 @@ function claudeStore(d,id){
     watch:(cb,err)=>c.onSnapshot(sn=>cb({docs:sn.docs.map(x=>({id:x.id,data:x.data()})),fromCache:sn.metadata.fromCache}),err)}}};
 }
 /* Branchement Supabase : table carnet_docs (user_id, collection, doc_id, data jsonb), protégée par RLS */
+/* ---------- hors-ligne : copie locale + file d'attente des saisies ---------- */
+const netErr=e=>{const m=String((e&&(e.message||e.details))||e||"");return !navigator.onLine||/fetch|network|load failed|timeout|abort|offline|ECONN|ERR_/i.test(m)};
+function offlineUI(n){const b=$("#netBar");if(!b)return;const off=!navigator.onLine;b.hidden=!off&&!n;
+  b.className="netbar"+(off?" off":"");b.textContent=off?`Hors connexion · ${n?`${n} saisie${n>1?"s":""} en attente d'envoi`:"tes saisies seront envoyées au retour du réseau"}`:`Envoi de ${n} saisie${n>1?"s":""} en attente…`}
 function supabaseStore(sb,userId,opt={}){
   const T="carnet_docs",cache={},subs={};let closed=false;
+  const HL=!!opt.horsLigne,SK="bald-off-"+userId,QK="bald-file-"+userId;
+  const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}},lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+  const snap=HL?(lsGet(SK)||{}):{};let snapT;const saveSnap=()=>{if(!HL)return;clearTimeout(snapT);snapT=setTimeout(()=>lsSet(SK,cache),300)};
+  const queue=()=>HL?(lsGet(QK)||[]):[];
+  const enqueue=op=>{const q=queue().filter(o=>!(o.n===op.n&&o.i===op.i));q.push(op);lsSet(QK,q);offlineUI(q.length)};
+  let flushing=false;
+  async function flush(){if(!HL||flushing||closed||!navigator.onLine)return;let q=queue();if(!q.length){offlineUI(0);return}flushing=true;offlineUI(q.length);
+    try{while(q.length){const o=q[0];let r;
+        try{r=o.op==="set"?await sb.from(T).upsert({user_id:userId,collection:o.n,doc_id:o.i,data:o.x,updated_at:new Date(o.t).toISOString()}):await sb.from(T).delete().eq("user_id",userId).eq("collection",o.n).eq("doc_id",o.i)}catch(e){r={error:e}}
+        if(r&&r.error){if(netErr(r.error))break;console.warn("Saisie refusée par la base",r.error)}
+        q=queue().filter(x=>!(x.n===o.n&&x.i===o.i&&x.t===o.t));lsSet(QK,q)}}
+    finally{flushing=false;offlineUI(queue().length)}}
+  if(HL){window.addEventListener("online",flush);window.addEventListener("offline",()=>offlineUI(queue().length));setInterval(flush,30000);setTimeout(flush,1500);offlineUI(queue().length)}
   const canWrite=(n,i)=>!opt.lecture&&(!opt.ecriture||opt.ecriture.includes(n)||opt.ecriture.includes(n+"/"+i));
   const ro=()=>{throw {code:"lecture-seule",message:"Lecture seule"}};
-  const emit=n=>{(subs[n]||[]).forEach(cb=>cb({docs:Object.entries(cache[n]||{}).map(([id,data])=>({id,data})),fromCache:false}))};
-  const put=(n,i,x)=>{(cache[n]=cache[n]||{})[i]=x;emit(n)};
-  const drop=(n,i)=>{if(cache[n])delete cache[n][i];emit(n)};
+  const emit=(n,fc)=>{(subs[n]||[]).forEach(cb=>cb({docs:Object.entries(cache[n]||{}).map(([id,data])=>({id,data})),fromCache:!!fc}))};
+  const put=(n,i,x)=>{(cache[n]=cache[n]||{})[i]=x;emit(n);saveSnap()};
+  const drop=(n,i)=>{if(cache[n])delete cache[n][i];emit(n);saveSnap()};
   const merge=(a,b)=>{const o={...(a||{})};for(const[k,v]of Object.entries(b)){o[k]=v&&typeof v==="object"&&!Array.isArray(v)&&o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k])?merge(o[k],v):v}return o};
   const newId=()=>(crypto.randomUUID?crypto.randomUUID().replace(/-/g,"").slice(0,20):uidLocal()+uidLocal());
   const chk=r=>{if(r&&r.error)throw {code:"unavailable",message:r.error.message};return r};
@@ -2255,11 +2303,20 @@ function supabaseStore(sb,userId,opt={}){
     .subscribe();
   return {kind:"supabase",userId,close(){closed=true;for(const k in subs)subs[k]=[];try{sb.removeChannel(ch)}catch(e){}},col(n){return {
     async add(x){const i=newId();await this.set(i,x);return i},
-    async set(i,x){if(!canWrite(n,i))ro();put(n,i,x);chk(await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()}))},
+    async set(i,x){if(!canWrite(n,i))ro();put(n,i,x);
+      if(HL&&(queue().length||!navigator.onLine)){enqueue({op:"set",n,i,x,t:Date.now()});flush();return}
+      let r;try{r=await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()})}catch(e){r={error:e}}
+      if(r&&r.error&&HL&&netErr(r.error)){enqueue({op:"set",n,i,x,t:Date.now()});return}chk(r)},
     async update(i,x){const v=merge((cache[n]||{})[i],x);await this.set(i,v)},
-    async del(i){if(!canWrite(n,i))ro();drop(n,i);chk(await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i))},
+    async del(i){if(!canWrite(n,i))ro();drop(n,i);
+      if(HL&&(queue().length||!navigator.onLine)){enqueue({op:"del",n,i,t:Date.now()});flush();return}
+      let r;try{r=await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i)}catch(e){r={error:e}}
+      if(r&&r.error&&HL&&netErr(r.error)){enqueue({op:"del",n,i,t:Date.now()});return}chk(r)},
     watch(cb,err){(subs[n]=subs[n]||[]).push(cb);
-      sb.from(T).select("doc_id,data").eq("user_id",userId).eq("collection",n).then(r=>{if(closed)return;if(r.error){err&&err({code:"unavailable",message:r.error.message});return}cache[n]={};r.data.forEach(row=>cache[n][row.doc_id]=row.data);emit(n)},e=>err&&err({code:"unavailable",message:String(e)}));
+      if(HL&&snap[n]&&!cache[n]){cache[n]={...snap[n]};setTimeout(()=>{if(!closed)emit(n,true)},0)}
+      const applyQ=()=>{queue().filter(o=>o.n===n).forEach(o=>{cache[n]=cache[n]||{};if(o.op==="set")cache[n][o.i]=o.x;else delete cache[n][o.i]})};
+      const fail=m=>{if(HL&&snap[n]){applyQ();emit(n,true);return}err&&err({code:"unavailable",message:m})};
+      sb.from(T).select("doc_id,data").eq("user_id",userId).eq("collection",n).then(r=>{if(closed)return;if(r.error){fail(r.error.message);return}cache[n]={};r.data.forEach(row=>cache[n][row.doc_id]=row.data);applyQ();emit(n);saveSnap()},e=>fail(String(e)));
       return ()=>{subs[n]=(subs[n]||[]).filter(f=>f!==cb)}}
   }}};
 }
@@ -2286,6 +2343,7 @@ const IN_CLAUDE=!!(window.claude&&window.claude.use);
 const HOSTED=!IN_CLAUDE&&!!(window.BALD_CONFIG&&BALD_CONFIG.supabaseUrl&&BALD_CONFIG.supabaseAnonKey);
 if(!IN_CLAUDE&&/\.netlify\.app$/.test(location.hostname))document.documentElement.classList.add("badge-netlify");
 let SB=null,SB_USER=null,ROLE=null;
+if(HOSTED&&"serviceWorker" in navigator&&(location.protocol==="https:"||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)))window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 /* Invitation : ?invite=… est mémorisé avant la connexion (le retour de connexion efface l'adresse) */
 const INVITE_K="bald-invite";
 (function(){try{const q=new URLSearchParams(location.search),t=q.get("invite");if(t){if(/^[a-f0-9]{32,80}$/.test(t))localStorage.setItem(INVITE_K,t);q.delete("invite");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash)}}catch(e){}})();
@@ -2298,8 +2356,10 @@ async function initSupabase(){
   const {data}=await SB.auth.getSession();
   SB.auth.onAuthStateChange((ev,sess)=>{if(ev==="SIGNED_OUT"){location.reload()}else if(sess&&!SB_USER){SB_USER=sess.user;afterLogin()}});
   if(data&&data.session){SB_USER=data.session.user;return true}
+  if(!navigator.onLine){const lu=lastUser();if(lu){SB_USER={id:lu.id,email:lu.email,user_metadata:lu.user_metadata};return true}}
   return false;
 }
+function lastUser(){try{return JSON.parse(localStorage.getItem("bald-last-user")||"null")}catch(e){return null}}
 async function init(){
   try{
     if(IN_CLAUDE){
@@ -2355,7 +2415,7 @@ function acctHeader(){
   w.hidden=false;document.body.classList.add("has-acct");const b=$("#acctBtn"),menu=$("#acctMenu");
   if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctInstall").hidden=isStandalone();$("#acctInstall").onclick=()=>{menu.hidden=true;maybeInstall(true)};$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
     b.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;b.setAttribute("aria-expanded",String(!menu.hidden))};
-    $("#logout").onclick=async()=>{clearDraft();try{await SB.auth.signOut()}catch(e){}location.reload()}}
+    $("#logout").onclick=async()=>{clearDraft();try{["bald-last-user","bald-off-"+SB_USER.id].forEach(k=>localStorage.removeItem(k))}catch(e){}try{await SB.auth.signOut()}catch(e){}location.reload()}}
   else{$("#acctName").textContent="Se connecter";b.classList.remove("on");b.title="Se connecter";b.setAttribute("aria-label","Se connecter");menu.hidden=true;
     b.onclick=()=>{try{sessionStorage.removeItem("bald-demo")}catch(e){}location.reload()}}
 }
@@ -2414,9 +2474,11 @@ async function afterLogin(){
     }
     clearInvite();
   }
+  if(st.role==="ancien"){const lu=lastUser();if(lu&&lu.id===SB_USER.id&&lu.role)st={role:lu.role}}
   ROLE=st.role;
+  try{localStorage.setItem("bald-last-user",JSON.stringify({id:SB_USER.id,email:SB_USER.email,user_metadata:SB_USER.user_metadata||{},role:ROLE}))}catch(e){}
   if(ROLE==="aucun"||ROLE==="suspendu"){showReserve(ROLE,invErr);return}
-  STORE=supabaseStore(SB,SB_USER.id);showAccount();startData();
+  STORE=supabaseStore(SB,SB_USER.id,{horsLigne:true});showAccount();startData();
   if(ROLE==="coach"&&location.hash==="#clients")route();
 }
 function showReserve(role,err){
@@ -2431,7 +2493,7 @@ function startData(){
   if(!STORE||state.mode==="db")return;
   hideLogin();
   state.mode="db";
-  let got=0;const timer=setTimeout(()=>{if(got<5){const b=$("#banner");b.hidden=false;b.textContent="Tes données ne répondent pas encore. Elles s'afficheront dès que la connexion revient."}},10000);
+  let got=0;const timer=setTimeout(()=>{if(got<5&&navigator.onLine){const b=$("#banner");b.hidden=false;b.textContent="Tes données ne répondent pas encore. Elles s'afficheront dès que la connexion revient."}},10000);
   const done=(fromCache)=>{if(!fromCache){got++;if(got>=5){clearTimeout(timer);const b=$("#banner");if(b.textContent.startsWith("Tes données"))b.hidden=true}}};
   const fail=e=>{clearTimeout(timer);report(e)};
   C("seances").watch(sn=>{state.sessions=sn.docs.map(d=>({...d.data,id:d.id}));done(sn.fromCache);render()},fail);
@@ -3658,7 +3720,7 @@ function openClient(c){
 function closeClient(){
   if(!COACH_VIEW)return;resetCarnet();COACH_VIEW=null;
   document.body.classList.remove("coach-view");$("#coachBar").hidden=true;
-  STORE=supabaseStore(SB,SB_USER.id);startData();location.hash="#clients";route();scrollTo({top:0});
+  STORE=supabaseStore(SB,SB_USER.id,{horsLigne:true});startData();location.hash="#clients";route();scrollTo({top:0});
 }
 $("#coachBack").onclick=closeClient;
 

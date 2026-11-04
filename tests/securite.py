@@ -19,7 +19,7 @@ with sync_playwright() as p:
     pg.fill('#pTitre',X);pg.fill('#pNotes',X);pg.click('#pN0');pg.fill('#pN0',X);pg.wait_for_timeout(100);pg.locator('.picker .opt.custom').click();pg.wait_for_timeout(100)
     pg.locator('.pset .pc').first.fill('10');pg.locator('.pset .pr').first.fill('5')
     pg.click('#pAsTpl');pg.wait_for_timeout(250)
-    pg.select_option('#tplSel',index=pg.locator('#tplSel option').count()-1);pg.click('#tplUse');pg.wait_for_timeout(250)
+    pg.locator('#tplBox [data-tpl-id]:not(.free)').last.click();pg.wait_for_timeout(250)
     pg.click('#wkEdit summary') if not pg.evaluate("document.querySelector('#wkEdit').open") else None
     pg.select_option('select[data-wd="6"]',index=pg.locator('select[data-wd="6"] option').count()-1);pg.wait_for_timeout(250)
     pg.click('#pSubmit');pg.wait_for_timeout(250)
