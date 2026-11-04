@@ -95,8 +95,8 @@ select public.changer_client(:'P',true);
 select public.mon_statut()->>'role';
 \echo T31 Paul se declare coach (attendu ERREUR)
 insert into public.app_roles values (:'P','coach');
-\echo T32 collection inconnue (attendu ERREUR)
 reset role; set role authenticated; select pg_temp.as_user(:'L');
+\echo T32 collection inconnue (attendu ERREUR)
 insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'L','hack','x','{}');
 -- anon
 reset role; set role anon; select pg_temp.as_user('');

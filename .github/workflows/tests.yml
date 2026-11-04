@@ -1,0 +1,58 @@
+# Tests automatiques à chaque envoi : règles de sécurité (vrai PostgreSQL) + parcours de l'appli (Chrome).
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  securite-base:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Règles de sécurité Supabase
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+        run: |
+          set -e
+          for t in test_rls test_hook test_photos; do
+            psql -q -c "drop database if exists t" && psql -q -c "create database t"
+            psql -d t -q -f tests/sql/supabase_min.sql >/dev/null 2>&1
+            for m in schema 02_espace_coach 03_inscription_sur_invitation 04_objectifs_coach 05_bilans_photos; do
+              psql -d t -q -v ON_ERROR_STOP=1 -f supabase/$m.sql >/dev/null
+            done
+            echo "== $t"; psql -d t -f tests/sql/$t.sql 2>&1 | python3 outils/verifier_sql.py
+          done
+  parcours-appli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Outils
+        run: pip install playwright==1.63.0 pillow
+      - name: Préparation
+        run: bash outils/preparer_tests.sh
+      - name: Tests
+        run: |
+          fail=0
+          for t in regression securite heberge coach guide programme videos bilan horsligne installer; do
+            echo "::group::$t"
+            if ! out=$(timeout 600 python3 tests/$t.py 2>&1); then echo "$out" | tail -40; fail=1; echo "::endgroup::"; continue; fi
+            echo "$out" | grep -E '^(OK|ÉCHEC)|Erreurs JS'
+            if echo "$out" | grep -qE '^ÉCHEC|Erreurs JS : \['; then fail=1; fi
+            echo "::endgroup::"
+          done
+          exit $fail

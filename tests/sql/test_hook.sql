@@ -12,7 +12,7 @@ select (public.creer_invitation('Paul','Paul@X.fr')->>'token') as tok \gset
 reset role; set role supabase_auth_admin;
 \echo H03 inscription paul@x.fr invite (attendu {})
 select public.hook_inscription_sur_invitation('{"user":{"email":"paul@x.fr"}}');
-\echo H04 inscription inconnu (attendu error 403)
+\echo H04 inscription inconnu (attendu 403)
 select public.hook_inscription_sur_invitation('{"user":{"email":"pirate@x.fr"}}')->'error'->>'http_code';
 \echo H05 inscription sans email (attendu 403)
 select public.hook_inscription_sur_invitation('{"user":{}}')->'error'->>'http_code';
