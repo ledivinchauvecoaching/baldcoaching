@@ -12,10 +12,20 @@ Application de suivi (séances, programme, tracking, nutrition, bilan) : une seu
    **Ne mets jamais la clé `service_role` dans ce dépôt.**
 3. **Netlify** : *Add new site › Import from GitHub*, choisis ce dépôt. Aucun build : le dossier publié est la racine (voir `netlify.toml`).
 
+## Espace coach (migration n°2)
+
+1. Supabase › SQL Editor : colle `supabase/02_espace_coach.sql`, remplace `TON_EMAIL_ICI` par l'adresse de ton compte (celle affichée dans le menu du compte de l'appli), puis **Run**. La dernière requête doit afficher ton e-mail avec le rôle `coach`.
+2. Dans l'appli : menu du compte › **Mes clients** › « Créer le lien », puis envoie le lien en DM.
+3. Règles : l'appli est réservée au coach et à ses clients ; le coach lit tout le carnet d'un client actif et n'écrit que ses séances prévues et des commentaires ; un client ne voit jamais un autre client ; un client « en pause » garde l'accès en lecture à ses données.
+
+Tant que ce script n'est pas exécuté, l'appli fonctionne comme avant (chacun son carnet, sans espace coach).
+
 ## Développement
 
 - Chaque modification passe par une branche → Netlify crée une *deploy preview* → validation → fusion dans `main` → mise en ligne.
 - Tests (Python + Playwright) :
+  - `python3 tests/coach.py` : espace coach (invitation, accès réservé, vue coach, programmation, commentaires, cloisonnement) ;
+  - `tests/sql/` : règles de sécurité testées sur un vrai PostgreSQL (`supabase_min.sql` imite Supabase, puis `test_rls.sql` tente 34 contournements) ;
   - `python3 tests/heberge.py` : version hébergée avec un faux Supabase (connexion, cloisonnement entre comptes, sauvegarde/import) ;
   - `python3 tests/regression.py` : parcours fonctionnels ;
   - `python3 tests/securite.py` : injections, export CSV, liens piégés ;

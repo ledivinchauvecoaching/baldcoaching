@@ -329,6 +329,29 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 /* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.coachbar{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;background:var(--accent);color:#FFFFFF;padding:10px 14px;font-size:14px;border:1px solid var(--rule)}
+.coachbar b{font-size:15px}
+.coachbar .ghost{background:rgba(255,255,255,.15);border-color:#FFFFFF;color:#FFFFFF;padding:5px 10px}
+.coach-view .panel:has(#horsProg),.coach-view #onb,.coach-view #newGoalBox,.coach-view [data-done],.coach-view [data-del-g],.coach-view [data-gm],.coach-view [data-edit-s],.coach-view [data-del-s],.coach-view [data-sd],.coach-view [data-start],.coach-view [data-tpl],.coach-view [data-skip],.coach-view .tpl-manage,.coach-view .panel:has(#tGoalsForm),.coach-view .panel:has(#hForm),.coach-view .panel:has(#stepUrl),.coach-view .panel:has(#nGoalsForm),.coach-view .panel:has(#mzForm),.coach-view .kcalp,.coach-view .imp-btn,.coach-view #impBox,.coach-view .pal-kg,.coach-view #pAsTpl,.coach-view #tdSession .btn,.coach-view .ex-tools{display:none!important}
+.coach-view #tTable,.coach-view #nTable,.coach-view #wkDays,.coach-view #tdTrack{pointer-events:none}
+.clcard{border:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
+.clcard+.clcard{margin-top:10px}
+.clcard .clh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.clcard .clh b{font-size:16px}
+.clcard .acts{display:flex;gap:8px;flex-wrap:wrap}
+.clcard.off{opacity:.65}
+.invform{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.invrow{display:flex;gap:8px}.invrow input{flex:1;min-width:0}
+.invlink{border:1px dashed var(--accent);background:var(--accent-soft);padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.invlink code{font-size:12.5px;word-break:break-all;color:var(--ink)}
+.invitem{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:8px 0;font-size:14px;flex-wrap:wrap}
+.invitem .acts{display:flex;gap:6px}
+.ccom{margin-top:8px;border-left:4px solid var(--accent);background:var(--accent-soft);padding:8px 10px;font-size:14px;color:var(--ink)}
+.ccom .who{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brown);margin-bottom:2px}
+.ccom .acts{display:flex;gap:6px;margin-top:6px}
+.ccom textarea{width:100%;box-sizing:border-box;font:inherit;min-height:64px;padding:8px}
+.cadd{margin-top:8px}
+.tag-coach{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border:1px solid var(--accent);padding:1px 6px}
 .guidebar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;color:var(--brown)}
 .guidebar b{color:var(--accent)}
 .guidebar .ghost{font-size:12.5px;padding:5px 10px}
@@ -1020,7 +1043,7 @@ body.locked{overflow:hidden}
     <div class="cv-band">
       <div class="cv-tools">
         <span class="acct-w" id="acctW" hidden><button type="button" class="sugg-btn acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><b class="ini" id="acctIni" aria-hidden="true"></b><span id="acctName">Se connecter</span></button>
-          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
+          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><a class="btn" href="#clients" id="acctClients" hidden style="text-align:center;text-decoration:none">Mes clients</a><span class="hint" id="acctCoach" hidden style="margin:0">Suivi par @bald.coaching</span><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
   <a class="sugg-btn" id="tab-suggestion" href="#suggestion" title="Une idée, une remarque ?" aria-label="Suggestion"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span>Suggestion</span></a>
       </div>
       <div class="theme-sw" role="group" aria-label="Apparence">
@@ -1032,6 +1055,7 @@ body.locked{overflow:hidden}
     </div>
     <div class="cv-sub"><span><span id="today"></span><span class="cv-rule"> · Surcharge progressive : +1 rép ou +<span id="palTxt">0,5</span> kg à chaque séance</span></span><span id="exampleTools"></span><span id="acct" hidden></span></div>
   </header>
+  <div class="coachbar" id="coachBar" hidden><span>Carnet de <b id="coachBarName"></b> · vue coach</span><button type="button" class="ghost" id="coachBack">Revenir à mon carnet</button></div>
   <section class="recap" aria-label="Les 7 derniers jours">
     <div class="rc-count"><span class="label">7 derniers jours</span><span class="rc-big num" id="rcCount">0</span><span class="rc-unit" id="rcUnit">séance</span><span class="hint num" id="rcMeta"></span></div>
     <div class="rc-days" id="rcDays"></div>
@@ -1111,6 +1135,20 @@ body.locked{overflow:hidden}
   </section>
 
   <!-- SUGGESTION -->
+  <section id="view-clients" hidden class="cols" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="panel">
+      <h2>Mes clients</h2>
+      <div id="clList"><p class="hint">Chargement…</p></div>
+    </div>
+    <div class="panel">
+      <h2>Inviter un client</h2>
+      <p class="hint" style="margin:0">Crée un lien personnel et envoie-le en DM. Il sert une seule fois et expire au bout de 14 jours. Ton client l'ouvre, se connecte, et il apparaît dans ta liste.</p>
+      <form id="invForm" class="invform"><label class="label" for="invNote">Prénom du client (pour t'y retrouver)</label><div class="invrow"><input type="text" id="invNote" maxlength="80" placeholder="ex. Paul"><button class="btn" type="submit" id="invGo">Créer le lien</button></div></form>
+      <div id="invNew" hidden></div>
+      <h3 class="label" style="margin:12px 0 0">Invitations en attente</h3>
+      <div id="invList"><p class="hint">Aucune.</p></div>
+    </div>
+  </section>
   <section id="view-suggestion" hidden class="cols" style="grid-template-columns:minmax(0,1fr) minmax(0,340px)">
     <div class="panel">
       <h2>Une idée, une remarque ?</h2>
@@ -1447,7 +1485,7 @@ body.locked{overflow:hidden}
   <div class="login-card">
     <div class="login-band"><span class="login-brand">@bald.coaching</span><h1 id="loginTitle">Carnet <em>d'entraînement</em></h1></div>
     <div class="login-body">
-      <p style="margin:0">Connecte-toi pour retrouver ton carnet sur tous tes appareils. Tes données restent privées : personne d'autre ne peut les voir.</p>
+      <p style="margin:0" id="loginIntro">Connecte-toi pour retrouver ton carnet sur tous tes appareils. Tes données restent privées : seul ton coach peut les consulter.</p>
       <form id="loginForm" class="login-form">
         <label class="label" for="loginEmail">Ton e-mail</label>
         <input type="email" id="loginEmail" required autocomplete="email" placeholder="prenom@exemple.fr">
@@ -1459,6 +1497,19 @@ body.locked{overflow:hidden}
       <button type="button" class="ghost login-demo" id="loginDemo">Découvrir l'application sans compte</button>
       <p class="hint">Pas de mot de passe : tu reçois un lien par e-mail, tu cliques, c'est tout.</p>
       <p class="hint" style="margin-top:4px"><a href="confidentialite.html" style="color:var(--accent);font-weight:700">Règles de confidentialité</a></p>
+    </div>
+  </div>
+</section>
+<section class="login" id="reserve" hidden aria-labelledby="reserveTitle">
+  <div class="login-card">
+    <div class="login-band"><span class="login-brand">@bald.coaching</span><h1 id="reserveTitle">Carnet <em>d'entraînement</em></h1></div>
+    <div class="login-body">
+      <p class="login-msg" id="reserveMsg"></p>
+      <p style="margin:0" id="reserveTxt"></p>
+      <a class="btn" style="text-align:center;text-decoration:none" href="https://www.instagram.com/bald.coaching/" target="_blank" rel="noopener">Écrire à @bald.coaching sur Instagram</a>
+      <button type="button" class="ghost login-demo" id="reserveRead" hidden>Consulter mon carnet (lecture seule)</button>
+      <button type="button" class="ghost login-demo" id="reserveOut">Se déconnecter</button>
+      <p class="hint" style="margin:0" id="reserveWho"></p>
     </div>
   </div>
 </section>
@@ -1493,7 +1544,8 @@ window.BALD_CONFIG=window.BALD_CONFIG||{supabaseUrl:"",supabaseAnonKey:""};
 (function(){
 const TYPES=["Musculation","Course","Vélo","Mobilité","Autre"];
 const RPE_WORDS=["","Très facile","Facile","Modéré","Un peu dur","Dur","Dur","Très dur","Très dur","Extrêmement dur","Maximal"];
-const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,mode:"loading"};
+const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,comments:{},mode:"loading"};
+let COACH_VIEW=null,MY_MODELES=[];
 let readOnly=false;
 let tWeek=0, tSel=null, jType="Tout", jAll=false, PRS=new Set();
 let db=null, uid=null, pendingPlan=null, editingPlan=null;
@@ -1887,7 +1939,7 @@ addPlanRow();
 
 /* ---------- modèles ---------- */
 function renderTpl(){
-  const M=tset().modeles||[];const box=$("#tplBox");
+  const M=(COACH_VIEW?MY_MODELES:tset().modeles)||[];const box=$("#tplBox");
   box.innerHTML=M.length?`<div class="field"><label class="label" for="tplSel">Partir d'un modèle</label><div class="tpl-row"><select id="tplSel"><option value="">Choisir un modèle…</option>${M.map(m=>`<option value="${esc(m.id)}">${esc(m.nom)} · ${(m.exercices||[]).length} exercice${(m.exercices||[]).length>1?"s":""}</option>`).join("")}</select><button type="button" class="btn" id="tplUse">Charger</button></div></div>
     <details class="tpl-manage"><summary>Gérer mes modèles (${M.length})</summary><ul>${M.map(m=>`<li><span>${esc(m.nom)}</span><button type="button" class="ghost" data-tpl-del="${esc(m.id)}">Supprimer</button></li>`).join("")}</ul></details>`
     :`<p class="hint tpl-empty">Astuce : sur une séance planifiée, touche « Enregistrer comme modèle » pour la replanifier ensuite en un clic (Push, Pull, Legs…).</p>`;
@@ -2025,7 +2077,7 @@ async function addGoal(g){ if(state.mode==="db"){await C("objectifs").add(g)} el
 async function delGoal(id){ if(state.mode==="db"){await C("objectifs").del(id)} else {state.goals=state.goals.filter(x=>x.id!==id);render()} }
 async function setGoalDone(id,v){ if(state.mode==="db"){await C("objectifs").update(id,{atteint:v})} else {const g=state.goals.find(x=>x.id===id);g.atteint=v;render()} }
 async function setMesures(id,mesures){ if(state.mode==="db"){await C("objectifs").update(id,{mesures})} else {const g=state.goals.find(x=>x.id===id);g.mesures=mesures;render()} }
-async function addPlan(p){ if(state.mode==="db"){await C("prevues").add(p)} else {state.plans.push({...p,id:uidLocal()});render()} }
+async function addPlan(p){ if(COACH_VIEW)p={...p,coach:true}; if(state.mode==="db"){await C("prevues").add(p)} else {state.plans.push({...p,id:uidLocal()});render()} }
 async function setPlan(id,p){ if(state.mode==="db"){await C("prevues").set(id,p)} else {state.plans=state.plans.map(x=>x.id===id?{...p,id}:x);render()} }
 async function delPlan(id){ if(state.mode==="db"){await C("prevues").del(id)} else {state.plans=state.plans.filter(x=>x.id!==id);render()} }
 
@@ -2037,8 +2089,10 @@ function claudeStore(d,id){
     watch:(cb,err)=>c.onSnapshot(sn=>cb({docs:sn.docs.map(x=>({id:x.id,data:x.data()})),fromCache:sn.metadata.fromCache}),err)}}};
 }
 /* Branchement Supabase : table carnet_docs (user_id, collection, doc_id, data jsonb), protégée par RLS */
-function supabaseStore(sb,userId){
-  const T="carnet_docs",cache={},subs={};
+function supabaseStore(sb,userId,opt={}){
+  const T="carnet_docs",cache={},subs={};let closed=false;
+  const canWrite=n=>!opt.lecture&&(!opt.ecriture||opt.ecriture.includes(n));
+  const ro=()=>{throw {code:"lecture-seule",message:"Lecture seule"}};
   const emit=n=>{(subs[n]||[]).forEach(cb=>cb({docs:Object.entries(cache[n]||{}).map(([id,data])=>({id,data})),fromCache:false}))};
   const put=(n,i,x)=>{(cache[n]=cache[n]||{})[i]=x;emit(n)};
   const drop=(n,i)=>{if(cache[n])delete cache[n][i];emit(n)};
@@ -2047,18 +2101,18 @@ function supabaseStore(sb,userId){
   const chk=r=>{if(r&&r.error)throw {code:"unavailable",message:r.error.message};return r};
   // Temps réel : ajouts et modifications uniquement (les suppressions Supabase ne sont pas filtrables par utilisateur ni soumises au RLS).
   // Une suppression faite sur un autre appareil apparaît au prochain chargement.
-  const onRow=ev=>{const row=ev.new;if(!row||row.user_id!==userId||!row.collection)return;put(row.collection,row.doc_id,row.data)};
-  sb.channel("carnet-"+userId)
+  const onRow=ev=>{const row=ev.new;if(closed||!row||row.user_id!==userId||!row.collection)return;put(row.collection,row.doc_id,row.data)};
+  const ch=sb.channel("carnet-"+userId+"-"+Math.random().toString(36).slice(2,7))
     .on("postgres_changes",{event:"INSERT",schema:"public",table:T,filter:"user_id=eq."+userId},onRow)
     .on("postgres_changes",{event:"UPDATE",schema:"public",table:T,filter:"user_id=eq."+userId},onRow)
     .subscribe();
-  return {kind:"supabase",col(n){return {
+  return {kind:"supabase",userId,close(){closed=true;for(const k in subs)subs[k]=[];try{sb.removeChannel(ch)}catch(e){}},col(n){return {
     async add(x){const i=newId();await this.set(i,x);return i},
-    async set(i,x){put(n,i,x);chk(await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()}))},
+    async set(i,x){if(!canWrite(n))ro();put(n,i,x);chk(await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()}))},
     async update(i,x){const v=merge((cache[n]||{})[i],x);await this.set(i,v)},
-    async del(i){drop(n,i);chk(await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i))},
+    async del(i){if(!canWrite(n))ro();drop(n,i);chk(await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i))},
     watch(cb,err){(subs[n]=subs[n]||[]).push(cb);
-      sb.from(T).select("doc_id,data").eq("user_id",userId).eq("collection",n).then(r=>{if(r.error){err&&err({code:"unavailable",message:r.error.message});return}cache[n]={};r.data.forEach(row=>cache[n][row.doc_id]=row.data);emit(n)},e=>err&&err({code:"unavailable",message:String(e)}));
+      sb.from(T).select("doc_id,data").eq("user_id",userId).eq("collection",n).then(r=>{if(closed)return;if(r.error){err&&err({code:"unavailable",message:r.error.message});return}cache[n]={};r.data.forEach(row=>cache[n][row.doc_id]=row.data);emit(n)},e=>err&&err({code:"unavailable",message:String(e)}));
       return ()=>{subs[n]=(subs[n]||[]).filter(f=>f!==cb)}}
   }}};
 }
@@ -2076,6 +2130,7 @@ async function clearExamples(){
   for(const [d,v] of Object.entries(state.tracking)) if(v.exemple) await saveDay(d,null);
 }
 function report(e){
+  if(e&&e.code==="lecture-seule"){toast(COACH_VIEW?"Vue coach : seuls le programme et les commentaires sont modifiables.":"Ton carnet est en lecture seule.");return}
   const b=$("#banner");b.hidden=false;b.classList.remove("demo");
   b.textContent=e&&e.code==="quota_exceeded"?"Le carnet est plein : supprimez d'anciennes séances pour en ajouter.":"L'enregistrement a échoué. Vérifiez votre connexion puis réessayez.";
 }
@@ -2083,13 +2138,18 @@ function report(e){
 const IN_CLAUDE=!!(window.claude&&window.claude.use);
 const HOSTED=!IN_CLAUDE&&!!(window.BALD_CONFIG&&BALD_CONFIG.supabaseUrl&&BALD_CONFIG.supabaseAnonKey);
 if(!IN_CLAUDE&&/\.netlify\.app$/.test(location.hostname))document.documentElement.classList.add("badge-netlify");
-let SB=null,SB_USER=null;
+let SB=null,SB_USER=null,ROLE=null;
+/* Invitation : ?invite=… est mémorisé avant la connexion (le retour de connexion efface l'adresse) */
+const INVITE_K="bald-invite";
+(function(){try{const q=new URLSearchParams(location.search),t=q.get("invite");if(t){if(/^[a-f0-9]{32,80}$/.test(t))localStorage.setItem(INVITE_K,t);q.delete("invite");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash)}}catch(e){}})();
+function pendingInvite(){try{return localStorage.getItem(INVITE_K)}catch(e){return null}}
+function clearInvite(){try{localStorage.removeItem(INVITE_K)}catch(e){}}
 function loadScript(src){return new Promise((ok,ko)=>{const t=document.createElement("script");t.src=src;t.onload=ok;t.onerror=()=>ko(new Error("script"));document.head.appendChild(t)})}
 async function initSupabase(){
   if(!window.supabase)await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js");
   SB=window.supabase.createClient(BALD_CONFIG.supabaseUrl,BALD_CONFIG.supabaseAnonKey,{auth:{flowType:"pkce",persistSession:true,detectSessionInUrl:true}});
   const {data}=await SB.auth.getSession();
-  SB.auth.onAuthStateChange((ev,sess)=>{if(ev==="SIGNED_OUT"){location.reload()}else if(sess&&!SB_USER){SB_USER=sess.user;startData()}});
+  SB.auth.onAuthStateChange((ev,sess)=>{if(ev==="SIGNED_OUT"){location.reload()}else if(sess&&!SB_USER){SB_USER=sess.user;afterLogin()}});
   if(data&&data.session){SB_USER=data.session.user;return true}
   return false;
 }
@@ -2106,7 +2166,7 @@ async function init(){
       if(db)STORE=claudeStore(db,uid);
     }else if(HOSTED){
       let signed=false;try{signed=await initSupabase()}catch(e){report({code:"unavailable"});}
-      if(signed){STORE=supabaseStore(SB,SB_USER.id);showAccount()}
+      if(signed){await afterLogin();return}
       else if(SB&&!demoChosen()){showLogin();return}
     }
   }catch(e){}
@@ -2116,6 +2176,7 @@ async function init(){
 function demoChosen(){try{return sessionStorage.getItem("bald-demo")==="1"}catch(e){return false}}
 function showLogin(){
   const L=$("#login");L.hidden=false;document.body.classList.add("locked");
+  if(pendingInvite()){$("#loginIntro").innerHTML="<b>Tu es invité(e) par @bald.coaching.</b> Connecte-toi (lien par e-mail ou Google) pour rejoindre ton suivi.";$("#loginDemo").hidden=true}
   try{const q=new URLSearchParams(location.search+"&"+location.hash.replace(/^#/,"")),ec=q.get("error_code")||q.get("error");
     if(ec){const m=$("#loginMsg");m.hidden=false;m.className="login-msg ko";m.textContent=/expired/.test(ec)?"Ce lien a expiré ou a déjà servi. Demande un nouveau lien ci-dessous.":"La connexion n'a pas abouti. Demande un nouveau lien ci-dessous.";
       history.replaceState(null,"",location.pathname)}}catch(e){}
@@ -2143,7 +2204,7 @@ function firstName(u){
 function acctHeader(){
   const w=$("#acctW");if(!w)return;if(!HOSTED){w.hidden=true;return}
   w.hidden=false;document.body.classList.add("has-acct");const b=$("#acctBtn"),menu=$("#acctMenu");
-  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
+  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
     b.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;b.setAttribute("aria-expanded",String(!menu.hidden))};
     $("#logout").onclick=async()=>{clearDraft();try{await SB.auth.signOut()}catch(e){}location.reload()}}
   else{$("#acctName").textContent="Se connecter";b.classList.remove("on");b.title="Se connecter";b.setAttribute("aria-label","Se connecter");menu.hidden=true;
@@ -2162,8 +2223,35 @@ function startLocal(){
     if(HOSTED){b.insertAdjacentHTML("beforeend",' <button type="button" class="btn" id="goLogin" style="margin-left:6px;padding:4px 10px;font-style:normal">Me connecter</button>');$("#goLogin").onclick=()=>{try{sessionStorage.removeItem("bald-demo")}catch(e){}location.reload()}}
     render();tReady=true;applySteps();
 }
+/* Après connexion : rôle (coach / client / aucun), invitation en attente, puis ouverture du carnet */
+let afterLoginRun=false;
+async function afterLogin(){
+  if(afterLoginRun||!SB_USER)return;afterLoginRun=true;
+  let st;try{const r=await SB.rpc("mon_statut");if(r.error)throw r.error;st=r.data||{role:"aucun"}}catch(e){st={role:"ancien"}}
+  const inv=pendingInvite();let invErr="";
+  if(inv){
+    if(st.role==="aucun"||st.role==="suspendu"){
+      try{const r=await SB.rpc("accepter_invitation",{p_token:inv});if(r.error)throw r.error;
+        if(r.data&&r.data.ok){st={role:"client"};setTimeout(()=>toast("<b>Bienvenue !</b><br>Ton coach @bald.coaching peut maintenant suivre ton carnet et te programmer des séances.",true),600)}
+        else invErr="Ce lien d'invitation n'est plus valable (déjà utilisé ou expiré). Demande-en un nouveau à ton coach."}
+      catch(e){invErr="L'invitation n'a pas pu être validée. Réessaie dans un instant."}
+    }
+    clearInvite();
+  }
+  ROLE=st.role;
+  if(ROLE==="aucun"||ROLE==="suspendu"){showReserve(ROLE,invErr);return}
+  STORE=supabaseStore(SB,SB_USER.id);showAccount();startData();
+  if(ROLE==="coach"&&location.hash==="#clients")route();
+}
+function showReserve(role,err){
+  hideLogin();const R=$("#reserve");R.hidden=false;document.body.classList.add("locked");
+  const m=$("#reserveMsg");m.hidden=!err;m.className="login-msg ko";m.textContent=err||"";
+  $("#reserveTxt").textContent=role==="suspendu"?"Ton suivi avec @bald.coaching est en pause. Tes données sont conservées : tu peux les consulter et les exporter, et ton coach peut réactiver ton accès.":"Cette application est réservée aux clients de @bald.coaching. Pour y accéder, demande ton lien d'invitation personnel à ton coach.";
+  $("#reserveWho").textContent=SB_USER&&SB_USER.email?"Connecté avec "+SB_USER.email:"";
+  const rd=$("#reserveRead");rd.hidden=role!=="suspendu";rd.onclick=()=>{R.hidden=true;document.body.classList.remove("locked");STORE=supabaseStore(SB,SB_USER.id,{lecture:true});showAccount();startData();const b=$("#banner");b.hidden=false;b.textContent="Suivi en pause : ton carnet est en lecture seule. Tu peux exporter tes données depuis Bilan."};
+  $("#reserveOut").onclick=async()=>{try{await SB.auth.signOut()}catch(e){}location.reload()};
+}
 function startData(){
-  if(!STORE&&SB&&SB_USER){STORE=supabaseStore(SB,SB_USER.id);showAccount()}
   if(!STORE||state.mode==="db")return;
   hideLogin();
   state.mode="db";
@@ -2174,6 +2262,7 @@ function startData(){
   C("objectifs").watch(sn=>{state.goals=sn.docs.map(d=>({...d.data,id:d.id,mesures:[...(d.data.mesures||[])]}));done(sn.fromCache);render()},fail);
   C("tracking").watch(sn=>{const m={};sn.docs.forEach(d=>{m[d.id]={...((d.data||{}).values||{})}});state.tracking=m;done(sn.fromCache);render();if(!sn.fromCache&&!tReady){tReady=true;applySteps()}},fail);
   C("reglages").watch(sn=>{const doc=sn.docs.find(d=>d.id==="tracking");const x=doc?doc.data:null;state.tset=x?{...JSON.parse(JSON.stringify(x)),cibles:{...DEFAULT_T.cibles,...(x.cibles||{})},habitudes:(x.habitudes||[]).map(h=>({...h})),modeles:JSON.parse(JSON.stringify(x.modeles||[]))}:null;done(sn.fromCache);render();fillTGoals()},fail);
+  C("commentaires").watch(sn=>{const m={};sn.docs.forEach(d=>m[d.id]=d.data);state.comments=m;if(document.body.dataset.view==="seances")journal()},()=>{});
   C("prevues").watch(sn=>{state.plans=sn.docs.map(d=>{const x=d.data;return {...x,id:d.id,exercices:(x.exercices||[]).map(e=>({...e,ref:Array.isArray(e.ref)?e.ref.map(r=>({...r})):(e.ref?{...e.ref}:null),sets:Array.isArray(e.sets)?e.sets.map(r=>({...r})):e.sets}))}});done(sn.fromCache);render()},fail);
   render();
 }
@@ -2879,7 +2968,7 @@ function journal(){
     const min=list.reduce((a,s)=>a+(+s.duree||0),0),ld=list.reduce((a,s)=>a+load(s),0);
     h+=`<div class="weekgroup"><div class="weekhead"><h3>Semaine du ${fmtShort(parse(k))}</h3><span class="hint num">${list.length} séance${list.length>1?"s":""} · ${fmtNum(min)} min · ${fmtNum(ld)} UA</span></div>`;
     list.forEach(s=>{
-      h+=`<div class="entry"><div class="d">${esc(fmtDay(s.date))}</div><div class="main"><div class="meta"><span class="type">${esc(s.type)}</span><span class="num">${fmtNum(+s.duree)} min</span>${s.distance?`<span class="num"><b>${fmtNum(+s.distance)} km</b>${s.deniv?` · D+ ${fmtNum(+s.deniv)} m`:""} · ${esc(paceTxt(s.type,+s.distance,+s.duree))}</span>`:""}<span class="pill ${rpeClass(+s.rpe)} num" title="${esc(RPE_WORDS[+s.rpe]||"")}">RPE ${esc(s.rpe)}</span><span class="hint num">${fmtNum(load(s))} UA</span>${s.exemple?'<span class="tag-ex">exemple</span>':""}</div>${exList(s)}${s.notes?`<p class="notes">${esc(s.notes)}</p>`:""}</div><div class="eacts"><button class="ghost" data-edit-s="${esc(s.id)}" aria-label="Modifier la séance">Modifier</button><button class="ghost" data-del-s="${esc(s.id)}" aria-label="Supprimer la séance">Supprimer</button></div></div>`;
+      h+=`<div class="entry"><div class="d">${esc(fmtDay(s.date))}</div><div class="main"><div class="meta"><span class="type">${esc(s.type)}</span><span class="num">${fmtNum(+s.duree)} min</span>${s.distance?`<span class="num"><b>${fmtNum(+s.distance)} km</b>${s.deniv?` · D+ ${fmtNum(+s.deniv)} m`:""} · ${esc(paceTxt(s.type,+s.distance,+s.duree))}</span>`:""}<span class="pill ${rpeClass(+s.rpe)} num" title="${esc(RPE_WORDS[+s.rpe]||"")}">RPE ${esc(s.rpe)}</span><span class="hint num">${fmtNum(load(s))} UA</span>${s.exemple?'<span class="tag-ex">exemple</span>':""}</div>${exList(s)}${s.notes?`<p class="notes">${esc(s.notes)}</p>`:""}${comBlock(s)}</div><div class="eacts"><button class="ghost" data-edit-s="${esc(s.id)}" aria-label="Modifier la séance">Modifier</button><button class="ghost" data-del-s="${esc(s.id)}" aria-label="Supprimer la séance">Supprimer</button></div></div>`;
     });
     h+=`</div>`;
   });
@@ -2890,6 +2979,7 @@ function journal(){
   const jm=$("#jMore");if(jm)jm.onclick=()=>{jAll=true;journal()};const jl=$("#jLess");if(jl)jl.onclick=()=>{jAll=false;journal()};
   el.querySelectorAll("[data-del-s]").forEach(b=>confirmBtn(b,()=>delSession(b.dataset.delS)));
   el.querySelectorAll("[data-edit-s]").forEach(b=>b.onclick=()=>editSession(state.sessions.find(x=>x.id===b.dataset.editS)));
+  wireComments(el);
 }
 
 function exList(s){
@@ -2931,10 +3021,10 @@ function renderPlans(){
     const compactCard=idx>=3;
     const recTag=p.virtual?'<span class="rectag">Semaine type</span>':(p.rec?'<span class="rectag">Semaine type · modifiée</span>':"");
     const acts=`<div class="acts"><button class="btn" data-start="${esc(p.id)}">Faire cette séance</button><button class="ghost" data-edit="${esc(p.id)}">Modifier</button>${p.virtual?`<button class="ghost" data-skip="${esc(p.rec)}">Passer cette fois</button>`:`${(p.exercices||[]).length&&!p.rec?`<button class="ghost" data-tpl="${esc(p.id)}">Enregistrer comme modèle</button>`:""}<button class="ghost" data-del-p="${esc(p.id)}">Supprimer</button>`}</div>`;
-    if(compactCard)return `<article class="plan compact" data-pid="${esc(p.id)}"><div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}</div>${(p.exercices||[]).length?`<p class="hint" style="margin:0">${p.exercices.map(e=>esc(e.nom)).join(" · ")}</p>`:""}${acts}</article>`;
+    if(compactCard)return `<article class="plan compact" data-pid="${esc(p.id)}"><div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.coach?`<span class="tag-coach">${COACH_VIEW?"Programmée par toi":"Par ton coach"}</span>`:""}</div>${(p.exercices||[]).length?`<p class="hint" style="margin:0">${p.exercices.map(e=>esc(e.nom)).join(" · ")}</p>`:""}${acts}</article>`;
     return `<article class="plan" data-pid="${esc(p.id)}">
       <div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div>
-      <div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.exemple?'<span class="tag-ex">exemple</span>':""}</div>
+      <div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.coach?`<span class="tag-coach">${COACH_VIEW?"Programmée par toi":"Par ton coach"}</span>`:""}${p.exemple?'<span class="tag-ex">exemple</span>':""}</div>
       ${rows?`<div class="ptable"><table><thead><tr><th>Exercice</th><th>Repère · kg × reps</th><th>Prévu · charge totale</th></tr></thead><tbody>${rows}</tbody>${totRow(tPass,tPrev)}</table></div>`:""}
       ${p.notes?`<p class="notes" style="margin:0;color:var(--muted);font-size:14px">${esc(p.notes)}</p>`:""}
       ${acts}
@@ -2975,7 +3065,7 @@ function renderSessDay(){
   const rb=$("#drResume");if(rb)rb.onclick=()=>resumeDraft(getDraft());const db2=$("#drDrop");if(db2)confirmBtn(db2,async()=>{clearDraft();renderSessDay()});
   $("#sDay").querySelectorAll("[data-sd]").forEach(b=>b.onclick=()=>startFromPlan(findPlan(b.dataset.sd),true));
 }
-function sessAuto(){if(sessMode)return renderSessDay();if(getDraft())return renderSessDay();const p=planForToday();if(p&&dismissedPlan!==p.id)startFromPlan(p,true);else renderSessDay()}
+function sessAuto(){if(COACH_VIEW)return renderSessDay();if(sessMode)return renderSessDay();if(getDraft())return renderSessDay();const p=planForToday();if(p&&dismissedPlan!==p.id)startFromPlan(p,true);else renderSessDay()}
 let editingSession=null;
 const DRAFT_K="bald-draft";
 function readForm(){
@@ -3180,6 +3270,7 @@ function renderView(v){
   else if(v==="programme"){renderWeek();renderTpl();renderPlans()}
   else if(v==="seances"){if(!sessMode)renderSessDay();chart();journal();cmpSoon()}
   else if(v==="bilan"){renderBilan()}
+  else if(v==="clients"){renderClients()}
 }
 
 /* ---------- forms ---------- */
@@ -3247,20 +3338,88 @@ document.querySelectorAll(".panel>h2").forEach(h=>{
 });
 function openPanel(el){const p=el.closest(".panel");if(p&&p.classList.contains("collapsed")){p.classList.remove("collapsed");p.querySelector("h2").setAttribute("aria-expanded","true")}}
 
+/* ---------- espace coach ---------- */
+function comBlock(s){
+  const c=state.comments&&state.comments[s.id];
+  if(COACH_VIEW){
+    if(c)return `<div class="ccom" data-com="${esc(s.id)}"><span class="who">Ton commentaire</span><span class="ctxt">${esc(c.texte)}</span><div class="acts"><button type="button" class="ghost" data-com-edit="${esc(s.id)}">Modifier</button><button type="button" class="ghost" data-com-del="${esc(s.id)}">Supprimer</button></div></div>`;
+    return `<button type="button" class="ghost cadd" data-com-add="${esc(s.id)}">💬 Commenter cette séance</button>`;
+  }
+  return c?`<div class="ccom"><span class="who">💬 Ton coach</span>${esc(c.texte)}</div>`:"";
+}
+function wireComments(el){
+  const open=(id,txt)=>{const host=el.querySelector(`[data-com="${CSS.escape(id)}"]`)||el.querySelector(`[data-com-add="${CSS.escape(id)}"]`);if(!host)return;
+    const box=document.createElement("div");box.className="ccom";box.innerHTML=`<span class="who">Ton commentaire</span><textarea maxlength="600" aria-label="Commentaire"></textarea><div class="acts"><button type="button" class="btn">Envoyer</button><button type="button" class="ghost">Annuler</button></div>`;
+    host.replaceWith(box);const ta=box.querySelector("textarea");ta.value=txt||"";ta.focus();
+    box.querySelector(".ghost").onclick=()=>journal();
+    box.querySelector(".btn").onclick=()=>{const t=ta.value.trim();if(!t){ta.focus();return}
+      C("commentaires").set(id,{texte:t,date:iso(today),coach:true,at:Date.now()}).then(()=>{state.comments={...state.comments,[id]:{texte:t}};journal();toast("Commentaire envoyé")}).catch(report)}};
+  el.querySelectorAll("[data-com-add]").forEach(b=>b.onclick=()=>open(b.dataset.comAdd,""));
+  el.querySelectorAll("[data-com-edit]").forEach(b=>b.onclick=()=>open(b.dataset.comEdit,(state.comments[b.dataset.comEdit]||{}).texte));
+  el.querySelectorAll("[data-com-del]").forEach(b=>confirmBtn(b,async()=>{await C("commentaires").del(b.dataset.comDel);const m={...state.comments};delete m[b.dataset.comDel];state.comments=m;journal()}));
+}
+function inviteUrl(t){return location.origin+location.pathname+"?invite="+t}
+async function copyTxt(t,btn){try{await navigator.clipboard.writeText(t);if(btn){const o=btn.textContent;btn.textContent="Copié ✓";setTimeout(()=>btn.textContent=o,1600)}}catch(e){prompt("Copie ce lien :",t)}}
+function fmtDT(x){try{return new Date(x).toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})}catch(e){return ""}}
+async function renderClients(){
+  if(ROLE!=="coach"||!SB)return;
+  const [rc,ri]=await Promise.all([SB.rpc("mes_clients"),SB.rpc("mes_invitations")]);
+  const L=$("#clList"),I=$("#invList");
+  if(rc.error){L.innerHTML=`<p class="hint">Impossible de charger tes clients pour le moment.</p>`}
+  else{const cl=rc.data||[];
+    L.innerHTML=cl.length?cl.map(c=>`<div class="clcard${c.actif?"":" off"}"><div class="clh"><b>${esc(c.nom||c.email||"Client")}</b><span class="hint">${c.actif?"depuis le "+esc(fmtDT(c.depuis)):"en pause"}</span></div>${c.nom&&c.email?`<span class="hint">${esc(c.email)}</span>`:""}<div class="acts">${c.actif?`<button type="button" class="btn" data-cl-open="${esc(c.id)}">Ouvrir son carnet</button><button type="button" class="ghost" data-cl-off="${esc(c.id)}">Mettre en pause</button>`:`<button type="button" class="ghost" data-cl-on="${esc(c.id)}">Réactiver</button>`}</div></div>`).join(""):`<div class="empty"><p>Pas encore de client. Crée un lien d'invitation et envoie-le en DM.</p></div>`;
+    L.querySelectorAll("[data-cl-open]").forEach(b=>b.onclick=()=>openClient(cl.find(c=>c.id===b.dataset.clOpen)));
+    L.querySelectorAll("[data-cl-off]").forEach(b=>confirmBtn(b,async()=>{const r=await SB.rpc("changer_client",{p_client:b.dataset.clOff,p_actif:false});if(r.error)report(r.error);renderClients()}));
+    L.querySelectorAll("[data-cl-on]").forEach(b=>b.onclick=async()=>{const r=await SB.rpc("changer_client",{p_client:b.dataset.clOn,p_actif:true});if(r.error)report(r.error);renderClients()});
+  }
+  const inv=(ri&&!ri.error&&ri.data)||[];
+  I.innerHTML=inv.length?inv.map(x=>`<div class="invitem"><span><b>${esc(x.note||"Sans nom")}</b> <span class="hint">· expire le ${esc(fmtDT(x.expire_le))}</span></span><span class="acts"><button type="button" class="ghost" data-inv-copy="${esc(x.token)}">Copier le lien</button><button type="button" class="ghost" data-inv-del="${esc(x.token)}">Annuler</button></span></div>`).join(""):`<p class="hint" style="margin:6px 0 0">Aucune.</p>`;
+  I.querySelectorAll("[data-inv-copy]").forEach(b=>b.onclick=()=>copyTxt(inviteUrl(b.dataset.invCopy),b));
+  I.querySelectorAll("[data-inv-del]").forEach(b=>confirmBtn(b,async()=>{await SB.rpc("annuler_invitation",{p_token:b.dataset.invDel});renderClients()}));
+}
+$("#invForm").addEventListener("submit",async e=>{e.preventDefault();if(ROLE!=="coach")return;
+  const btn=$("#invGo");btn.disabled=true;
+  try{const r=await SB.rpc("creer_invitation",{p_note:$("#invNote").value.trim()||null});if(r.error)throw r.error;
+    const url=inviteUrl(r.data.token),nm=r.data.note||"ton client";const box=$("#invNew");box.hidden=false;
+    box.innerHTML=`<div class="invlink"><b>Lien pour ${esc(nm)}</b><code>${esc(url)}</code><div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="invCopy">Copier le lien</button>${navigator.share?`<button type="button" class="ghost" id="invShare">Partager…</button>`:""}</div><span class="hint">Valable 14 jours, pour une seule personne.</span></div>`;
+    $("#invCopy").onclick=()=>copyTxt(url,$("#invCopy"));const sh=$("#invShare");if(sh)sh.onclick=()=>navigator.share({title:"Ton carnet @bald.coaching",text:"Voici ton accès à ton carnet d'entraînement @bald.coaching :",url}).catch(()=>{});
+    $("#invNote").value="";renderClients();
+  }catch(err){toast("Le lien n'a pas pu être créé. Réessaie.")}
+  finally{btn.disabled=false}});
+function resetCarnet(){
+  if(STORE&&STORE.close)STORE.close();
+  state.sessions=[];state.goals=[];state.plans=[];state.tracking={};state.tset=null;state.comments={};state.mode="loading";
+  sessMode=null;pendingPlan=null;editingSession=null;donePlans.clear();VP=[];
+}
+function openClient(c){
+  if(!c||ROLE!=="coach")return;
+  if(!COACH_VIEW)MY_MODELES=JSON.parse(JSON.stringify((tset().modeles)||[]));
+  resetCarnet();COACH_VIEW={id:c.id,nom:c.nom||c.email||"Client"};
+  document.body.classList.add("coach-view");$("#coachBar").hidden=false;$("#coachBarName").textContent=COACH_VIEW.nom;
+  STORE=supabaseStore(SB,c.id,{ecriture:["prevues","commentaires"]});startData();
+  location.hash="#accueil";route();scrollTo({top:0});
+}
+function closeClient(){
+  if(!COACH_VIEW)return;resetCarnet();COACH_VIEW=null;
+  document.body.classList.remove("coach-view");$("#coachBar").hidden=true;
+  STORE=supabaseStore(SB,SB_USER.id);startData();location.hash="#clients";route();scrollTo({top:0});
+}
+$("#coachBack").onclick=closeClient;
+
 /* ---------- routing ---------- */
 let lastView=null;
 function route(){
-  const views=["accueil","tracking","programme","seances","nutrition","bilan","suggestion"];let h=location.hash.slice(1);if(h==="objectifs")h="accueil";const v=views.includes(h)?h:"accueil";
+  const views=["accueil","tracking","programme","seances","nutrition","bilan","suggestion","clients"];let h=location.hash.slice(1);if(h==="objectifs")h="accueil";if(h==="clients"&&ROLE!=="coach")h="accueil";const v=views.includes(h)?h:"accueil";
   document.body.dataset.view=v;
-  views.forEach(n=>{$("#view-"+n).hidden=n!==v;$("#tab-"+n).removeAttribute("aria-current")});
+  views.forEach(n=>{$("#view-"+n).hidden=n!==v;const t=$("#tab-"+n);t&&t.removeAttribute("aria-current")});
   renderView(v);
   if(v==="seances")sessAuto();
   if(v!==lastView){pickPhrase();lastView=v}
-  const PT={accueil:"Accueil",tracking:"Tracking",programme:"Programme",seances:"Séances",nutrition:"Nutrition",bilan:"Bilan",suggestion:"Suggestion"};
+  const PT={accueil:"Accueil",tracking:"Tracking",programme:"Programme",seances:"Séances",nutrition:"Nutrition",bilan:"Bilan",suggestion:"Suggestion",clients:"Mes clients"};
   $("#pageTitle").innerHTML=`<em>${PT[v]}</em>`;
   document.title=`${PT[v]} · @bald.coaching`;baseTitle=document.title;
   syncRest();
-  $("#tab-"+v).setAttribute("aria-current","page");
+  const tv=$("#tab-"+v);tv&&tv.setAttribute("aria-current","page");
 }
 window.addEventListener("hashchange",()=>{if(grabSteps()){applySteps();return}route()});route();
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(chart,150)});
