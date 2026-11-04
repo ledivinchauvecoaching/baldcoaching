@@ -24,6 +24,8 @@ try:
     v=vis(pg);ok("1 exercice en cours + le suivant, le reste masqué",v[:2]==['g-cur','g-cur'] or (v[0]=='g-cur' and v[1]=='g-next'),str(v))
     ok("compteur affiché",'Exercice 1' in pg.inner_text('#guideTxt'),pg.inner_text('#guideTxt'))
     pg.locator('#exRows .g-cur').first.scroll_into_view_if_needed();pg.screenshot(path='/home/claude/rendus/v45-guide-1.png')
+    ok("nom de l'exercice en titre, options repliées",pg.locator('#exRows .g-cur .g-name').count()==1 and pg.is_hidden('#exRows .g-cur .exnote'))
+    ok("date/durée/type placés après les exercices",pg.evaluate("document.querySelector('#exField').compareDocumentPosition(document.querySelector('#sDate'))&4")>0)
     # ex 1
     for i,inp in enumerate(pg.locator('#exRows .g-cur .sc').all()):inp.fill(str(10+i))
     pg.click('#exRows .g-val');pg.wait_for_timeout(500)

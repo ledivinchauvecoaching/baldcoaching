@@ -410,6 +410,46 @@ nav.tabs a .ndot{position:absolute;top:4px;right:calc(50% - 18px);min-width:16px
 .ccom textarea{width:100%;box-sizing:border-box;font:inherit;min-height:64px;padding:8px}
 .cadd{margin-top:8px}
 .tag-coach{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border:1px solid var(--accent);padding:1px 6px}
+.cmpdet{margin-top:12px;border:1px solid var(--line)}
+.cmpdet>summary{cursor:pointer;padding:10px 12px;font-weight:700;color:var(--brown);list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.cmpdet>summary::-webkit-details-marker{display:none}
+.cmpdet>summary::after{content:"+";font-size:18px;color:var(--accent)}
+.cmpdet[open]>summary::after{content:"−"}
+.cmpdet:has(#cmpBox[hidden]){display:none}
+.cmpdet #cmpBox{margin:0 12px 12px}
+.g-chrono{font-weight:700;color:var(--brown);font-size:13.5px}
+#exRows.guided .exrow.g-cur{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+#exRows.guided .exrow.g-cur>.exc{margin:0}
+.sess-on #horsProg{display:none}
+.guidebar #guideAll{white-space:nowrap}
+#exRows.guided .exrow.g-cur>.g-head{order:0}
+#exRows.guided .exrow.g-cur>.exc{order:1}
+#exRows.guided .exrow.g-cur>.refsrc{order:2;font-size:13px;color:var(--brown);background:var(--sunk);padding:6px 10px;border-left:3px solid var(--line)}
+#exRows.guided .exrow.g-cur>.refsrc:empty{display:none}
+#exRows.guided .exrow.g-cur>.sets{order:3}
+#exRows.guided .exrow.g-cur>.addset{order:4;align-self:flex-start}
+#exRows.guided .exrow.g-cur>.nm{order:5}
+#exRows.guided .exrow.g-cur>.exopts{order:6}
+#exRows.guided .exrow.g-cur>.exnote{order:7}
+#exRows.guided .exrow.g-cur>.g-val{order:8}
+#exRows.guided .exrow.g-cur>.x{display:none}
+#exRows.guided .exrow.g-cur:not(.opts)>.nm,#exRows.guided .exrow.g-cur:not(.opts)>.exopts,#exRows.guided .exrow.g-cur:not(.opts)>.exnote{display:none}
+.g-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.g-name{margin:0;font-size:19px;line-height:1.25;color:var(--ink);text-transform:none;border:0;padding:0}
+.g-opt{font-size:12.5px;padding:5px 10px;flex:none}
+.rs-go{width:40px}
+.rs-go.used svg{stroke-width:3}
+.rest.mini .rest-presets,.rest.mini .rest-adj,.rest.mini:not(.running) #rReset,.rest.mini .rest-bar{display:none!important}
+.rest.mini .rest-in{display:flex!important;padding-top:6px!important;padding-bottom:6px!important;gap:10px!important;align-items:center}
+.rest.mini .rest-head{display:flex!important;flex-direction:row;margin-right:auto}
+.rest.mini .rest-msg{display:none}
+.rest.mini .rest-main{margin-left:0}
+.rest.mini .rest-time{font-size:22px;min-width:56px;cursor:pointer}
+.rest.mini #rGo{padding:7px 14px}
+.rest.mini.running .rest-adj{display:inline-grid!important;place-items:center}
+.rest.mini.running .rest-head{display:none!important}
+.rest-open{background:none;border:0;color:#E8CDB9;font:inherit;font-size:12px;text-decoration:underline;cursor:pointer;padding:0}
+.rest:not(.mini) .rest-open{display:none}
 .guidebar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;color:var(--brown)}
 .guidebar b{color:var(--accent)}
 .guidebar .ghost{font-size:12.5px;padding:5px 10px}
@@ -1173,11 +1213,11 @@ body.locked{overflow:hidden}
         <div class="field" id="exField" hidden>
           <span class="label">Exercices</span>
           <div class="exbox">
-            <div class="guidebar" id="guideBar" hidden><span id="guideTxt"></span><button type="button" class="ghost" id="guideAll">Voir tous les exercices</button></div>
+            <div class="guidebar" id="guideBar" hidden><span id="guideTxt"></span><span class="g-chrono num" id="gChrono" hidden></span><button type="button" class="ghost" id="guideAll">Voir tous les exercices</button></div>
             <div id="exRows" style="display:flex;flex-direction:column;gap:10px"></div>
             <button type="button" class="ghost addex" id="addEx">+ Ajouter un exercice</button>
           </div>
-          <div id="cmpBox" hidden></div>
+          <details class="cmpdet" id="cmpDet"><summary>Comparatif de charge <span class="hint">passée · prévue · actuelle</span></summary><div id="cmpBox" hidden></div></details>
         </div>
         <div class="field">
           <div class="rpe-read"><label class="label" for="sRpe">Effort perçu (RPE)</label><span><b class="num" id="rpeVal">6</b> <span id="rpeWord" class="hint"></span></span></div>
@@ -1594,7 +1634,7 @@ body.locked{overflow:hidden}
 <div class="rest" id="rest" hidden role="region" aria-label="Minuteur de repos">
   <div class="rest-bar"><i id="rProg"></i></div>
   <div class="rest-in">
-    <div class="rest-head"><span class="rest-lbl"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13.5V9.5M9.5 2.5h5M18.5 6.5l1.5-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg> Repos</span><span class="rest-msg" id="rMsg" aria-live="polite"></span></div>
+    <div class="rest-head"><button type="button" class="rest-open" id="rOpen">Réglages</button><span class="rest-lbl"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13.5V9.5M9.5 2.5h5M18.5 6.5l1.5-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg> Repos</span><span class="rest-msg" id="rMsg" aria-live="polite"></span></div>
     <div class="rest-presets" id="rPresets"></div>
     <div class="rest-main">
       <button type="button" class="rest-adj" id="rMinus" aria-label="Retirer 15 secondes">−15</button>
@@ -1803,9 +1843,11 @@ let exSeq=0;
 function addSessSet(list,st={},ph={}){
   setSeq++;
   const d=document.createElement("div");d.className="set";
-  d.innerHTML=`${snBtn}${nIn("sc",st.charge,ph.charge??"kg","0.5","Charge en kg")}<span class="mul">×</span>${nIn("sr",st.reps,ph.reps??"reps","1","Répétitions")}<button type="button" class="rs-go" aria-label="Série terminée : lancer le repos" title="Lancer le repos"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13.5V9.5M9.5 2.5h5M18.5 6.5l1.5-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button><button type="button" class="xs" aria-label="Retirer cette série">×</button>`;
+  d.innerHTML=`${snBtn}${nIn("sc",st.charge,ph.charge??"kg","0.5","Charge en kg")}<span class="mul">×</span>${nIn("sr",st.reps,ph.reps??"reps","1","Répétitions")}<button type="button" class="rs-go" aria-label="Série faite : lancer le repos" title="Série faite : lance le repos"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button><button type="button" class="xs" aria-label="Retirer cette série">×</button>`;
   d.querySelector(".xs").onclick=()=>{if(list.children.length>1){d.remove();renum(list)}else d.querySelectorAll("input").forEach(x=>x.value="")};
-  d.querySelector(".rs-go").onclick=()=>{const row=d.closest(".exrow");d.querySelector(".rs-go").classList.add("used");if(row&&row.classList.contains("ss-a")){toast("Superset : enchaîne avec l'exercice suivant");const nx=row.nextElementSibling;const f=nx&&nx.querySelector(".set .sr");f&&f.focus();return}const rp=row&&+row.querySelector(".rp").value;restStart(true,rp||null)};
+  d.querySelector(".rs-go").onclick=()=>{const row=d.closest(".exrow");d.querySelector(".rs-go").classList.add("used");
+    /* série faite sans rien saisir : on reprend les valeurs proposées (dernière fois) */
+    d.querySelectorAll(".sc,.sr").forEach(x=>{if(x.value===""&&/^\d+([.,]\d+)?$/.test(x.placeholder||"")){x.value=x.placeholder.replace(",",".");x.dispatchEvent(new Event("input",{bubbles:true}))}});if(row&&row.classList.contains("ss-a")){toast("Superset : enchaîne avec l'exercice suivant");const nx=row.nextElementSibling;const f=nx&&nx.querySelector(".set .sr");f&&f.focus();return}const rp=row&&+row.querySelector(".rp").value;restStart(true,rp||null)};
   wireWarm(d,list,st);
   list.appendChild(d);renum(list);return d;
 }
@@ -1815,7 +1857,7 @@ function addExRow(v={}){
   r.innerHTML=`<input class="nm" type="text" id="exN${i}" autocomplete="off" placeholder="Choisir un exercice" aria-label="Exercice" value="${esc(v.nom||"")}">
     <button type="button" class="x" aria-label="Retirer cet exercice">×</button>
     ${v.consigne?`<p class="exc">${esc(v.consigne)}</p>`:""}
-    <div class="sets"><div class="sethead"><span>N°</span><span>Kg</span><span></span><span>Reps</span><span title="Repos">Repos</span><span></span></div><div class="setlist"></div></div>
+    <div class="sets"><div class="sethead"><span>N°</span><span>Kg</span><span></span><span>Reps</span><span title="Série faite : lance le repos">Fait</span><span></span></div><div class="setlist"></div></div>
     <button type="button" class="ghost addset">+ Série</button>
     <div class="exopts">${reposSel("exRp"+i,v.repos)}${ssBox("exSs"+i,v.ss)}</div>
     <input type="text" class="exnote" id="exNo${i}" maxlength="140" placeholder="Note (ex. prise plus serrée, douleur épaule…)" aria-label="Note sur l'exercice" value="${esc(v.note||"")}">
@@ -1891,13 +1933,21 @@ $("#addEx").onclick=()=>addExRow().querySelector("input").focus();
 let liveId=null,liveStart=null,guideOn=true;try{guideOn=localStorage.getItem("bald-guide")!=="0"}catch(e){}
 function gBlocks(rows){const B=[];rows.forEach((r,i)=>{const prev=i>0&&rows[i-1].querySelector(".ssb").checked;if(prev&&B.length)B[B.length-1].push(r);else B.push([r])});return B}
 function gSets(r){return [...r.querySelectorAll(".set")].map(d=>({c:numv(d.querySelector(".sc").value),r:numv(d.querySelector(".sr").value)})).filter(x=>x.c!=null||x.r!=null)}
+function placeMeta(){
+  const f=$("#sessionForm"),row=$("#sDate").closest(".row2"),typ=$("#typeChips").closest(".field"),car=$("#cardioF"),exF=$("#exField"),rpe=$("#sRpe").closest(".field");
+  const plan=sessMode==="plan"&&!exF.hidden;
+  if(plan){if(row.nextElementSibling!==typ||rpe.previousElementSibling!==car){f.insertBefore(row,rpe);f.insertBefore(typ,rpe);f.insertBefore(car,rpe)}row.classList.add("meta-end")}
+  else if(f.firstElementChild!==row){f.insertBefore(car,f.firstElementChild);f.insertBefore(typ,car);f.insertBefore(row,typ);row.classList.remove("meta-end")}
+}
 function guide(){
+  placeMeta();
   const box=$("#exRows"),bar=$("#guideBar");if(!box||!bar)return;const rows=[...box.children];
-  rows.forEach(r=>{r.classList.remove("g-done","g-cur","g-next","g-later");r.querySelectorAll(":scope>.g-sum,:scope>.g-prev,:scope>.g-val").forEach(x=>x.remove())});
+  rows.forEach(r=>{r.classList.remove("g-done","g-cur","g-next","g-later");r.querySelectorAll(":scope>.g-sum,:scope>.g-prev,:scope>.g-val,:scope>.g-head").forEach(x=>x.remove())});
+  gChrono();
   const active=sessMode==="plan"&&!$("#exField").hidden&&rows.length>1;
   bar.hidden=!active;$("#addEx").hidden=false;box.classList.toggle("guided",active&&guideOn);
   if(!active)return;
-  $("#guideAll").textContent=guideOn?"Voir tous les exercices":"Un exercice à la fois";
+  $("#guideAll").textContent=guideOn?"Tout voir":"Un à la fois";
   if(!guideOn){$("#guideTxt").textContent=`${rows.filter(r=>r.dataset.done==="1").length} / ${rows.length} exercices validés`;return}
   const B=gBlocks(rows),ci=B.findIndex(b=>b.some(r=>r.dataset.done!=="1"));
   B.forEach((b,k)=>b.forEach((r,j)=>{
@@ -1905,7 +1955,9 @@ function guide(){
     if(r.dataset.done==="1"){r.classList.add("g-done");const S=gSets(r);
       r.insertAdjacentHTML("afterbegin",`<button type="button" class="g-sum" aria-label="Modifier ${esc(nom)}"><span class="ck">✓</span><b>${esc(nom)}</b><span>${S.length?S.map(x=>`${x.r??"–"}${x.c!=null?` × ${fmtNum(x.c)} kg`:""}`).join(" · "):"aucune série notée"}</span><em>Modifier</em></button>`);
       r.querySelector(".g-sum").onclick=()=>{b.forEach(x=>delete x.dataset.done);guide();saveDraft();setTimeout(()=>r.scrollIntoView({block:"start",behavior:"smooth"}),30)}}
-    else if(k===ci)r.classList.add("g-cur");
+    else if(k===ci){r.classList.add("g-cur");
+      r.insertAdjacentHTML("afterbegin",`<div class="g-head"><h3 class="g-name">${esc(nom)}</h3><button type="button" class="ghost g-opt" aria-expanded="${r.classList.contains("opts")}">${r.classList.contains("opts")?"Fermer":"Options"}</button></div>`);
+      r.querySelector(".g-opt").onclick=()=>{r.classList.toggle("opts");guide()}}
     else if(k===ci+1){r.classList.add("g-next");const n=r.querySelectorAll(".set").length,rp=+r.querySelector(".rp").value,f=r.querySelector(".set .sr"),reps=f&&(f.value||(f.placeholder!=="reps"?f.placeholder:""));
       r.insertAdjacentHTML("afterbegin",`<div class="g-prev">${j===0?`<span class="lab">Ensuite${b.length>1?" · superset":""}</span>`:""}<b>${esc(nom)}</b><span>${n} série${n>1?"s":""}${reps?` × ${esc(reps)} reps`:""}${rp?` · repos ${fmtMS(rp)}`:""}</span>${r.dataset.cs?`<span>${esc(r.dataset.cs)}</span>`:""}</div>`)}
     else r.classList.add("g-later");
@@ -1916,6 +1968,8 @@ function guide(){
   const last=B[ci][B[ci].length-1];last.insertAdjacentHTML("beforeend",`<button type="button" class="btn g-val">${B[ci].length>1?"Valider le superset":"Valider l'exercice"} ✓</button>`);
   last.querySelector(".g-val").onclick=()=>gValidate(B[ci],ci+1>=B.length);
 }
+function gChrono(){const el=$("#gChrono");if(!el)return;const on=sessMode==="plan"&&liveStart&&guideOn&&!$("#guideBar").hidden;el.hidden=!on;if(on){const m=Math.max(0,Math.floor((Date.now()-liveStart)/60000));el.textContent="⏱ "+(m<60?m+" min":Math.floor(m/60)+" h "+String(m%60).padStart(2,"0"))}}
+setInterval(gChrono,30000);
 function gValidate(b,isLast){
   b.forEach(r=>r.dataset.done="1");
   const du=$("#sDuree");if(liveStart&&(du.value===""||du.dataset.auto)){du.value=Math.max(1,Math.round((Date.now()-liveStart)/60000));du.dataset.auto="1"}
@@ -2672,6 +2726,7 @@ let rDur=90,rLeft=90,rEnd=0,rRun=false,rTick=0,rAudio=null,rWake=null,rDoneT=0;
 try{const v=+localStorage.getItem("bald-rest");if(v>=15&&v<=900){rDur=v;rLeft=v}}catch(e){}
 const mmss=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+":"+String(t%60).padStart(2,"0")};
 let baseTitle=null;
+let restBig=false;
 function restPaint(){
   $("#rTime").textContent=mmss(rLeft);
   if(baseTitle==null)baseTitle=document.title;
@@ -2679,6 +2734,7 @@ function restPaint(){
   $("#rProg").style.width=(rRun||rLeft<rDur?(1-rLeft/rDur)*100:0)+"%";
   $("#rGo").textContent=rRun?"Pause":(rLeft<rDur&&rLeft>0?"Reprendre":"Démarrer");
   $("#rest").classList.toggle("running",rRun);
+  $("#rest").classList.toggle("mini",!restBig&&!$("#rest").classList.contains("done"));
   $("#rPresets").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.s===rDur)));
   $("#rMsg").dataset.d=rDur;
 }
@@ -2720,7 +2776,9 @@ $("#rPresets").addEventListener("click",e=>{const b=e.target.closest("button");i
 $("#rMinus").onclick=()=>{if(rRun){rEnd-=15000;rLeft=Math.max(0,(rEnd-Date.now())/1000);if(rLeft<=0)restLoop();else restPaint()}else restSetDur(rDur-15)};
 $("#rPlus").onclick=()=>{if(rRun){rEnd+=15000;rLeft=(rEnd-Date.now())/1000;restPaint()}else restSetDur(rDur+15)};
 $("#rGo").onclick=()=>{rRun?restPause():restStart(false)};
-$("#rReset").onclick=restReset;
+$("#rReset").onclick=()=>{restReset();restBig=false;restPaint()};
+$("#rOpen").onclick=()=>{restBig=true;restPaint()};
+$("#rTime").addEventListener("click",()=>{restBig=!restBig;restPaint()});
 restPaint();
 
 /* ---------- apparence ---------- */
@@ -3212,7 +3270,7 @@ function editPlan(p){
 let sessMode=null,dismissedPlan=null;const donePlans=new Set();
 function todayPlans(){const t=iso(today);return allPlans().filter(x=>!donePlans.has(x.id)).sort((a,b)=>a.date.localeCompare(b.date)||(a.createdAt||0)-(b.createdAt||0))}
 function planForToday(){const t=iso(today);return todayPlans().find(x=>x.date===t)}
-function syncRest(){const on=document.body.dataset.view==="seances"&&!$("#sessionForm").hidden;$("#rest").hidden=!on;document.body.classList.toggle("has-rest",on)}
+function syncRest(){const on=document.body.dataset.view==="seances"&&!$("#sessionForm").hidden;$("#rest").hidden=!on;document.body.classList.toggle("has-rest",on);document.body.classList.toggle("sess-on",!$("#sessionForm").hidden&&!!sessMode&&sessMode!=="edit")}
 function showSessForm(on){$("#sessionForm").hidden=!on;$("#sDay").hidden=on;$("#horsProg").hidden=on&&sessMode==="libre";syncRest()}
 function renderSessDay(){
   if(sessMode){showSessForm(true);$("#sessTitle").textContent=sessMode==="libre"?"Séance hors programme":sessMode==="edit"?"Modifier la séance":"Séance du jour";$("#editBar").hidden=sessMode!=="edit"&&sessMode!=="libre";$("#editBarTxt").textContent=sessMode==="edit"?"Tu modifies une séance déjà enregistrée.":"Séance libre, en dehors de ton programme.";$("#sSubmit").textContent=sessMode==="edit"?"Enregistrer les modifications":"Enregistrer la séance";return}
@@ -3272,7 +3330,7 @@ function startFromPlan(p,stay){
   (ex.length?ex:[{}]).forEach(e=>addExRow(e));
   liveId=null;liveStart=Date.now();guide();
   $("#sNotes").value=p.notes||"";
-  $("#fromPlanTxt").textContent=`Depuis le programme : ${p.titre||p.type} (${fmtDay(p.date)}). Ajuste avec ce que tu as vraiment fait.`;
+  $("#fromPlanTxt").innerHTML=`<b>${esc(p.titre||p.type)}</b> · séance du programme`;
   $("#fromPlan").hidden=false;cmpSoon();renderSessDay();
   if(!stay)location.hash="#seances";
   setTimeout(()=>$("#sDuree").focus(),50);
