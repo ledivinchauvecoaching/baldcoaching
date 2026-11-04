@@ -1798,6 +1798,7 @@ function renderTpl(){
     <details class="tpl-manage"><summary>Gérer mes modèles (${M.length})</summary><ul>${M.map(m=>`<li><span>${esc(m.nom)}</span><button type="button" class="ghost" data-tpl-del="${esc(m.id)}">Supprimer</button></li>`).join("")}</ul></details>`
     :`<p class="hint tpl-empty">Astuce : sur une séance planifiée, touche « Enregistrer comme modèle » pour la replanifier ensuite en un clic (Push, Pull, Legs…).</p>`;
   const u=$("#tplUse");if(u)u.onclick=()=>{const m=M.find(x=>x.id===$("#tplSel").value);if(m)loadTpl(m)};
+  const ts=$("#tplSel");if(ts)ts.onchange=()=>{const m=M.find(x=>x.id===ts.value);if(m)loadTpl(m)};
   box.querySelectorAll("[data-tpl-del]").forEach(b=>confirmBtn(b,()=>{const t=tset();return saveTSet({...t,cibles:{...t.cibles},habitudes:t.habitudes.map(x=>({...x})),modeles:(t.modeles||[]).filter(x=>x.id!==b.dataset.tplDel).map(x=>JSON.parse(JSON.stringify(x)))})}));
 }
 function loadTpl(m){
@@ -2824,10 +2825,10 @@ function renderPlans(){
     const compactCard=idx>=3;
     const recTag=p.virtual?'<span class="rectag">Semaine type</span>':(p.rec?'<span class="rectag">Semaine type · modifiée</span>':"");
     const acts=`<div class="acts"><button class="btn" data-start="${esc(p.id)}">Faire cette séance</button><button class="ghost" data-edit="${esc(p.id)}">Modifier</button>${p.virtual?`<button class="ghost" data-skip="${esc(p.rec)}">Passer cette fois</button>`:`${(p.exercices||[]).length&&!p.rec?`<button class="ghost" data-tpl="${esc(p.id)}">Enregistrer comme modèle</button>`:""}<button class="ghost" data-del-p="${esc(p.id)}">Supprimer</button>`}</div>`;
-    if(compactCard)return `<article class="plan compact" data-pid="${esc(p.id)}"><div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.type)}</b>${p.titre?`<span>· ${esc(p.titre)}</span>`:""}${recTag}</div>${(p.exercices||[]).length?`<p class="hint" style="margin:0">${p.exercices.map(e=>esc(e.nom)).join(" · ")}</p>`:""}${acts}</article>`;
+    if(compactCard)return `<article class="plan compact" data-pid="${esc(p.id)}"><div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}</div>${(p.exercices||[]).length?`<p class="hint" style="margin:0">${p.exercices.map(e=>esc(e.nom)).join(" · ")}</p>`:""}${acts}</article>`;
     return `<article class="plan" data-pid="${esc(p.id)}">
       <div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div>
-      <div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.type)}</b>${p.titre?`<span>· ${esc(p.titre)}</span>`:""}${recTag}${p.exemple?'<span class="tag-ex">exemple</span>':""}</div>
+      <div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.exemple?'<span class="tag-ex">exemple</span>':""}</div>
       ${rows?`<div class="ptable"><table><thead><tr><th>Exercice</th><th>Repère · kg × reps</th><th>Prévu · charge totale</th></tr></thead><tbody>${rows}</tbody>${totRow(tPass,tPrev)}</table></div>`:""}
       ${p.notes?`<p class="notes" style="margin:0;color:var(--muted);font-size:14px">${esc(p.notes)}</p>`:""}
       ${acts}
@@ -3028,7 +3029,7 @@ function renderToday(){renderOnb();
   if(p){
     const [rel,cls]=relDay(p.date);const ex=(p.exercices||[]).filter(e=>e.nom);
     el.innerHTML=`<div class="tds"><div class="ph"><span class="when">${esc(p.titre||p.type)}</span><span class="rel ${cls}">${rel}</span></div>
-      <div class="meta"><b>${esc(p.type)}</b> · ${esc(fmtDay(p.date))}${ex.length?` · ${ex.length} exercice${ex.length>1?"s":""}`:""}</div>
+      <div class="meta"><b>${esc(p.titre||p.type)}</b>${p.titre?` · ${esc(p.type)}`:""} · ${esc(fmtDay(p.date))}${ex.length?` · ${ex.length} exercice${ex.length>1?"s":""}`:""}</div>
       ${ex.length?`<ul class="tdl">${ex.slice(0,5).map(e=>`<li>${esc(e.nom)} <span class="hint">${setsOf(e).length} série${setsOf(e).length>1?"s":""}</span></li>`).join("")}${ex.length>5?`<li class="hint">+ ${ex.length-5} autre${ex.length-5>1?"s":""}</li>`:""}</ul>`:(p.notes?`<p class="hint" style="margin:0">${esc(p.notes)}</p>`:"")}
       <button type="button" class="btn" id="tdStart">Faire cette séance</button></div>`;
     $("#tdStart").onclick=()=>startFromPlan(p);
