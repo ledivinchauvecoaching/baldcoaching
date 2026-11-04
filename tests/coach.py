@@ -75,7 +75,7 @@ try:
     # coach ouvre le carnet de Paul
     as_user(pg,COACH,'#clients');pg.wait_for_timeout(300)
     ok("coach voit 2 clients",pg.locator('#clList .clcard').count()==2)
-    pg.locator('[data-cl-open]').first.click();pg.wait_for_timeout(900)
+    pg.locator('[data-cl-open="paul"]').click();pg.wait_for_timeout(900)
     ok("vue coach : bandeau « Carnet de Paul »",pg.is_visible('#coachBar') and 'Paul' in pg.inner_text('#coachBar'),pg.inner_text('#coachBar'))
     pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(500)
     ok("vue coach : séance de Paul visible",'Séance de Paul' in pg.inner_text('#journal'))
@@ -97,6 +97,21 @@ try:
     ok("coach ne peut pas modifier les séances de Paul",bool(r))
     pg.click('#coachBack');pg.wait_for_timeout(800)
     ok("retour au carnet du coach",pg.is_hidden('#coachBar') and 'Séance de Paul' not in pg.inner_text('body'))
+    # tableau de bord coach
+    pg.evaluate("location.hash='#clients'");pg.wait_for_timeout(900)
+    t=pg.inner_text('#clList')
+    ok("tableau de bord : résumé de Paul",'aujourd' in t and 'PROCHAINE SÉANCE' in t.upper() and 'UPPER' in t,t[160:520].replace('\n',' | '))
+    ok("tableau de bord : alerte pour Léa",'Aucune séance enregistrée' in t)
+    pg.screenshot(path='/home/claude/rendus/v52-tableau-de-bord.png',full_page=True)
+    # notifications chez Paul
+    as_user(pg,PAUL,'#accueil');pg.wait_for_timeout(400)
+    ok("Paul : encart « Du nouveau de ton coach »",pg.is_visible('#coachNews') and 'commentaire' in pg.inner_text('#coachNews') and 'programmée' in pg.inner_text('#coachNews'),pg.inner_text('#coachNews').replace('\n',' | ') if pg.is_visible('#coachNews') else '')
+    ok("Paul : pastilles sur Séance et Prog.",pg.locator('#tab-seances .ndot').count()==1 and pg.locator('#tab-programme .ndot').count()==1)
+    pg.screenshot(path='/home/claude/rendus/v52-client-nouveautes.png')
+    pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(400)
+    ok("commentaire marqué « Nouveau »",pg.locator('#journal .tag-new').count()==1)
+    pg.evaluate("location.hash='#accueil'");pg.wait_for_timeout(300)
+    ok("après lecture : pastille Séance retirée, Prog. reste",pg.locator('#tab-seances .ndot').count()==0 and pg.locator('#tab-programme .ndot').count()==1 and 'commentaire' not in pg.inner_text('#coachNews'))
     # Paul voit le commentaire et la séance programmée
     as_user(pg,PAUL,'#seances');pg.wait_for_timeout(300)
     ok("Paul voit le commentaire du coach",'monte de 2,5 kg' in pg.inner_text('#journal'))
@@ -106,7 +121,7 @@ try:
     pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(400)
     pg.locator('#journal .ccom').first.scroll_into_view_if_needed();pg.screenshot(path='/home/claude/rendus/v50-client-commentaire.png')
     # coach met Paul en pause
-    as_user(pg,COACH,'#clients');pg.wait_for_timeout(300);bt=pg.locator('[data-cl-off]').first;bt.click();pg.wait_for_timeout(150);bt.click();pg.wait_for_timeout(500)
+    as_user(pg,COACH,'#clients');pg.wait_for_timeout(300);bt=pg.locator('[data-cl-off="paul"]');bt.click();pg.wait_for_timeout(150);bt.click();pg.wait_for_timeout(500)
     as_user(pg,PAUL)
     ok("Paul en pause : écran dédié + lecture seule possible",pg.is_visible('#reserve') and pg.is_visible('#reserveRead'))
     pg.click('#reserveRead');pg.wait_for_timeout(800);pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(300)

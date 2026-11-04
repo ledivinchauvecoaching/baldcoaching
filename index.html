@@ -329,6 +329,19 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 /* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
+#invEmail{font:inherit;padding:10px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;box-sizing:border-box;border-radius:0}
+.cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
+.cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
+.cnews .cn-l .btn{padding:6px 12px;font-size:14px}
+nav.tabs a{position:relative}
+nav.tabs a .ndot{position:absolute;top:4px;right:calc(50% - 18px);min-width:16px;height:16px;border-radius:8px;background:var(--hard,#A8361F);color:#fff;font-size:10.5px;font-weight:700;line-height:16px;text-align:center;padding:0 4px;box-sizing:border-box;font-style:normal}
+.tag-new{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#fff;background:var(--hard,#A8361F);padding:1px 6px;vertical-align:middle}
+.cl-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;font-size:13.5px}
+.cl-stats span{color:var(--muted);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.cl-stats b{font-weight:700;color:var(--ink)}
+.cl-alert{font-size:12.5px;font-weight:700;color:#fff;background:var(--hard,#A8361F);padding:3px 8px;align-self:flex-start}
+.cl-ok{font-size:12.5px;font-weight:700;color:var(--easy,#4F7F45);border:1px solid currentColor;padding:2px 8px;align-self:flex-start}
 .coachbar{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;background:var(--accent);color:#FFFFFF;padding:10px 14px;font-size:14px;border:1px solid var(--rule)}
 .coachbar b{font-size:15px}
 .coachbar .ghost{background:rgba(255,255,255,.15);border-color:#FFFFFF;color:#FFFFFF;padding:5px 10px}
@@ -1451,6 +1464,7 @@ body.locked{overflow:hidden}
 
   <!-- OBJECTIFS -->
   <section id="view-accueil" hidden style="display:flex;flex-direction:column;gap:16px">
+    <div class="cnews" id="coachNews" hidden></div>
     <div class="panel onb" id="onb" hidden></div>
     <div class="today-grid">
       <div class="panel"><h2>Séance du jour</h2><div id="tdSession"></div></div>
@@ -3264,6 +3278,7 @@ function render(){
   $("#palTxt").textContent=fmtNum(PAL_KG());
   recap();weekStats();tools();
   renderView(document.body.dataset.view||"accueil");
+  coachNews();
 }
 function renderView(v){
   if(v==="accueil"){renderToday();goals()}
@@ -3347,7 +3362,7 @@ function comBlock(s){
     if(c)return `<div class="ccom" data-com="${esc(s.id)}"><span class="who">Ton commentaire</span><span class="ctxt">${esc(c.texte)}</span><div class="acts"><button type="button" class="ghost" data-com-edit="${esc(s.id)}">Modifier</button><button type="button" class="ghost" data-com-del="${esc(s.id)}">Supprimer</button></div></div>`;
     return `<button type="button" class="ghost cadd" data-com-add="${esc(s.id)}">💬 Commenter cette séance</button>`;
   }
-  return c?`<div class="ccom"><span class="who">💬 Ton coach</span>${esc(c.texte)}</div>`:"";
+  return c?`<div class="ccom"><span class="who">💬 Ton coach${c.at&&c.at>NEWS_SEEN_AT.com?'<span class="tag-new">Nouveau</span>':""}</span>${esc(c.texte)}</div>`:"";
 }
 function wireComments(el){
   const open=(id,txt)=>{const host=el.querySelector(`[data-com="${CSS.escape(id)}"]`)||el.querySelector(`[data-com-add="${CSS.escape(id)}"]`);if(!host)return;
@@ -3369,8 +3384,10 @@ async function renderClients(){
   const L=$("#clList"),I=$("#invList");
   if(rc.error){L.innerHTML=`<p class="hint">Impossible de charger tes clients pour le moment.</p>`}
   else{const cl=rc.data||[];
-    L.innerHTML=cl.length?cl.map(c=>`<div class="clcard${c.actif?"":" off"}"><div class="clh"><b>${esc(c.nom||c.email||"Client")}</b><span class="hint">${c.actif?"depuis le "+esc(fmtDT(c.depuis)):"en pause"}</span></div>${c.nom&&c.email?`<span class="hint">${esc(c.email)}</span>`:""}<div class="acts">${c.actif?`<button type="button" class="btn" data-cl-open="${esc(c.id)}">Ouvrir son carnet</button><button type="button" class="ghost" data-cl-off="${esc(c.id)}">Mettre en pause</button>`:`<button type="button" class="ghost" data-cl-on="${esc(c.id)}">Réactiver</button>`}</div></div>`).join(""):`<div class="empty"><p>Pas encore de client. Crée un lien d'invitation et envoie-le en DM.</p></div>`;
+    L.innerHTML=cl.length?cl.map(c=>`<div class="clcard${c.actif?"":" off"}"><div class="clh"><b>${esc(c.nom||c.email||"Client")}</b><span class="hint">${c.actif?"depuis le "+esc(fmtDT(c.depuis)):"en pause"}</span></div>${c.nom&&c.email?`<span class="hint">${esc(c.email)}</span>`:""}${c.actif?`<div class="cl-res" data-res="${esc(c.id)}"><span class="hint">Chargement du résumé…</span></div>`:""}<div class="acts">${c.actif?`<button type="button" class="btn" data-cl-open="${esc(c.id)}">Ouvrir son carnet</button><button type="button" class="ghost" data-cl-off="${esc(c.id)}">Mettre en pause</button>`:`<button type="button" class="ghost" data-cl-on="${esc(c.id)}">Réactiver</button>`}</div></div>`).join(""):`<div class="empty"><p>Pas encore de client. Crée un lien d'invitation et envoie-le en DM.</p></div>`;
     L.querySelectorAll("[data-cl-open]").forEach(b=>b.onclick=()=>openClient(cl.find(c=>c.id===b.dataset.clOpen)));
+    L.querySelectorAll("[data-res]").forEach(async el=>{try{const r=await clientResume(el.dataset.res);el.innerHTML=resumeHTML(r);el.style.display="flex";el.style.flexDirection="column";el.style.gap="6px";
+      const card=el.closest(".clcard");if(card&&el.querySelector(".cl-alert"))card.parentNode.insertBefore(card,card.parentNode.querySelector(".clcard:not(.has-alert)"));if(card&&el.querySelector(".cl-alert"))card.classList.add("has-alert")}catch(e){el.innerHTML='<span class="hint">Résumé indisponible.</span>'}});
     L.querySelectorAll("[data-cl-off]").forEach(b=>confirmBtn(b,async()=>{const r=await SB.rpc("changer_client",{p_client:b.dataset.clOff,p_actif:false});if(r.error)report(r.error);renderClients()}));
     L.querySelectorAll("[data-cl-on]").forEach(b=>b.onclick=async()=>{const r=await SB.rpc("changer_client",{p_client:b.dataset.clOn,p_actif:true});if(r.error)report(r.error);renderClients()});
   }
@@ -3409,6 +3426,54 @@ function closeClient(){
 }
 $("#coachBack").onclick=closeClient;
 
+/* ---------- nouveautés du coach (côté client) ---------- */
+const NEWS_SEEN_AT={com:0,prog:0};
+function seenKey(){return "bald-vu-"+(SB_USER?SB_USER.id:"x")}
+function getSeen(){try{return {com:0,prog:0,...JSON.parse(localStorage.getItem(seenKey())||"{}")}}catch(e){return {com:0,prog:0}}}
+function newsCounts(){
+  if(ROLE!=="client"||COACH_VIEW)return {com:0,prog:0};
+  const sn=getSeen();
+  const com=Object.values(state.comments||{}).filter(c=>c&&c.at&&c.at>sn.com).length;
+  const prog=(state.plans||[]).filter(p=>p.coach&&(p.createdAt||0)>sn.prog&&p.date>=iso(today)).length;
+  return {com,prog};
+}
+function markSeen(v){
+  if(ROLE!=="client"||COACH_VIEW)return;const sn=getSeen(),k=v==="seances"?"com":v==="programme"?"prog":null;if(!k)return;
+  NEWS_SEEN_AT[k]=sn[k];sn[k]=Date.now();try{localStorage.setItem(seenKey(),JSON.stringify(sn))}catch(e){}
+  setTimeout(coachNews,0);
+}
+function coachNews(){
+  const n=newsCounts(),box=$("#coachNews");if(!box)return;
+  [["seances",n.com],["programme",n.prog]].forEach(([t,c])=>{const a=$("#tab-"+t);if(!a)return;let d=a.querySelector(".ndot");if(c){if(!d){d=document.createElement("i");d.className="ndot";a.appendChild(d)}d.textContent=c;a.setAttribute("aria-label",a.textContent.trim()+" ("+c+" nouveau"+(c>1?"x":"")+")")}else if(d){d.remove();a.removeAttribute("aria-label")}});
+  if(!n.com&&!n.prog){box.hidden=true;return}
+  box.hidden=false;
+  box.innerHTML=`<span class="cn-h">Du nouveau de ton coach</span>${n.prog?`<div class="cn-l"><span>📅 ${n.prog} séance${n.prog>1?"s":""} programmée${n.prog>1?"s":""} pour toi</span><a class="btn" href="#programme">Voir</a></div>`:""}${n.com?`<div class="cn-l"><span>💬 ${n.com} commentaire${n.com>1?"s":""} sur tes séances</span><a class="btn" href="#seances">Lire</a></div>`:""}`;
+}
+
+/* ---------- tableau de bord coach ---------- */
+async function clientResume(id){
+  const q=c=>SB.from("carnet_docs").select("doc_id,data").eq("user_id",id).eq("collection",c);
+  const [rs,rt,rp]=await Promise.all([q("seances"),q("tracking"),q("prevues")]);
+  const S=(rs.data||[]).map(r=>r.data).filter(x=>x&&x.date).sort((a,b)=>a.date<b.date?1:-1);
+  const T=(rt.data||[]).map(r=>({d:r.doc_id,p:r.data&&r.data.values&&r.data.values.poids})).filter(x=>x.p!=null).sort((a,b)=>a.d<b.d?1:-1);
+  const P=(rp.data||[]).map(r=>r.data).filter(x=>x&&x.date>=iso(today)).sort((a,b)=>a.date<b.date?-1:1);
+  const d7=iso(addDays(today,-6)),d30=iso(addDays(today,-30));
+  const last=S[0],sem=S.filter(x=>x.date>=d7).length;
+  const inact=last?Math.round((parse(iso(today))-parse(last.date))/864e5):null;
+  const w=T[0],w30=T.find(x=>x.d<=d30)||T[T.length-1];
+  return {last,sem,inact,w,dw:w&&w30&&w30!==w?w.p-w30.p:null,next:P[0],nbNext:P.length};
+}
+function resumeHTML(r){
+  const rel=n=>n===0?"aujourd'hui":n===1?"hier":"il y a "+n+" j";
+  const alert=r.inact==null?'<span class="cl-alert">Aucune séance enregistrée</span>':r.inact>=7?`<span class="cl-alert">Inactif depuis ${r.inact} jours</span>`:!r.nbNext?'<span class="cl-alert">Rien de programmé</span>':'<span class="cl-ok">Actif</span>';
+  return `${alert}<div class="cl-stats">
+    <div><span>Dernière séance</span><b>${r.last?esc(rel(r.inact)):"—"}</b>${r.last?` · ${esc(r.last.titre||r.last.type||"")}`:""}</div>
+    <div><span>7 derniers jours</span><b>${r.sem}</b> séance${r.sem>1?"s":""}</div>
+    <div><span>Poids</span>${r.w?`<b>${fmtNum(r.w.p)} kg</b>${r.dw!=null?` · ${r.dw>0?"+":""}${fmtNum(Math.round(r.dw*10)/10)} kg / 30 j`:""}`:"—"}</div>
+    <div><span>Prochaine séance</span>${r.next?`<b>${esc(fmtShort(parse(r.next.date)))}</b> · ${esc(r.next.titre||r.next.type||"")}`:"—"}</div>
+  </div>`;
+}
+
 /* ---------- routing ---------- */
 let lastView=null;
 function route(){
@@ -3417,6 +3482,7 @@ function route(){
   views.forEach(n=>{$("#view-"+n).hidden=n!==v;const t=$("#tab-"+n);t&&t.removeAttribute("aria-current")});
   renderView(v);
   if(v==="seances")sessAuto();
+  markSeen(v);
   if(v!==lastView){pickPhrase();lastView=v}
   const PT={accueil:"Accueil",tracking:"Tracking",programme:"Programme",seances:"Séances",nutrition:"Nutrition",bilan:"Bilan",suggestion:"Suggestion",clients:"Mes clients"};
   $("#pageTitle").innerHTML=`<em>${PT[v]}</em>`;
