@@ -10,7 +10,7 @@ U='http://127.0.0.1:8765/'
 res=[];errs=[]
 def ok(n,c,i=""):res.append((n,bool(c),i))
 def login(pg,uid,mail):
-    pg.evaluate(f"localStorage.setItem('mock-session',JSON.stringify({{user:{{id:'{uid}',email:'{mail}'}}}}))");pg.reload();pg.wait_for_timeout(700)
+    pg.evaluate(f"localStorage.setItem('mock-session',JSON.stringify({{user:{{id:'{uid}',email:'{mail}',user_metadata:{{}}}}}}))");pg.reload();pg.wait_for_timeout(700)
 try:
   with sync_playwright() as p:
     b=p.chromium.launch(executable_path='/usr/bin/google-chrome')
@@ -23,10 +23,11 @@ try:
     ok("lien magique demandé",'Lien envoyé' in pg.inner_text('#loginMsg') and pg.evaluate("localStorage.getItem('mock-last-otp')")=='"client@exemple.fr"')
     pg.click('#loginDemo');pg.wait_for_timeout(400)
     ok("mode découverte sans compte",pg.is_hidden('#login') and 'découverte' in pg.inner_text('#banner').lower())
+    ok("bouton « Se connecter » dans l'en-tête",pg.is_visible('#acctBtn') and pg.inner_text('#acctName')=='Se connecter')
     # utilisateur A
     pg.evaluate("sessionStorage.removeItem('bald-demo')");login(pg,'user-A','a@exemple.fr')
     ok("connecté : application ouverte",pg.is_hidden('#login'))
-    ok("connecté : e-mail affiché",'a@exemple.fr' in pg.inner_text('#acct') or pg.is_visible('#logout'))
+    ok("connecté : prénom dans l'en-tête",pg.inner_text('#acctName')=='A',pg.inner_text('#acctName'))
     ok("carnet vide au départ",pg.locator('#onb').is_visible())
     pg.evaluate("location.hash='#tracking'");pg.wait_for_timeout(200)
     pg.locator('#tTable .tcell[data-k="poids"]:not([disabled])').last.click();pg.fill('#tEditVal','81,4');pg.click('#tEditSave');pg.wait_for_timeout(300)
@@ -44,6 +45,7 @@ try:
     path='/tmp/claude-0/backup-A.json';dl.value.save_as(path);B=json.load(open(path))
     ok("sauvegarde JSON complète",B['format']=='bald-carnet' and len(B['seances'])==1 and len(B['objectifs'])==1 and any(v.get('poids')==81.4 for v in B['tracking'].values()),f"{len(B['seances'])} séance, {len(B['objectifs'])} objectif, {len(B['tracking'])} jour")
     # déconnexion
+    pg.click('#acctBtn');pg.wait_for_timeout(200);ok("menu du compte : e-mail + déconnexion",'a@exemple.fr' in pg.inner_text('#acctMenu') and pg.is_visible('#logout'))
     pg.click('#logout');pg.wait_for_timeout(700);ok("déconnexion : retour à la connexion",pg.is_visible('#login'))
     # utilisateur B : cloisonnement puis import
     pg.evaluate("location.hash='#accueil'");login(pg,'user-B','b@exemple.fr')

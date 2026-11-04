@@ -661,6 +661,8 @@ details.newgoal summary{font-family:var(--f-display);font-weight:700;font-size:1
   .cv-brand img{width:30px;height:30px}
   .cv-brand span{display:none}
   header.cover h1{font-size:24px;flex:1;min-width:0}
+  .has-acct header.cover h1{font-size:clamp(16px,4.8vw,22px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .has-acct .theme-sw button[aria-pressed="true"]{display:none}
   .theme-sw{position:static;order:3}
   .cv-sub{font-size:12px;padding:5px 10px}
   .cv-rule{display:none}
@@ -936,10 +938,25 @@ a.ghost{text-decoration:none;display:inline-block}
 .pal-kg select{width:auto;padding:5px 8px}
 .sugg-btn{display:inline-flex;align-items:center;gap:6px;color:#E8CDB9;text-decoration:none;font-weight:700;font-size:12.5px;border:1px solid rgba(255,255,255,.35);padding:6px 10px;position:absolute;top:12px;right:190px}
 .sugg-btn:hover,.sugg-btn[aria-current="page"]{color:#FFFFFF;background:rgba(255,255,255,.12)}
+.cv-tools{position:absolute;top:12px;right:190px;display:flex;gap:8px;align-items:flex-start}
+.cv-tools .sugg-btn{position:static}
+.acct-w{position:relative;display:inline-flex}
+.acct-btn{background:none;cursor:pointer;font-family:inherit}
+.acct-btn span{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-btn.on{color:#FFFFFF;border-color:var(--accent);background:var(--accent)}
+.acct-btn .ini{display:none;width:18px;height:18px;place-items:center;font-size:14px;font-weight:700;line-height:1}
+.acct-btn:not(.on) .ini{display:none!important}
+.acct-menu .acct-who{display:none;font-weight:700;font-size:15px;color:var(--ink)}
+.acct-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:60;min-width:200px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);box-shadow:0 8px 24px rgba(20,10,4,.25);padding:12px;display:flex;flex-direction:column;gap:10px}
+.acct-menu .acct-mail{font-size:13px;color:var(--muted);word-break:break-all}
 .week .big small{font-size:14px}
 @media (max-width:620px){
   .sugg-btn{position:static;order:2;padding:6px 8px}
   .sugg-btn span{display:none}
+  .cv-tools{position:static;order:2;gap:6px}
+  .acct-btn .ini{display:grid}
+  .acct-btn.on svg{display:none}
+  .acct-menu .acct-who{display:block}
 }
 .mfav{display:flex;flex-direction:column;gap:6px}
 .mfav-l{display:flex;flex-wrap:wrap;gap:6px}
@@ -989,7 +1006,11 @@ body.locked{overflow:hidden}
 <div class="wrap">
   <header class="cover">
     <div class="cv-band">
-      <a class="sugg-btn" id="tab-suggestion" href="#suggestion" title="Une idée, une remarque ?" aria-label="Suggestion"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span>Suggestion</span></a>
+      <div class="cv-tools">
+        <span class="acct-w" id="acctW" hidden><button type="button" class="sugg-btn acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><b class="ini" id="acctIni" aria-hidden="true"></b><span id="acctName">Se connecter</span></button>
+          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
+  <a class="sugg-btn" id="tab-suggestion" href="#suggestion" title="Une idée, une remarque ?" aria-label="Suggestion"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span>Suggestion</span></a>
+      </div>
       <div class="theme-sw" role="group" aria-label="Apparence">
         <button type="button" data-th="light" aria-pressed="false"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg><span>Clair</span></button>
         <button type="button" data-th="dark" aria-pressed="false"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span>Sombre</span></button>
@@ -2102,15 +2123,25 @@ function showLogin(){
   $("#loginDemo").onclick=()=>{try{sessionStorage.setItem("bald-demo","1")}catch(e){}hideLogin();startLocal()};
 }
 function hideLogin(){$("#login").hidden=true;document.body.classList.remove("locked")}
-function showAccount(){
-  if(!SB_USER)return;const a=$("#acct");a.hidden=false;
-  a.innerHTML=`<span class="acct-mail"></span><button type="button" class="ghost" id="logout">Se déconnecter</button>`;
-  a.querySelector(".acct-mail").textContent=SB_USER.email||"Connecté";
-  $("#logout").onclick=async()=>{clearDraft();try{await SB.auth.signOut()}catch(e){}location.reload()};
+function firstName(u){
+  const m=(u&&u.user_metadata)||{};let n=m.given_name||m.first_name||(m.full_name||m.name||"").trim().split(/\s+/)[0]||"";
+  if(!n&&u&&u.email){n=u.email.split("@")[0].split(/[._\-+0-9]/)[0]||u.email.split("@")[0]}
+  return n?n.charAt(0).toUpperCase()+n.slice(1):"Mon compte";
 }
+function acctHeader(){
+  const w=$("#acctW");if(!w)return;if(!HOSTED){w.hidden=true;return}
+  w.hidden=false;document.body.classList.add("has-acct");const b=$("#acctBtn"),menu=$("#acctMenu");
+  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
+    b.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;b.setAttribute("aria-expanded",String(!menu.hidden))};
+    $("#logout").onclick=async()=>{clearDraft();try{await SB.auth.signOut()}catch(e){}location.reload()}}
+  else{$("#acctName").textContent="Se connecter";b.classList.remove("on");b.title="Se connecter";b.setAttribute("aria-label","Se connecter");menu.hidden=true;
+    b.onclick=()=>{try{sessionStorage.removeItem("bald-demo")}catch(e){}location.reload()}}
+}
+document.addEventListener("click",e=>{const m=$("#acctMenu");if(m&&!m.hidden&&!e.target.closest("#acctW")){m.hidden=true;$("#acctBtn").setAttribute("aria-expanded","false")}});
+function showAccount(){acctHeader()}
 let localStarted=false;
 function startLocal(){
-  if(localStarted)return;localStarted=true;
+  if(localStarted)return;localStarted=true;acctHeader();
     state.mode="local";state.sessions=exampleSessions().map(s=>({...s,id:uidLocal()}));state.goals=exampleGoals().map(g=>({...g,id:uidLocal()}));state.plans=examplePlans().map(x=>({...x,id:uidLocal()}));state.tracking=exampleTracking();state.tset={repas:[{id:"r1",nom:"Petit-déj habituel",p:35,g:60,l:15},{id:"r2",nom:"Shaker whey",p:25,g:3,l:2},{id:"r3",nom:"Riz poulet",p:45,g:80,l:12}],semaine:{"1":"mA","4":"mB"},semaineDepuis:iso(today),modeles:[
       {id:"mA",nom:"Séance 1 · Haut du corps",titre:"Séance 1 · Haut du corps",type:"Musculation",notes:"Récup 2 min sur les polyarticulaires",exercices:[{nom:"Développé couché à la barre",sets:[{charge:60,reps:8},{charge:60,reps:8},{charge:62.5,reps:6},{charge:62.5,reps:6}],repos:150},{nom:"Tractions prise large",sets:[{charge:0,reps:6},{charge:0,reps:6},{charge:0,reps:5}],repos:120},{nom:"Élévations latérales aux haltères",sets:[{charge:10,reps:12},{charge:10,reps:12},{charge:10,reps:12}],repos:60}]},
       {id:"mB",nom:"Séance 2 · Bas du corps",titre:"Séance 2 · Bas du corps",type:"Musculation",notes:"",exercices:[{nom:"Squat à la barre (Squat lourd arrière)",sets:[{charge:40,reps:10,ech:true},{charge:80,reps:5},{charge:85,reps:5},{charge:85,reps:5}],repos:180},{nom:"Fentes aux haltères",sets:[{charge:20,reps:10},{charge:20,reps:10},{charge:20,reps:10}],repos:90}]}],
