@@ -361,6 +361,20 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 #nTable td.dsel{background:var(--accent-soft)}
 #nTable th.dsel{box-shadow:inset 0 -3px 0 var(--accent)}
 .coach-view #nAddBtn,.coach-view .nd-del,.coach-view .nd-pl button,.coach-view #nAdd{display:none!important}
+.inst-bg{position:fixed;inset:0;z-index:95;background:rgba(20,10,4,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+@media (min-width:621px){.inst-bg{align-items:center}}
+.inst{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--rule);box-shadow:0 18px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;max-height:calc(100vh - 32px);overflow:auto}
+.inst-h{display:flex;gap:12px;align-items:center;background:var(--band);color:var(--on-band);padding:14px 16px}
+.inst-h img{border-radius:12px;flex:none}
+.inst-h h2{margin:2px 0 0;font-size:19px;color:var(--on-band);text-transform:none}
+.inst-b{padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.inst-b ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.inst-b li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;counter-increment:st}
+.inst-b li::before{content:counter(st);width:28px;height:28px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink,#fff);font-weight:700}
+.inst-b .ico{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid var(--line);vertical-align:middle;margin:0 2px;color:var(--accent)}
+.inst-b .note{margin:0;padding:8px 10px;border-left:4px solid var(--accent);background:var(--accent-soft);font-size:13.5px;color:var(--brown)}
+.inst-acts{display:flex;gap:8px;padding:0 16px 16px}
+.inst-acts .btn{flex:1}
 .cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
 .cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
@@ -1096,7 +1110,7 @@ body.locked{overflow:hidden}
     <div class="cv-band">
       <div class="cv-tools">
         <span class="acct-w" id="acctW" hidden><button type="button" class="sugg-btn acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><b class="ini" id="acctIni" aria-hidden="true"></b><span id="acctName">Se connecter</span></button>
-          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><a class="btn" href="#clients" id="acctClients" hidden style="text-align:center;text-decoration:none">Mes clients</a><span class="hint" id="acctCoach" hidden style="margin:0">Suivi par @bald.coaching</span><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
+          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><a class="btn" href="#clients" id="acctClients" hidden style="text-align:center;text-decoration:none">Mes clients</a><span class="hint" id="acctCoach" hidden style="margin:0">Suivi par @bald.coaching</span><button type="button" class="ghost" id="acctInstall" hidden>📲 Installer l'appli</button><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
   <a class="sugg-btn" id="tab-suggestion" href="#suggestion" title="Une idée, une remarque ?" aria-label="Suggestion"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span>Suggestion</span></a>
       </div>
       <div class="theme-sw" role="group" aria-label="Apparence">
@@ -1568,6 +1582,13 @@ body.locked{overflow:hidden}
     </div>
   </div>
 </section>
+<div class="inst-bg" id="instBg" hidden>
+  <div class="inst" role="dialog" aria-modal="true" aria-labelledby="instTitle">
+    <div class="inst-h"><img src="icon-192.png" alt="" width="52" height="52"><div><span class="login-brand">BaldCoaching</span><h2 id="instTitle">Installe l'appli sur ton téléphone</h2></div></div>
+    <div class="inst-b" id="instBody"></div>
+    <div class="inst-acts"><button type="button" class="btn" id="instDone">C'est fait</button><button type="button" class="ghost" id="instLater">Plus tard</button></div>
+  </div>
+</div>
 <div class="stepc" id="stepConfirm" hidden role="dialog" aria-live="polite"><p id="stepConfirmTxt"></p><div class="acts"><button type="button" class="btn" id="stepYes">Enregistrer</button><button type="button" class="ghost" id="stepNo">Ignorer</button></div></div>
 <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
 <div class="rest" id="rest" hidden role="region" aria-label="Minuteur de repos">
@@ -2261,14 +2282,41 @@ function firstName(u){
 function acctHeader(){
   const w=$("#acctW");if(!w)return;if(!HOSTED){w.hidden=true;return}
   w.hidden=false;document.body.classList.add("has-acct");const b=$("#acctBtn"),menu=$("#acctMenu");
-  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
+  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctInstall").hidden=isStandalone();$("#acctInstall").onclick=()=>{menu.hidden=true;maybeInstall(true)};$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
     b.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;b.setAttribute("aria-expanded",String(!menu.hidden))};
     $("#logout").onclick=async()=>{clearDraft();try{await SB.auth.signOut()}catch(e){}location.reload()}}
   else{$("#acctName").textContent="Se connecter";b.classList.remove("on");b.title="Se connecter";b.setAttribute("aria-label","Se connecter");menu.hidden=true;
     b.onclick=()=>{try{sessionStorage.removeItem("bald-demo")}catch(e){}location.reload()}}
 }
 document.addEventListener("click",e=>{const m=$("#acctMenu");if(m&&!m.hidden&&!e.target.closest("#acctW")){m.hidden=true;$("#acctBtn").setAttribute("aria-expanded","false")}});
-function showAccount(){acctHeader()}
+function showAccount(){acctHeader();setTimeout(maybeInstall,1500)}
+/* ---------- « Installe l'appli » (une fois par appareil) ---------- */
+let instEvt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();instEvt=e});
+const INST_K="bald-install";
+function isStandalone(){return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true}
+function devKind(){const ua=navigator.userAgent||"";const ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  if(ios)return /CriOS|FxiOS|EdgiOS/.test(ua)?"ios-autre":"ios";if(/Android/i.test(ua))return "android";return "bureau"}
+function maybeInstall(force){
+  if(!HOSTED||IN_CLAUDE||!SB_USER||COACH_VIEW||isStandalone())return;
+  const k=devKind();if(!force&&k==="bureau")return;
+  if(!force){try{const v=JSON.parse(localStorage.getItem(INST_K)||"null");if(v&&(v.fait||Date.now()<v.revoir))return}catch(e){}}
+  if(!$("#reserve").hidden||!$("#login").hidden)return;
+  const share=`<span class="ico" aria-label="bouton Partager"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>`;
+  const dots=`<span class="ico" aria-label="menu">⋮</span>`;
+  let h;
+  if(k==="ios")h=`<p style="margin:0">En 3 gestes, l'appli s'ouvre comme une vraie application, en plein écran :</p><ol><li><span>Touche ${share} <b>Partager</b>, en bas de Safari.</span></li><li><span>Fais défiler et choisis <b>« Sur l'écran d'accueil »</b>.</span></li><li><span>Touche <b>Ajouter</b> : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol><p class="note">Ouvre ensuite toujours l'appli depuis cette icône, et connecte-toi une fois <b>avec Google</b> à l'intérieur : sur iPhone, l'appli installée ne partage pas la connexion de Safari.</p>`;
+  else if(k==="ios-autre")h=`<ol><li><span>Touche ${share} <b>Partager</b> (en haut à droite ou en bas selon le navigateur).</span></li><li><span>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</span></li></ol><p class="note">Si l'option n'apparaît pas, ouvre ce site dans <b>Safari</b> et recommence. Connecte-toi ensuite une fois avec Google dans l'appli installée.</p>`;
+  else if(k==="android")h=instEvt?`<p style="margin:0">Ajoute l'appli à ton écran d'accueil : elle s'ouvrira en plein écran, comme une vraie application.</p><button type="button" class="btn" id="instGo">📲 Installer BaldCoaching</button>`:`<ol><li><span>Touche ${dots} <b>le menu</b>, en haut à droite de Chrome.</span></li><li><span>Choisis <b>« Installer l'application »</b> (ou « Ajouter à l'écran d'accueil »).</span></li><li><span>Confirme : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol>`;
+  else h=`<p style="margin:0">Sur ton téléphone, ouvre <b>${esc(location.host)}</b> puis :</p><ol><li><span><b>iPhone</b> : Safari › ${share} Partager › « Sur l'écran d'accueil ».</span></li><li><span><b>Android</b> : Chrome › ${dots} › « Installer l'application ».</span></li></ol>${instEvt?`<button type="button" class="btn" id="instGo">Installer sur cet ordinateur</button>`:""}`;
+  $("#instBody").innerHTML=h;$("#instBg").hidden=false;
+  const close=v=>{$("#instBg").hidden=true;try{localStorage.setItem(INST_K,JSON.stringify(v))}catch(e){}};
+  $("#instDone").onclick=()=>close({fait:true});
+  $("#instLater").onclick=()=>close({revoir:Date.now()+3*864e5});
+  $("#instBg").onclick=e=>{if(e.target.id==="instBg")close({revoir:Date.now()+3*864e5})};
+  const g=$("#instGo");if(g)g.onclick=async()=>{try{instEvt.prompt();const r=await instEvt.userChoice;instEvt=null;if(r&&r.outcome==="accepted"){close({fait:true});toast("C'est installé : retrouve BaldCoaching sur ton écran d'accueil")}}catch(e){}};
+  setTimeout(()=>$("#instDone").focus(),50);
+}
+window.addEventListener("appinstalled",()=>{$("#instBg").hidden=true;try{localStorage.setItem(INST_K,JSON.stringify({fait:true}))}catch(e){}});
 let localStarted=false;
 function startLocal(){
   if(localStarted)return;localStarted=true;acctHeader();
