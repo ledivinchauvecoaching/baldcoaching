@@ -8,3 +8,10 @@ grant execute on function auth.uid() to anon, authenticated;
 create publication supabase_realtime;
 grant usage on schema public to anon, authenticated;
 create role supabase_auth_admin nologin;
+-- stockage minimal (imitation de Supabase Storage)
+create schema if not exists storage;
+create table storage.buckets(id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
+create table storage.objects(id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets(id), name text, owner uuid default auth.uid());
+alter table storage.objects enable row level security;
+grant usage on schema storage to authenticated, anon;
+grant select, insert, update, delete on storage.objects to authenticated;

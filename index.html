@@ -398,6 +398,28 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 .tdn{display:flex;flex-direction:column;gap:10px}
 .tdn .nd-big b{font-size:28px}
 .tdn .nd-mac{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bil-f{display:flex;flex-direction:column;gap:12px}
+.bil-sc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center}
+.bil-sc .lab{font-size:14px;font-weight:700}
+.bil-sc .lab small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.sc5{display:flex;gap:4px}
+.sc5 button{width:36px;height:36px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.sc5 button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.bil-ph{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bil-ph label{border:1px dashed var(--line);aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:12.5px;color:var(--muted);text-align:center;overflow:hidden;position:relative;background:var(--sunk)}
+.bil-ph label img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bil-ph label span{position:relative;z-index:1;background:rgba(0,0,0,.45);color:#fff;padding:2px 6px;font-weight:700}
+.bil-ph input{display:none}
+.bil-done{border-left:4px solid var(--easy,#4F7F45);background:var(--sunk);padding:10px 12px;font-size:14px}
+.bil-item{border:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.bil-item+.bil-item{margin-top:8px}
+.bil-item .h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.bil-item .sc{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--brown)}
+.bil-thumbs{display:flex;gap:6px}
+.bil-thumbs img{width:72px;height:96px;object-fit:cover;border:1px solid var(--line);cursor:zoom-in}
+.bil-zoom{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:16px}
+.bil-zoom img{max-width:100%;max-height:100%}
+.coach-view .bil-f,.coach-view #bilEdit{display:none!important}
 .cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
 .cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
@@ -1492,6 +1514,11 @@ body.locked{overflow:hidden}
       </div>
       <p class="hint">Touche une case pour noter ta valeur du jour. La case se coche toute seule quand la cible est atteinte, et dès que tu t'es pesé pour le poids. Les habitudes personnalisées se cochent d'un simple toucher.</p>
     </div>
+    <div class="panel" id="bilPanel">
+      <h2>Bilan de la semaine</h2>
+      <div id="bilBody"></div>
+      <div id="bilHist"></div>
+    </div>
     <div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
       <div class="panel">
         <h2>Mes cibles quotidiennes</h2>
@@ -1714,7 +1741,7 @@ window.BALD_CONFIG=window.BALD_CONFIG||{supabaseUrl:"",supabaseAnonKey:""};
 (function(){
 const TYPES=["Musculation","Course","Vélo","Mobilité","Autre"];
 const RPE_WORDS=["","Très facile","Facile","Modéré","Un peu dur","Dur","Dur","Très dur","Très dur","Extrêmement dur","Maximal"];
-const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,comments:{},coachSet:null,mode:"loading"};
+const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,comments:{},coachSet:null,bilans:{},mode:"loading"};
 let COACH_VIEW=null,MY_MODELES=[];
 let readOnly=false;
 let tWeek=0, tSel=null, jType="Tout", jAll=false, PRS=new Set();
@@ -2524,6 +2551,7 @@ function startData(){
   C("tracking").watch(sn=>{const m={};sn.docs.forEach(d=>{m[d.id]={...((d.data||{}).values||{})}});state.tracking=m;done(sn.fromCache);render();if(!sn.fromCache&&!tReady){tReady=true;applySteps()}},fail);
   C("reglages").watch(sn=>{const doc=sn.docs.find(d=>d.id==="tracking");const x=doc?doc.data:null;state.tset=x?{...JSON.parse(JSON.stringify(x)),cibles:{...DEFAULT_T.cibles,...(x.cibles||{})},habitudes:(x.habitudes||[]).map(h=>({...h})),modeles:JSON.parse(JSON.stringify(x.modeles||[]))}:null;
     const cd=sn.docs.find(d=>d.id==="coach");state.coachSet=cd&&cd.data&&cd.data.cibles?JSON.parse(JSON.stringify(cd.data)):null;done(sn.fromCache);render();fillTGoals()},fail);
+  C("bilans").watch(sn=>{const m={};sn.docs.forEach(d=>m[d.id]=d.data);state.bilans=m;if(document.body.dataset.view==="tracking")renderBilan2()},()=>{});
   C("commentaires").watch(sn=>{const m={};sn.docs.forEach(d=>m[d.id]=d.data);state.comments=m;if(document.body.dataset.view==="seances")journal()},()=>{});
   C("prevues").watch(sn=>{state.plans=sn.docs.map(d=>{const x=d.data;return {...x,id:d.id,exercices:(x.exercices||[]).map(e=>({...e,ref:Array.isArray(e.ref)?e.ref.map(r=>({...r})):(e.ref?{...e.ref}:null),sets:Array.isArray(e.sets)?e.sets.map(r=>({...r})):e.sets}))}});done(sn.fromCache);render()},fail);
   render();
@@ -3323,6 +3351,51 @@ function relDay(d){
   if(n===0)return ["Aujourd'hui",""];if(n===1)return ["Demain",""];
   if(n>1)return [`Dans ${n} jours`,""];return [`Prévue il y a ${-n} j`,"late"];
 }
+/* ---------- bilan hebdomadaire (avec photos sur la version en ligne) ---------- */
+const BIL_SC=[["energie","Énergie","1 = à plat · 5 = en pleine forme"],["sommeil","Sommeil","qualité sur la semaine"],["faim","Faim","1 = aucune · 5 = très forte"],["stress","Stress","1 = serein · 5 = très stressé"],["motivation","Motivation","envie de t'entraîner"]];
+const BIL_PH=[["face","Face"],["profil","Profil"],["dos","Dos"]];
+let bilEdit=false,bilDraft={},bilFiles={};const bilUrls={};
+const photosOK=()=>!!(SB&&SB.storage&&SB_USER);
+function weekKey(d){return iso(monday(d||today))}
+async function photoUrl(path){if(!path||!photosOK())return "";if(bilUrls[path]&&bilUrls[path].t>Date.now())return bilUrls[path].u;
+  try{const r=await SB.storage.from("photos").createSignedUrl(path,3600);const u=r&&r.data&&r.data.signedUrl;if(u){bilUrls[path]={u,t:Date.now()+3000e3};return u}}catch(e){}return ""}
+function compressImg(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=rej;fr.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?res(b):rej(new Error("image")),"image/jpeg",0.82)};im.src=fr.result};fr.readAsDataURL(file)})}
+function renderBilan2(){
+  const body=$("#bilBody");if(!body)return;const wk=weekKey(),cur=state.bilans[wk];
+  const lw=lastWeight();
+  if(cur&&!bilEdit){body.innerHTML=`<div class="bil-done">✓ ${COACH_VIEW?"Bilan reçu":"Bilan envoyé"} le ${esc(fmtShort(parse(cur.date||wk)))}${COACH_VIEW?"":" · ton coach le voit dans ton carnet"}. <button type="button" class="ghost" id="bilEdit" style="margin-left:6px">Modifier</button></div>`;$("#bilEdit").onclick=()=>{bilEdit=true;bilDraft=JSON.parse(JSON.stringify(cur));bilFiles={};renderBilan2()}}
+  else if(COACH_VIEW){body.innerHTML=`<p class="hint" style="margin:0">Pas encore de bilan cette semaine.</p>`}
+  else{
+    if(!bilEdit&&!Object.keys(bilDraft).length)bilDraft={poids:lw};
+    const d=bilDraft;
+    body.innerHTML=`<form class="bil-f" id="bilForm"><p class="hint" style="margin:0">Une fois par semaine, idéalement le même jour : 1 minute pour faire le point avec ton coach.</p>
+      <div class="row2"><div class="field"><label class="label" for="bilPoids">Poids (kg)</label><input type="text" data-num inputmode="decimal" id="bilPoids" value="${d.poids!=null?esc(String(d.poids)):""}" placeholder="${lw!=null?esc(String(lw)):"ex. 78,5"}"></div></div>
+      ${BIL_SC.map(([k,l,h])=>`<div class="bil-sc"><span class="lab">${l}<small>${h}</small></span><div class="sc5" role="group" aria-label="${l}">${[1,2,3,4,5].map(n=>`<button type="button" data-bk="${k}" data-bv="${n}" aria-pressed="${d[k]===n}">${n}</button>`).join("")}</div></div>`).join("")}
+      <div class="field"><label class="label" for="bilTxt">Ce qui s'est bien passé, ce qui a coincé</label><textarea id="bilTxt" maxlength="1500" placeholder="Ex. 4 séances faites, écart samedi soir, genou un peu sensible…">${esc(d.texte||"")}</textarea></div>
+      ${photosOK()?`<div class="field"><span class="label">Photos <span class="opt">facultatif · visibles seulement par toi et ton coach</span></span><div class="bil-ph">${BIL_PH.map(([k,l])=>`<label data-phk="${k}"><input type="file" accept="image/*" data-ph="${k}"><span>${l}</span><small>+ photo</small></label>`).join("")}</div></div>`:""}
+      <div class="tedit-row"><button type="submit" class="btn" id="bilSend">${state.bilans[wk]?"Mettre à jour mon bilan":"Envoyer mon bilan"}</button>${bilEdit?`<button type="button" class="ghost" id="bilCancel">Annuler</button>`:""}</div></form>`;
+    body.querySelectorAll("[data-bk]").forEach(b=>b.onclick=()=>{bilDraft[b.dataset.bk]=+b.dataset.bv;body.querySelectorAll(`[data-bk="${b.dataset.bk}"]`).forEach(x=>x.setAttribute("aria-pressed",String(x===b)))});
+    $("#bilTxt").oninput=e=>bilDraft.texte=e.target.value;$("#bilPoids").oninput=e=>{const v=parseFloat(e.target.value.replace(",","."));bilDraft.poids=isNaN(v)?null:v};
+    body.querySelectorAll("[data-ph]").forEach(inp=>{const k=inp.dataset.ph,lab=inp.closest("label");
+      const show=u=>{if(!u)return;let im=lab.querySelector("img");if(!im){im=document.createElement("img");im.alt="";lab.prepend(im)}im.src=u;lab.querySelector("small").textContent=""};
+      if(bilFiles[k])show(URL.createObjectURL(bilFiles[k]));else if(d.photos&&d.photos[k])photoUrl(d.photos[k]).then(show);
+      inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;try{bilFiles[k]=await compressImg(f);show(URL.createObjectURL(bilFiles[k]))}catch(e){toast("Cette image n'a pas pu être lue")}}});
+    const c=$("#bilCancel");if(c)c.onclick=()=>{bilEdit=false;bilDraft={};bilFiles={};renderBilan2()};
+    $("#bilForm").onsubmit=async e=>{e.preventDefault();const b=$("#bilSend");b.disabled=true;b.textContent="Envoi…";
+      try{const out={...bilDraft,semaine:wk,date:iso(today),at:Date.now(),photos:{...(bilDraft.photos||{})}};
+        for(const [k,blob] of Object.entries(bilFiles)){const path=`${SB_USER.id}/${wk}-${k}.jpg`;const r=await SB.storage.from("photos").upload(path,blob,{contentType:"image/jpeg",upsert:true});if(r&&r.error)throw r.error;out.photos[k]=path;delete bilUrls[path]}
+        if(state.mode==="db")await C("bilans").set(wk,out);else{state.bilans={...state.bilans,[wk]:out}}
+        if(out.poids!=null&&(state.tracking[iso(today)]||{}).poids==null){const cur={...(state.tracking[iso(today)]||{}),poids:out.poids};delete cur.exemple;saveDay(iso(today),cur).catch(()=>{})}
+        bilEdit=false;bilDraft={};bilFiles={};toast("<b>Bilan envoyé</b><br>Ton coach le verra dans ton carnet.",true);renderBilan2()}
+      catch(err){b.disabled=false;b.textContent="Réessayer";toast(netErr(err)?"Pas de réseau : réessaie quand tu es connecté (les photos ont besoin du réseau).":"L'envoi a échoué. Réessaie dans un instant.")}};
+  }
+  // historique
+  const H=Object.entries(state.bilans).sort((a,b)=>a[0]<b[0]?1:-1).slice(0,8);
+  const hist=$("#bilHist");
+  hist.innerHTML=H.length?`<span class="label" style="display:block;margin:12px 0 6px">Historique</span>`+H.map(([k,x])=>`<div class="bil-item"><div class="h"><b>Semaine du ${esc(fmtShort(parse(k)))}</b>${x.poids!=null?`<span class="num">${fmtNum(+x.poids)} kg</span>`:""}</div><div class="sc">${BIL_SC.filter(([q])=>x[q]).map(([q,l])=>`<span>${l} <b>${x[q]}</b>/5</span>`).join("")}</div>${x.texte?`<p style="margin:0;font-size:14px">${esc(x.texte)}</p>`:""}${x.photos&&Object.keys(x.photos).length?`<div class="bil-thumbs">${BIL_PH.filter(([q])=>x.photos[q]).map(([q,l])=>`<img alt="${l}" data-bp="${esc(x.photos[q])}">`).join("")}</div>`:""}</div>`).join(""):"";
+  hist.querySelectorAll("[data-bp]").forEach(im=>{photoUrl(im.dataset.bp).then(u=>{if(u)im.src=u});im.onclick=()=>{if(!im.src)return;const z=document.createElement("div");z.className="bil-zoom";z.innerHTML=`<img alt="">`;z.querySelector("img").src=im.src;z.onclick=()=>z.remove();document.body.appendChild(z)}});
+}
+
 /* ---------- cycles sur plusieurs semaines ---------- */
 function cycleTpls(){return ((COACH_VIEW?MY_MODELES:tset().modeles)||[])}
 function renderCycle(){
@@ -3647,7 +3720,7 @@ function render(){
 }
 function renderView(v){
   if(v==="accueil"){renderToday();goals()}
-  else if(v==="tracking"){renderTracking();renderMz();mzPrefill()}
+  else if(v==="tracking"){renderTracking();renderMz();mzPrefill();renderBilan2()}
   else if(v==="nutrition"){renderTracking();coachSetUI();protHint();hbFill();if(!$("#nAdd").hidden)renderFav()}
   else if(v==="programme"){renderWeek();renderTpl();renderPlans();renderCycle()}
   else if(v==="seances"){if(!sessMode)renderSessDay();chart();journal();cmpSoon()}
@@ -3773,7 +3846,7 @@ $("#invForm").addEventListener("submit",async e=>{e.preventDefault();if(ROLE!=="
   finally{btn.disabled=false}});
 function resetCarnet(){
   if(STORE&&STORE.close)STORE.close();
-  state.sessions=[];state.goals=[];state.plans=[];state.tracking={};state.tset=null;state.comments={};state.coachSet=null;state.mode="loading";
+  state.sessions=[];state.goals=[];state.plans=[];state.tracking={};state.tset=null;state.comments={};state.coachSet=null;state.bilans={};state.mode="loading";
   sessMode=null;pendingPlan=null;editingSession=null;donePlans.clear();VP=[];
 }
 function openClient(c){
@@ -3827,7 +3900,8 @@ async function clientResume(id){
   const last=S[0],sem=S.filter(x=>x.date>=d7).length;
   const inact=last?Math.round((parse(iso(today))-parse(last.date))/864e5):null;
   const w=T[0],w30=T.find(x=>x.d<=d30)||T[T.length-1];
-  return {last,sem,inact,w,dw:w&&w30&&w30!==w?w.p-w30.p:null,next:P[0],nbNext:P.length};
+  let bil=null;try{const rb=await SB.from("carnet_docs").select("doc_id,data").eq("user_id",id).eq("collection","bilans");bil=(rb.data||[]).some(r=>r.doc_id===iso(monday(today)))}catch(e){}
+  return {last,sem,inact,w,dw:w&&w30&&w30!==w?w.p-w30.p:null,next:P[0],nbNext:P.length,bil};
 }
 function resumeHTML(r){
   const rel=n=>n===0?"aujourd'hui":n===1?"hier":"il y a "+n+" j";
@@ -3836,6 +3910,7 @@ function resumeHTML(r){
     <div><span>Dernière séance</span><b>${r.last?esc(rel(r.inact)):"—"}</b>${r.last?` · ${esc(r.last.titre||r.last.type||"")}`:""}</div>
     <div><span>7 derniers jours</span><b>${r.sem}</b> séance${r.sem>1?"s":""}</div>
     <div><span>Poids</span>${r.w?`<b>${fmtNum(r.w.p)} kg</b>${r.dw!=null?` · ${r.dw>0?"+":""}${fmtNum(Math.round(r.dw*10)/10)} kg / 30 j`:""}`:"—"}</div>
+    <div><span>Bilan de la semaine</span>${r.bil?"<b>✓ reçu</b>":"pas encore"}</div>
     <div><span>Prochaine séance</span>${r.next?`<b>${esc(fmtShort(parse(r.next.date)))}</b> · ${esc(r.next.titre||r.next.type||"")}`:"—"}</div>
   </div>`;
 }

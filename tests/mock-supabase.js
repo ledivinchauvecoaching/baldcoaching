@@ -66,6 +66,16 @@
       async signOut(){localStorage.removeItem("mock-session");authCb&&authCb("SIGNED_OUT",null);return {error:null}}
     },
     from:q,rpc,
+    storage:{from(bucket){return {
+      async upload(path,blob){const s=session();if(!s)return {error:{message:"non connecté"}};const me=s.user.id,folder=String(path).split("/")[0];
+        if(LS("mock-offline"))return {error:{message:"TypeError: Failed to fetch"}};
+        if(folder!==me||!isMember(me))return {error:{message:"new row violates row-level security policy"}};
+        const url=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(blob)});
+        const F=LS("mock-files")||{};F[bucket+"/"+path]=url;SET("mock-files",F);return {data:{path},error:null}},
+      async createSignedUrl(path){const s=session();if(!s)return {error:{message:"non connecté"}};const me=s.user.id,folder=String(path).split("/")[0];
+        if(folder!==me&&!coaches(me,folder))return {data:null,error:{message:"Object not found"}};
+        const u=(LS("mock-files")||{})[bucket+"/"+path];return u?{data:{signedUrl:u},error:null}:{data:null,error:{message:"Object not found"}}}
+    }}},
     channel(){const c={on(){return c},subscribe(){return c}};return c},
     removeChannel(){}
   }}};
