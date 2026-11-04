@@ -286,7 +286,7 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 .mzt tbody th{background:var(--t-lab);font-weight:700}
 .mzd{display:block;font-size:11px;color:var(--muted);font-weight:400}
 /* Accueil */
-.today-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.today-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 @media (max-width:860px){
   .today-grid{grid-template-columns:minmax(0,1fr)}
 }
@@ -360,7 +360,7 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 #nTable .tcell.star .tbox{border-color:var(--accent);color:var(--accent);background:var(--surface);font-size:14px}
 #nTable td.dsel{background:var(--accent-soft)}
 #nTable th.dsel{box-shadow:inset 0 -3px 0 var(--accent)}
-.coach-view #nAddBtn,.coach-view .nd-del,.coach-view .nd-pl button,.coach-view #nAdd{display:none!important}
+.coach-view #nAddBtn,.coach-view #tdNutAdd,.coach-view .nd-del,.coach-view .nd-pl button,.coach-view #nAdd{display:none!important}
 .inst-bg{position:fixed;inset:0;z-index:95;background:rgba(20,10,4,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
 @media (min-width:621px){.inst-bg{align-items:center}}
 .inst{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--rule);box-shadow:0 18px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;max-height:calc(100vh - 32px);overflow:auto}
@@ -392,6 +392,12 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 .dchips button[aria-pressed="true"] small{color:#E8CDB9}
 .dchips button.busy::after{content:"•";color:var(--accent);font-weight:700;line-height:.6}
 .pdate-f{max-width:220px}
+.exv{grid-column:1/-1;margin:0}
+.vdemo{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:5px 10px;font-size:13.5px}
+.prow .vd{font-size:13px;margin-top:6px}
+.tdn{display:flex;flex-direction:column;gap:10px}
+.tdn .nd-big b{font-size:28px}
+.tdn .nd-mac{grid-template-columns:repeat(3,minmax(0,1fr))}
 .cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
 .cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
@@ -441,6 +447,7 @@ nav.tabs a .ndot{position:absolute;top:4px;right:calc(50% - 18px);min-width:16px
 .guidebar #guideAll{white-space:nowrap}
 #exRows.guided .exrow.g-cur>.g-head{order:0}
 #exRows.guided .exrow.g-cur>.exc{order:1}
+#exRows.guided .exrow.g-cur>.exv{order:1}
 #exRows.guided .exrow.g-cur>.refsrc{order:2;font-size:13px;color:var(--brown);background:var(--sunk);padding:6px 10px;border-left:3px solid var(--line)}
 #exRows.guided .exrow.g-cur>.refsrc:empty{display:none}
 #exRows.guided .exrow.g-cur>.sets{order:3}
@@ -1585,6 +1592,17 @@ body.locked{overflow:hidden}
         <button class="ghost" type="button" id="pCancel" hidden>Annuler la modification</button>
       </form>
     </div>
+    <div class="panel" id="cyclePanel">
+      <h2>Programmer un cycle</h2>
+      <p class="hint" style="margin:0" id="cyHint">Plusieurs semaines d'un coup : choisis une séance par jour, la date de début et la durée. Chaque séance reste modifiable ensuite.</p>
+      <div class="row2">
+        <div class="field"><label class="label" for="cyStart">Début (lundi)</label><input type="date" id="cyStart"></div>
+        <div class="field"><label class="label" for="cyWeeks">Durée</label><select id="cyWeeks"></select></div>
+      </div>
+      <div class="wk-days" id="cyDays"></div>
+      <button type="button" class="btn" id="cyGo">Créer le cycle</button>
+      <div id="cyList"></div>
+    </div>
     <div class="panel" id="upPanel">
       <h2>Séances à venir</h2>
       <button type="button" class="btn ph-only" id="goPlan">+ Planifier une séance</button>
@@ -1598,6 +1616,7 @@ body.locked{overflow:hidden}
     <div class="panel onb" id="onb" hidden></div>
     <div class="today-grid">
       <div class="panel"><h2>Séance du jour</h2><div id="tdSession"></div></div>
+      <div class="panel" id="tdNutP"><h2>Nutrition du jour</h2><div id="tdNut"></div></div>
       <div class="panel"><h2>Tracking du jour</h2><div class="tdt" id="tdTrack"></div><p class="hint">Touche une habitude pour la noter.</p></div>
     </div>
     <h2 class="sec-h">Mes objectifs</h2>
@@ -1888,10 +1907,10 @@ function addSessSet(list,st={},ph={}){
 }
 function addExRow(v={}){
   const i=exSeq++;
-  const r=document.createElement("div");r.className="exrow";if(v.consigne)r.dataset.cs=v.consigne;
+  const r=document.createElement("div");r.className="exrow";if(v.consigne)r.dataset.cs=v.consigne;if(safeVideo(v.video))r.dataset.vd=safeVideo(v.video);
   r.innerHTML=`<input class="nm" type="text" id="exN${i}" autocomplete="off" placeholder="Choisir un exercice" aria-label="Exercice" value="${esc(v.nom||"")}">
     <button type="button" class="x" aria-label="Retirer cet exercice">×</button>
-    ${v.consigne?`<p class="exc">${esc(v.consigne)}</p>`:""}
+    ${v.consigne?`<p class="exc">${esc(v.consigne)}</p>`:""}${safeVideo(v.video)?`<p class="exv">${videoLink(v.video)}</p>`:""}
     <div class="sets"><div class="sethead"><span>N°</span><span>Kg</span><span></span><span>Reps</span><span title="Série faite : lance le repos">Fait</span><span></span></div><div class="setlist"></div></div>
     <button type="button" class="ghost addset">+ Série</button>
     <div class="exopts">${reposSel("exRp"+i,v.repos)}${ssBox("exSs"+i,v.ss)}</div>
@@ -2035,11 +2054,15 @@ function addPlanSet(list,ref={},st={}){
   wireWarm(d,list,st&&st.ech?st:ref);
   list.appendChild(d);renum(list);return d;
 }
+/* lien vidéo de démonstration : uniquement https */
+function safeVideo(u){try{const x=new URL(String(u||"").trim());return x.protocol==="https:"?x.href:""}catch(e){return ""}}
+function videoLink(u){const h=safeVideo(u);return h?`<a class="vdemo" href="${esc(h)}" target="_blank" rel="noopener noreferrer">▶ Voir la démo</a>`:""}
 function addPlanRow(v={}){
   const i=pSeq++;
   const r=document.createElement("div");r.className="prow";
   r.innerHTML=`<div class="top"><input type="text" class="nm" id="pN${i}" autocomplete="off" placeholder="Choisir un exercice" aria-label="Exercice" value="${esc(v.nom||"")}"><button type="button" class="x" aria-label="Retirer cet exercice">×</button></div>
     <input type="text" class="cs" id="pCs${i}" maxlength="200" placeholder="Consigne (fourchette, tempo, technique…)" aria-label="Consigne de l'exercice" value="${esc(v.consigne||"")}">
+    <input type="url" class="vd" id="pVd${i}" maxlength="400" placeholder="Lien vidéo de démo (Instagram, YouTube…) · facultatif" aria-label="Lien vidéo de démonstration" value="${esc(v.video||"")}">
     <div class="psets">
       <div class="phead"><span></span><span class="g ref">Repère</span><span class="g">Prévu</span><span></span></div>
       <div class="phead2"><span>N°</span><span>Kg</span><span>Reps</span><span>Kg</span><span>Reps</span><span></span></div>
@@ -2088,7 +2111,7 @@ function readPlanRows(){
     return {nom:r.querySelector(".nm").value.trim(),
       ref:lines.map(d=>{const o={charge:numv(d.querySelector(".rc").value),reps:numv(d.querySelector(".rr").value)};if(d.classList.contains("warm"))o.ech=true;return o}).filter(hasVal),
       sets:lines.map(d=>{const o={charge:numv(d.querySelector(".pc").value),reps:numv(d.querySelector(".pr").value)};if(d.classList.contains("warm"))o.ech=true;return o}),
-      repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked||false,consigne:r.querySelector(".cs").value.trim()};
+      repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked||false,consigne:r.querySelector(".cs").value.trim(),video:safeVideo(r.querySelector(".vd").value)};
   }).filter(e=>e.nom).map((e,i,a)=>{if(e.ss&&i===a.length-1)e.ss=false;return e});
 }
 function resetPlanForm(){
@@ -2128,7 +2151,7 @@ function loadTpl(m){
   openPanel($("#planFormTitle"));editingPlan=null;$("#pTitre").value=m.titre||m.nom;$("#pNotes").value=m.notes||"";checkType("pType",m.type||"Musculation");
   $("#pRows").innerHTML="";
   (m.exercices&&m.exercices.length?m.exercices:[{}]).forEach(e=>{
-    if(e.nom&&lastPerf(e.nom)){const r=addPlanRow({nom:e.nom,repos:e.repos,ss:e.ss,consigne:e.consigne});r._fill()}
+    if(e.nom&&lastPerf(e.nom)){const r=addPlanRow({nom:e.nom,repos:e.repos,ss:e.ss,consigne:e.consigne,video:e.video});r._fill()}
     else addPlanRow(e);
   });
   syncSS($("#pRows"));
@@ -2137,7 +2160,7 @@ function loadTpl(m){
 }
 function saveAsTpl(p){
   const t=tset();const nom=(p.titre||p.type||"Séance").trim();
-  const tpl={id:"m"+Date.now().toString(36),nom,titre:p.titre||"",type:p.type,notes:p.notes||"",exercices:(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||""}))};
+  const tpl={id:"m"+Date.now().toString(36),nom,titre:p.titre||"",type:p.type,notes:p.notes||"",exercices:(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||"",video:e.video||""}))};
   const M=(t.modeles||[]).filter(x=>x.nom.toLowerCase()!==nom.toLowerCase()).map(x=>JSON.parse(JSON.stringify(x)));M.push(tpl);
   return saveTSet({...t,cibles:{...t.cibles},habitudes:t.habitudes.map(x=>({...x})),modeles:M}).then(()=>toast(`Modèle « ${esc(nom)} » enregistré`));
 }
@@ -3300,6 +3323,38 @@ function relDay(d){
   if(n===0)return ["Aujourd'hui",""];if(n===1)return ["Demain",""];
   if(n>1)return [`Dans ${n} jours`,""];return [`Prévue il y a ${-n} j`,"late"];
 }
+/* ---------- cycles sur plusieurs semaines ---------- */
+function cycleTpls(){return ((COACH_VIEW?MY_MODELES:tset().modeles)||[])}
+function renderCycle(){
+  const M=cycleTpls(),days=$("#cyDays");if(!days)return;
+  if(!$("#cyWeeks").options.length){$("#cyWeeks").innerHTML=[1,2,3,4,5,6,8,10,12].map(n=>`<option value="${n}" ${n===4?"selected":""}>${n} semaine${n>1?"s":""}</option>`).join("");
+    $("#cyStart").value=iso(addDays(monday(today),7))}
+  const keep={};days.querySelectorAll("select").forEach(x=>keep[x.dataset.cd]=x.value);
+  const S=COACH_VIEW?{}:(tset().semaine||{});
+  days.innerHTML=M.length?WK.map(([k,nom])=>`<label class="wk-d"><span>${nom}</span><select data-cd="${k}"><option value="">Repos</option>${M.map(m=>`<option value="${esc(m.id)}" ${(keep[k]!==undefined?keep[k]:S[k])===m.id?"selected":""}>${esc(m.nom)}</option>`).join("")}</select></label>`).join(""):`<p class="hint">Crée d'abord des modèles de séance (formulaire « Planifier une séance » › « Enregistrer comme modèle »).</p>`;
+  $("#cyGo").hidden=!M.length;
+  const upd=()=>{const n=[...days.querySelectorAll("select")].filter(x=>x.value).length*(+$("#cyWeeks").value||4);$("#cyGo").textContent=n?`Créer le cycle · ${n} séance${n>1?"s":""}`:"Choisis au moins une séance";$("#cyGo").disabled=!n};
+  days.querySelectorAll("select").forEach(x=>x.onchange=upd);$("#cyWeeks").onchange=upd;upd();
+  $("#cyHint").textContent=COACH_VIEW?`Programme plusieurs semaines pour ${COACH_VIEW.nom} avec tes modèles : les séances arrivent dans son programme.`:"Plusieurs semaines d'un coup : choisis une séance par jour, la date de début et la durée. Chaque séance reste modifiable ensuite.";
+  // cycles existants
+  const C2={};(state.plans||[]).filter(p=>p.cycle&&p.date>=iso(today)).forEach(p=>{(C2[p.cycle]=C2[p.cycle]||[]).push(p)});
+  const ids=Object.keys(C2);
+  $("#cyList").innerHTML=ids.length?`<span class="label" style="display:block;margin-top:12px">Cycles en cours</span>`+ids.map(id=>{const L=C2[id].sort((a,b)=>a.date<b.date?-1:1);return `<div class="invitem"><span><b>${esc(L[0].cycleNom||"Cycle")}</b> <span class="hint">· ${L.length} séance${L.length>1?"s":""} à venir, jusqu'au ${esc(fmtShort(parse(L[L.length-1].date)))}</span></span><span class="acts"><button type="button" class="ghost" data-cydel="${esc(id)}">Retirer les séances à venir</button></span></div>`}).join(""):"";
+  $("#cyList").querySelectorAll("[data-cydel]").forEach(b=>confirmBtn(b,async()=>{const L=(state.plans||[]).filter(p=>p.cycle===b.dataset.cydel&&p.date>=iso(today));for(const p of L)await delPlan(p.id);toast(`${L.length} séance${L.length>1?"s":""} retirée${L.length>1?"s":""}`)}));
+}
+$("#cyGo").onclick=async()=>{
+  const M=cycleTpls(),W=+$("#cyWeeks").value||4,st=$("#cyStart").value;if(!st){$("#cyStart").focus();return}
+  const pick={};$("#cyDays").querySelectorAll("select").forEach(x=>{if(x.value)pick[x.dataset.cd]=M.find(m=>m.id===x.value)});
+  const id="c"+Date.now().toString(36),start=parse(st),nom=`Cycle de ${W} semaine${W>1?"s":""} · dès le ${fmtShort(start)}`;const out=[];
+  for(let i=0;i<7*W;i++){const d=addDays(start,i),k=String(d.getDay()),m=pick[k];if(!m)continue;const ds=iso(d);if(ds<iso(today))continue;
+    out.push({date:ds,type:m.type||"Musculation",titre:m.titre||m.nom,notes:m.notes||"",createdAt:Date.now(),cycle:id,cycleNom:nom,
+      exercices:(m.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||"",video:e.video||"",ref:[]}))})}
+  if(!out.length){toast("Aucune séance à créer sur cette période");return}
+  const b=$("#cyGo");b.disabled=true;let n=0;
+  try{for(const p of out){await addPlan(p);n++;b.textContent=`Création… ${n}/${out.length}`}
+    toast(`<b>Cycle créé</b><br>${n} séances programmées jusqu'au ${fmtShort(parse(out[out.length-1].date))}${COACH_VIEW?` pour ${esc(COACH_VIEW.nom)}`:""}`,true)}
+  catch(e){report(e)}finally{b.disabled=false;renderCycle()}
+};
 let plAll=false;const openPlans=new Set();
 function renderPlans(){
   const el=$("#plans");
@@ -3323,11 +3378,11 @@ function renderPlans(){
       const pv=vol(setsOf(e)),pa=lp?vol(lp.sets):null;
       tPass.push(pa);tPrev.push(pv);
       const d=`<span class="cmp"><b>${fmtVol(pv)}</b>${pa?`<span class="hint">vs ${fmtVol(pa)} passée</span>${dPct(pv,pa)}`:`<span class="hint">pas de séance passée</span>`}</span>`;
-      return `<tr><td><b>${esc(e.nom)}</b>${e.consigne?`<small class="pt-cs">${esc(e.consigne)}</small>`:""}</td><td class="ref num" data-l="Repère"><span>${refTxt}</span></td><td class="num" data-l="Prévu">${d}</td></tr>`;
+      return `<tr><td><b>${esc(e.nom)}</b>${e.consigne?`<small class="pt-cs">${esc(e.consigne)}</small>`:""}${safeVideo(e.video)?`<small class="pt-cs">${videoLink(e.video)}</small>`:""}</td><td class="ref num" data-l="Repère"><span>${refTxt}</span></td><td class="num" data-l="Prévu">${d}</td></tr>`;
     }).join("");
     const nEx=(p.exercices||[]).length,nSer=(p.exercices||[]).reduce((a,e)=>a+setsOf(e).filter(x=>!x.ech).length,0);
     const A=sumKg(tPass),B=sumKg(tPrev);
-    const recTag=p.virtual?'<span class="rectag">Semaine type</span>':(p.rec?'<span class="rectag">Semaine type · modifiée</span>':"");
+    const recTag=p.virtual?'<span class="rectag">Semaine type</span>':(p.rec?'<span class="rectag">Semaine type · modifiée</span>':(p.cycle?'<span class="rectag">Cycle</span>':""));
     const isToday=p.date<=iso(today),open=openPlans.has(p.id);
     const sum=nEx?`<div class="p-sum"><span><b>${nEx}</b> exercice${nEx>1?"s":""} · <b>${nSer}</b> série${nSer>1?"s":""}</span>${B?`<span>Prévu <b>${fmtVol(B)}</b>${A?` <span class="hint">vs ${fmtVol(A)} la dernière fois</span>${dPct(B,A)}`:""}</span>`:""}</div><p class="p-ex">${(p.exercices||[]).map(e=>esc(e.nom)).join(" · ")}</p>`:`<p class="hint" style="margin:0">Aucun exercice détaillé.</p>`;
     const more2=`${p.virtual?`<button class="ghost" data-skip="${esc(p.rec)}">Passer cette fois</button>`:`${nEx&&!p.rec?`<button class="ghost" data-tpl="${esc(p.id)}">Enregistrer comme modèle</button>`:""}<button class="ghost" data-del-p="${esc(p.id)}">Supprimer</button>`}`;
@@ -3385,7 +3440,7 @@ const DRAFT_K="bald-draft";
 function readForm(){
   return {mode:sessMode,plan:pendingPlan,edit:editingSession,at:Date.now(),date:$("#sDate").value,type:(document.querySelector('input[name=sType]:checked')||{}).value,duree:$("#sDuree").value,rpe:rpeEl.value,notes:$("#sNotes").value,
     distance:$("#sDist")?$("#sDist").value:"",deniv:$("#sDeniv")?$("#sDeniv").value:"",
-    live:liveId,start:liveStart,ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,consigne:r.dataset.cs||undefined,done:r.dataset.done==="1"||undefined,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
+    live:liveId,start:liveStart,ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,consigne:r.dataset.cs||undefined,video:r.dataset.vd||undefined,done:r.dataset.done==="1"||undefined,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
       sets:[...r.querySelectorAll(".set")].map(d=>({charge:numv(d.querySelector(".sc").value),reps:numv(d.querySelector(".sr").value),ech:d.classList.contains("warm")||undefined,fait:d.querySelector(".rs-go").classList.contains("used")||undefined}))}))};
 }
 function hasContent(f){return f.duree||f.notes||(f.ex||[]).some(e=>e.sets.some(x=>x.reps!=null||x.charge!=null)&&e.nom)}
@@ -3418,7 +3473,7 @@ function startFromPlan(p,stay){
   if(!p)return;pendingPlan=p.id;sessMode="plan";
   $("#sDate").value=iso(today);checkType("sType",p.type);syncExField();
   $("#exRows").innerHTML="";
-  const ex=(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||""}));
+  const ex=(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||"",video:e.video||""}));
   (ex.length?ex:[{}]).forEach(e=>addExRow(e));
   liveId=null;liveStart=Date.now();guide();
   $("#sNotes").value=p.notes||"";
@@ -3531,7 +3586,19 @@ function renderOnb(){
   el.querySelectorAll("[data-onb]").forEach(a=>a.addEventListener("click",()=>{if(a.dataset.onb==="#nutrition")setTimeout(()=>{const h=document.querySelector("#nGoalsTitle");const hc=$("#hbCalc");if(hc)hc.open=true;if(h){openPanel(h);h.scrollIntoView({block:"start",behavior:"smooth"})}},80);if(a.dataset.onb==="#programme")setTimeout(()=>{const w=$("#wkEdit");w.open=true;w.dataset.user="1"},80)}));
   $("#onbHide").onclick=()=>{try{localStorage.setItem("bald-onb-hide","1")}catch(e){}el.hidden=true};
 }
-function renderToday(){renderOnb();
+/* Accueil sur téléphone : l'essentiel du jour d'abord, le récap des 7 jours ensuite */
+function placeRecap(v){const rec=document.querySelector(".wrap>.recap, #view-accueil>.recap"),wk=document.querySelector("section.week"),nb=$("#netBar");if(!rec||!wk||!nb)return;
+  if(v==="accueil"&&isPhone()){const h=$("#view-accueil .sec-h");if(rec.nextElementSibling!==wk||h.previousElementSibling!==wk){h.before(rec);rec.after(wk)}}
+  else if(nb.previousElementSibling!==rec){nb.before(rec);$("#banner").after(wk)}}
+function renderTodayNut(){
+  const el=$("#tdNut");if(!el)return;const d=iso(today),v=state.tracking[d]||{},T=k=>targetOf({k}),kc=+v.kcal||0,kt=T("kcal");
+  const bar=(x,t)=>t?`<span class="bar"><i style="width:${Math.min(100,x/t*100).toFixed(0)}%"></i></span>`:"";
+  const big=kt?(kt-kc>=0?`<div class="nd-big">Il te reste<b class="num">${fmtNum(kt-kc)}</b>kcal</div>`:`<div class="nd-big over"><b class="num">+${fmtNum(kc-kt)}</b>kcal au-dessus</div>`):`<div class="nd-big"><b class="num">${fmtNum(kc)}</b>kcal aujourd'hui</div>`;
+  const mac=[["proteines","Prot."],["glucides","Gluc."],["lipides","Lip."]].map(([k,l])=>{const x=+v[k]||0,t=T(k);const r=t!=null?Math.round(t-x):null;return `<div><span class="l">${l}</span><b class="num">${r==null?fmtNum(x)+" g":r>=0?"reste "+fmtNum(r)+" g":"+"+fmtNum(-r)+" g"}</b>${bar(x,t)}</div>`}).join("");
+  el.innerHTML=`<div class="tdn">${big}${kt?bar(kc,kt):""}<div class="nd-mac">${mac}</div><button type="button" class="btn" id="tdNutAdd">+ Ajouter un repas</button></div>`;
+  $("#tdNutAdd").onclick=()=>{tWeek=0;nDaySel=d;location.hash="#nutrition";setTimeout(()=>openAdd(d),120)};
+}
+function renderToday(){renderOnb();renderTodayNut();
   const tIso=iso(today);
   const pl=allPlans().filter(x=>!donePlans.has(x.id)).sort((a,b)=>a.date.localeCompare(b.date));
   const p=pl.find(x=>x.date===tIso)||pl.find(x=>x.date<tIso)||pl.find(x=>x.date>tIso);
@@ -3582,7 +3649,7 @@ function renderView(v){
   if(v==="accueil"){renderToday();goals()}
   else if(v==="tracking"){renderTracking();renderMz();mzPrefill()}
   else if(v==="nutrition"){renderTracking();coachSetUI();protHint();hbFill();if(!$("#nAdd").hidden)renderFav()}
-  else if(v==="programme"){renderWeek();renderTpl();renderPlans()}
+  else if(v==="programme"){renderWeek();renderTpl();renderPlans();renderCycle()}
   else if(v==="seances"){if(!sessMode)renderSessDay();chart();journal();cmpSoon()}
   else if(v==="bilan"){renderBilan()}
   else if(v==="clients"){renderClients()}
@@ -3641,7 +3708,7 @@ grabSteps();
 document.addEventListener("input",e=>{const t=e.target;if(!t.matches||!t.matches("input[data-num]"))return;const v=t.value,c=v.replace(/,/g,".").replace(/[^0-9.\-]/g,"").replace(/(\..*)\./g,"$1");if(c!==v){const pos=t.selectionStart;t.value=c;try{t.setSelectionRange(pos,pos)}catch(_){}}},true);
 
 /* ---------- panneaux repliables sur téléphone ---------- */
-const MC_TITLES=["Mes objectifs","Mes cibles quotidiennes","Synchroniser mes pas","Habitudes personnalisées","Mensurations","Planifier une séance","Comment ça marche","Progression par exercice"];
+const MC_TITLES=["Programmer un cycle","Mes objectifs","Mes cibles quotidiennes","Synchroniser mes pas","Habitudes personnalisées","Mensurations","Planifier une séance","Comment ça marche","Progression par exercice"];
 const isPhone=()=>window.matchMedia("(max-width:620px)").matches;
 document.querySelectorAll(".panel>h2").forEach(h=>{
   if(!MC_TITLES.includes(h.textContent.trim()))return;
@@ -3781,7 +3848,7 @@ function route(){
   views.forEach(n=>{$("#view-"+n).hidden=n!==v;const t=$("#tab-"+n);t&&t.removeAttribute("aria-current")});
   renderView(v);
   if(v==="seances")sessAuto();
-  markSeen(v);
+  markSeen(v);placeRecap(v);
   if(v!==lastView){pickPhrase();lastView=v}
   const PT={accueil:"Accueil",tracking:"Tracking",programme:"Programme",seances:"Séances",nutrition:"Nutrition",bilan:"Bilan",suggestion:"Suggestion",clients:"Mes clients"};
   $("#pageTitle").innerHTML=`<em>${PT[v]}</em>`;
