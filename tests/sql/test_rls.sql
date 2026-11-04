@@ -20,7 +20,7 @@ select public.mon_statut();
 \echo T02 intrus insert (attendu ERREUR)
 insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'I','seances','s1','{}');
 \echo T03 intrus cree invitation (attendu ERREUR)
-select public.creer_invitation('x');
+select public.creer_invitation('x','x@x.fr');
 \echo T04 intrus lit coaching direct (attendu ERREUR permission)
 select * from public.coaching;
 -- coach
@@ -29,8 +29,8 @@ select pg_temp.as_user(:'C');
 select public.mon_statut();
 \echo T06 coach ecrit chez lui (attendu INSERT 0 1)
 insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'C','reglages','tracking','{"modeles":[1]}');
-select (public.creer_invitation('Paul')->>'token') as tok \gset
-select (public.creer_invitation('Léa')->>'token') as tok2 \gset
+select (public.creer_invitation('Paul','paul@x.fr')->>'token') as tok \gset
+select (public.creer_invitation('Léa','lea@x.fr')->>'token') as tok2 \gset
 \echo T07 coach liste invitations (attendu 2)
 select count(*) from public.mes_invitations();
 -- Paul accepte

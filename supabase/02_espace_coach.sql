@@ -47,9 +47,6 @@ create table if not exists public.invitations (
 alter table public.app_roles   enable row level security;
 alter table public.coaching    enable row level security;
 alter table public.invitations enable row level security;
-alter table public.app_roles   force row level security;
-alter table public.coaching    force row level security;
-alter table public.invitations force row level security;
 revoke all on public.app_roles, public.coaching, public.invitations from anon, authenticated;
 
 -- 5) Fonctions d'aide (utilisées par les règles de sécurité)

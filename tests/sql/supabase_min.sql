@@ -7,3 +7,4 @@ grant usage on schema auth to anon, authenticated;
 grant execute on function auth.uid() to anon, authenticated;
 create publication supabase_realtime;
 grant usage on schema public to anon, authenticated;
+create role supabase_auth_admin nologin;

@@ -34,12 +34,12 @@
   const tok=()=>Array.from({length:64},()=>"0123456789abcdef"[Math.floor(Math.random()*16)]).join("");
   const RPC={
     mon_statut(me){if(isCoach(me))return {role:"coach"};const l=links().find(x=>x.client_id===me);if(l&&l.actif)return {role:"client",depuis:l.depuis};if(l)return {role:"suspendu"};return {role:"aucun"}},
-    creer_invitation(me,{p_note}){if(!isCoach(me))throw "reserve au coach";const t=tok(),inv=LS("mock-invitations")||[];const x={token:t,coach_id:me,note:p_note||null,cree_le:new Date().toISOString(),expire_le:new Date(Date.now()+14*864e5).toISOString(),utilise_par:null};inv.push(x);SET("mock-invitations",inv);return {token:t,note:x.note,expire_le:x.expire_le}},
-    mes_invitations(me){return (LS("mock-invitations")||[]).filter(x=>x.coach_id===me&&isCoach(me)&&!x.utilise_par&&new Date(x.expire_le)>new Date()).map(({token,note,cree_le,expire_le})=>({token,note,cree_le,expire_le}))},
+    creer_invitation(me,{p_note,p_email}){if(!isCoach(me))throw "reserve au coach";const e=String(p_email||"").trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))throw "email invalide";const t=tok(),inv=LS("mock-invitations")||[];const x={token:t,coach_id:me,note:p_note||null,email:e,cree_le:new Date().toISOString(),expire_le:new Date(Date.now()+14*864e5).toISOString(),utilise_par:null};inv.push(x);SET("mock-invitations",inv);return {token:t,note:x.note,email:e,expire_le:x.expire_le}},
+    mes_invitations(me){return (LS("mock-invitations")||[]).filter(x=>x.coach_id===me&&isCoach(me)&&!x.utilise_par&&new Date(x.expire_le)>new Date()).map(({token,note,email,cree_le,expire_le})=>({token,note,email,cree_le,expire_le}))},
     annuler_invitation(me,{p_token}){SET("mock-invitations",(LS("mock-invitations")||[]).filter(x=>!(x.token===p_token&&x.coach_id===me&&!x.utilise_par)));return null},
     accepter_invitation(me,{p_token}){if(isCoach(me))return {ok:false,raison:"coach"};const inv=LS("mock-invitations")||[],x=inv.find(i=>i.token===p_token);
       if(!x||x.utilise_par||new Date(x.expire_le)<new Date())return {ok:false,raison:"invalide"};
-      const s=session(),L=links().filter(l=>l.client_id!==me);L.push({client_id:me,coach_id:x.coach_id,client_email:s.user.email,client_nom:(s.user.user_metadata||{}).full_name||null,depuis:new Date().toISOString(),actif:true});SET("mock-coaching",L);
+      const s=session();if(x.email&&String(s.user.email).toLowerCase()!==x.email)return {ok:false,raison:"autre_email"};const L=links().filter(l=>l.client_id!==me);L.push({client_id:me,coach_id:x.coach_id,client_email:s.user.email,client_nom:(s.user.user_metadata||{}).full_name||null,depuis:new Date().toISOString(),actif:true});SET("mock-coaching",L);
       x.utilise_par=me;SET("mock-invitations",inv);return {ok:true}},
     mes_clients(me){return isCoach(me)?links().filter(l=>l.coach_id===me).map(l=>({id:l.client_id,email:l.client_email,nom:l.client_nom,depuis:l.depuis,actif:l.actif})):[]},
     changer_client(me,{p_client,p_actif}){if(!isCoach(me))return null;SET("mock-coaching",links().map(l=>l.client_id===p_client&&l.coach_id===me?{...l,actif:p_actif}:l));return null}
@@ -53,7 +53,11 @@
     auth:{
       async getSession(){return {data:{session:session()}}},
       onAuthStateChange(cb){authCb=cb;return {data:{subscription:{unsubscribe(){}}}}},
-      async signInWithOtp({email}){SET("mock-last-otp",email);return {error:null}},
+      async signInWithOtp({email}){
+        /* crochet « inscription sur invitation » : une adresse inconnue sans invitation est refusée */
+        if(coachMode()&&LS("mock-hook")&&!(LS("mock-known")||[]).includes(email)&&!(LS("mock-invitations")||[]).some(i=>i.email===String(email).toLowerCase()&&!i.utilise_par))
+          return {error:{status:403,message:"Inscription reservee aux clients de bald.coaching : demande ton lien d'invitation a ton coach."}};
+        SET("mock-last-otp",email);return {error:null}},
       async signInWithOAuth(){return {error:null}},
       async signOut(){localStorage.removeItem("mock-session");authCb&&authCb("SIGNED_OUT",null);return {error:null}}
     },

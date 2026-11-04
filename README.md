@@ -18,6 +18,8 @@ Application de suivi (séances, programme, tracking, nutrition, bilan) : une seu
 2. Dans l'appli : menu du compte › **Mes clients** › « Créer le lien », puis envoie le lien en DM.
 3. Règles : l'appli est réservée au coach et à ses clients ; le coach lit tout le carnet d'un client actif et n'écrit que ses séances prévues et des commentaires ; un client ne voit jamais un autre client ; un client « en pause » garde l'accès en lecture à ses données.
 
+4. **Inscription sur invitation** : colle `supabase/03_inscription_sur_invitation.sql` et **Run**, puis *Authentication › Auth Hooks › Before User Created* : type **Postgres**, schéma `public`, fonction `hook_inscription_sur_invitation`. Un nouveau compte (Google ou lien e-mail) n'est alors créé que si son adresse a une invitation en cours ; le lien d'invitation ne fonctionne que pour cette adresse.
+
 Tant que ce script n'est pas exécuté, l'appli fonctionne comme avant (chacun son carnet, sans espace coach).
 
 ## Développement
