@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Carnet d'entraînement</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -314,6 +314,8 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
   #view-suggestion{grid-template-columns:minmax(0,1fr)!important}
 }
 /* Minuteur de repos */
+/* Téléphone : champs à 16 px minimum, sinon iPhone zoome au toucher et la page se décale de gauche à droite */
+@media (max-width:620px){input,select,textarea{font-size:16px!important}html,body{overflow-x:clip}}
 /* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
