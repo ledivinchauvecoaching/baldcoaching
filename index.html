@@ -1584,7 +1584,7 @@ body.locked{overflow:hidden}
 </section>
 <div class="inst-bg" id="instBg" hidden>
   <div class="inst" role="dialog" aria-modal="true" aria-labelledby="instTitle">
-    <div class="inst-h"><img src="icon-192.png" alt="" width="52" height="52"><div><span class="login-brand">BaldCoaching</span><h2 id="instTitle">Installe l'appli sur ton téléphone</h2></div></div>
+    <div class="inst-h"><img id="instIco" alt="" width="52" height="52"><div><span class="login-brand">BaldCoaching</span><h2 id="instTitle">Installe l'appli sur ton téléphone</h2></div></div>
     <div class="inst-b" id="instBody"></div>
     <div class="inst-acts"><button type="button" class="btn" id="instDone">C'est fait</button><button type="button" class="ghost" id="instLater">Plus tard</button></div>
   </div>
@@ -2308,7 +2308,7 @@ function maybeInstall(force){
   else if(k==="ios-autre")h=`<ol><li><span>Touche ${share} <b>Partager</b> (en haut à droite ou en bas selon le navigateur).</span></li><li><span>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</span></li></ol><p class="note">Si l'option n'apparaît pas, ouvre ce site dans <b>Safari</b> et recommence. Connecte-toi ensuite une fois avec Google dans l'appli installée.</p>`;
   else if(k==="android")h=instEvt?`<p style="margin:0">Ajoute l'appli à ton écran d'accueil : elle s'ouvrira en plein écran, comme une vraie application.</p><button type="button" class="btn" id="instGo">📲 Installer BaldCoaching</button>`:`<ol><li><span>Touche ${dots} <b>le menu</b>, en haut à droite de Chrome.</span></li><li><span>Choisis <b>« Installer l'application »</b> (ou « Ajouter à l'écran d'accueil »).</span></li><li><span>Confirme : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol>`;
   else h=`<p style="margin:0">Sur ton téléphone, ouvre <b>${esc(location.host)}</b> puis :</p><ol><li><span><b>iPhone</b> : Safari › ${share} Partager › « Sur l'écran d'accueil ».</span></li><li><span><b>Android</b> : Chrome › ${dots} › « Installer l'application ».</span></li></ol>${instEvt?`<button type="button" class="btn" id="instGo">Installer sur cet ordinateur</button>`:""}`;
-  $("#instBody").innerHTML=h;$("#instBg").hidden=false;
+  $("#instIco").src="icon-192.png";$("#instBody").innerHTML=h;$("#instBg").hidden=false;
   const close=v=>{$("#instBg").hidden=true;try{localStorage.setItem(INST_K,JSON.stringify(v))}catch(e){}};
   $("#instDone").onclick=()=>close({fait:true});
   $("#instLater").onclick=()=>close({revoir:Date.now()+3*864e5});
