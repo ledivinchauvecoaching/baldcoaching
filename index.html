@@ -317,6 +317,8 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 /* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.prow .cs{font-size:13.5px;margin-top:6px;font-style:italic}
+.exrow .exc{grid-column:1/-1;margin:2px 0 4px;padding:6px 9px;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--brown);font-size:13px;font-style:italic;line-height:1.4}
 body.has-rest{padding-bottom:calc(96px + var(--sab))}
 .rest{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--band);color:var(--on-band);border-top:1px solid var(--rule);box-shadow:0 -8px 24px rgba(20,10,4,.25);padding-bottom:var(--sab)}
 .rest-bar{height:4px;background:rgba(255,255,255,.12)}
@@ -1632,9 +1634,10 @@ function addSessSet(list,st={},ph={}){
 }
 function addExRow(v={}){
   const i=exSeq++;
-  const r=document.createElement("div");r.className="exrow";
+  const r=document.createElement("div");r.className="exrow";if(v.consigne)r.dataset.cs=v.consigne;
   r.innerHTML=`<input class="nm" type="text" id="exN${i}" autocomplete="off" placeholder="Choisir un exercice" aria-label="Exercice" value="${esc(v.nom||"")}">
     <button type="button" class="x" aria-label="Retirer cet exercice">×</button>
+    ${v.consigne?`<p class="exc">${esc(v.consigne)}</p>`:""}
     <div class="sets"><div class="sethead"><span>N°</span><span>Kg</span><span></span><span>Reps</span><span title="Repos">Repos</span><span></span></div><div class="setlist"></div></div>
     <button type="button" class="ghost addset">+ Série</button>
     <div class="exopts">${reposSel("exRp"+i,v.repos)}${ssBox("exSs"+i,v.ss)}</div>
@@ -1725,6 +1728,7 @@ function addPlanRow(v={}){
   const i=pSeq++;
   const r=document.createElement("div");r.className="prow";
   r.innerHTML=`<div class="top"><input type="text" class="nm" id="pN${i}" autocomplete="off" placeholder="Choisir un exercice" aria-label="Exercice" value="${esc(v.nom||"")}"><button type="button" class="x" aria-label="Retirer cet exercice">×</button></div>
+    <input type="text" class="cs" id="pCs${i}" maxlength="200" placeholder="Consigne (fourchette, tempo, technique…)" aria-label="Consigne de l'exercice" value="${esc(v.consigne||"")}">
     <div class="psets">
       <div class="phead"><span></span><span class="g ref">Repère</span><span class="g">Prévu</span><span></span></div>
       <div class="phead2"><span>N°</span><span>Kg</span><span>Reps</span><span>Kg</span><span>Reps</span><span></span></div>
@@ -1773,7 +1777,7 @@ function readPlanRows(){
     return {nom:r.querySelector(".nm").value.trim(),
       ref:lines.map(d=>{const o={charge:numv(d.querySelector(".rc").value),reps:numv(d.querySelector(".rr").value)};if(d.classList.contains("warm"))o.ech=true;return o}).filter(hasVal),
       sets:lines.map(d=>{const o={charge:numv(d.querySelector(".pc").value),reps:numv(d.querySelector(".pr").value)};if(d.classList.contains("warm"))o.ech=true;return o}),
-      repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked||false};
+      repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked||false,consigne:r.querySelector(".cs").value.trim()};
   }).filter(e=>e.nom).map((e,i,a)=>{if(e.ss&&i===a.length-1)e.ss=false;return e});
 }
 function resetPlanForm(){
@@ -1800,7 +1804,7 @@ function loadTpl(m){
   openPanel($("#planFormTitle"));editingPlan=null;$("#pTitre").value=m.titre||m.nom;$("#pNotes").value=m.notes||"";checkType("pType",m.type||"Musculation");
   $("#pRows").innerHTML="";
   (m.exercices&&m.exercices.length?m.exercices:[{}]).forEach(e=>{
-    if(e.nom&&lastPerf(e.nom)){const r=addPlanRow({nom:e.nom,repos:e.repos,ss:e.ss});r._fill()}
+    if(e.nom&&lastPerf(e.nom)){const r=addPlanRow({nom:e.nom,repos:e.repos,ss:e.ss,consigne:e.consigne});r._fill()}
     else addPlanRow(e);
   });
   syncSS($("#pRows"));
@@ -1809,7 +1813,7 @@ function loadTpl(m){
 }
 function saveAsTpl(p){
   const t=tset();const nom=(p.titre||p.type||"Séance").trim();
-  const tpl={id:"m"+Date.now().toString(36),nom,titre:p.titre||"",type:p.type,notes:p.notes||"",exercices:(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss}))};
+  const tpl={id:"m"+Date.now().toString(36),nom,titre:p.titre||"",type:p.type,notes:p.notes||"",exercices:(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||""}))};
   const M=(t.modeles||[]).filter(x=>x.nom.toLowerCase()!==nom.toLowerCase()).map(x=>JSON.parse(JSON.stringify(x)));M.push(tpl);
   return saveTSet({...t,cibles:{...t.cibles},habitudes:t.habitudes.map(x=>({...x})),modeles:M}).then(()=>toast(`Modèle « ${esc(nom)} » enregistré`));
 }
@@ -2870,7 +2874,7 @@ const DRAFT_K="bald-draft";
 function readForm(){
   return {mode:sessMode,plan:pendingPlan,edit:editingSession,at:Date.now(),date:$("#sDate").value,type:(document.querySelector('input[name=sType]:checked')||{}).value,duree:$("#sDuree").value,rpe:rpeEl.value,notes:$("#sNotes").value,
     distance:$("#sDist")?$("#sDist").value:"",deniv:$("#sDeniv")?$("#sDeniv").value:"",
-    ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
+    ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,consigne:r.dataset.cs||undefined,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
       sets:[...r.querySelectorAll(".set")].map(d=>({charge:numv(d.querySelector(".sc").value),reps:numv(d.querySelector(".sr").value),ech:d.classList.contains("warm")||undefined,fait:d.querySelector(".rs-go").classList.contains("used")||undefined}))}))};
 }
 function hasContent(f){return f.duree||f.notes||(f.ex||[]).some(e=>e.sets.some(x=>x.reps!=null||x.charge!=null)&&e.nom)}
@@ -2902,7 +2906,7 @@ function startFromPlan(p,stay){
   if(!p)return;pendingPlan=p.id;sessMode="plan";
   $("#sDate").value=iso(today);checkType("sType",p.type);syncExField();
   $("#exRows").innerHTML="";
-  const ex=(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss}));
+  const ex=(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||""}));
   (ex.length?ex:[{}]).forEach(e=>addExRow(e));
   $("#sNotes").value=p.notes||"";
   $("#fromPlanTxt").textContent=`Depuis le programme : ${p.titre||p.type} (${fmtDay(p.date)}). Ajuste avec ce que tu as vraiment fait.`;
