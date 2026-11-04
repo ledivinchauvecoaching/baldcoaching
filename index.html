@@ -317,6 +317,20 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 /* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.guidebar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;color:var(--brown)}
+.guidebar b{color:var(--accent)}
+.guidebar .ghost{font-size:12.5px;padding:5px 10px}
+#exRows.guided .exrow.g-later{display:none}
+#exRows.guided .exrow.g-done>*:not(.g-sum),#exRows.guided .exrow.g-next>*:not(.g-prev){display:none!important}
+#exRows.guided .exrow.g-done,#exRows.guided .exrow.g-next{padding-bottom:0;border-bottom:0}
+.g-sum{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;width:100%;text-align:left;font:inherit;font-size:14px;background:var(--sunk);border:1px solid var(--line);color:var(--ink);padding:9px 12px;cursor:pointer}
+.g-sum .ck{color:var(--easy,#4F7F45);font-weight:700}
+.g-sum span{color:var(--muted);font-size:13px}
+.g-sum em{margin-left:auto;font-style:normal;font-size:12.5px;color:var(--accent);font-weight:700}
+.g-prev{grid-column:1/-1;border:1px dashed var(--line);padding:9px 12px;display:flex;flex-direction:column;gap:2px;color:var(--muted);font-size:13px}
+.g-prev .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--brown)}
+.g-prev b{color:var(--ink);font-size:14.5px}
+.g-val{grid-column:1/-1;width:100%;margin-top:6px}
 .prow .cs{font-size:13.5px;margin-top:6px;font-style:italic}
 .exrow .exc{grid-column:1/-1;margin:2px 0 4px;padding:6px 9px;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--brown);font-size:13px;font-style:italic;line-height:1.4}
 body.has-rest{padding-bottom:calc(96px + var(--sab))}
@@ -1035,6 +1049,7 @@ body.locked{overflow:hidden}
         <div class="field" id="exField" hidden>
           <span class="label">Exercices</span>
           <div class="exbox">
+            <div class="guidebar" id="guideBar" hidden><span id="guideTxt"></span><button type="button" class="ghost" id="guideAll">Voir tous les exercices</button></div>
             <div id="exRows" style="display:flex;flex-direction:column;gap:10px"></div>
             <button type="button" class="ghost addex" id="addEx">+ Ajouter un exercice</button>
           </div>
@@ -1666,8 +1681,8 @@ function addExRow(v={}){
   $("#exRows").appendChild(r);syncSS($("#exRows"));
   return r;
 }
-function readExRows(){
-  return [...$("#exRows").children].map(r=>({
+function readExRows(rows){
+  return (rows||[...$("#exRows").children]).map(r=>({
     nom:r.querySelector(".nm").value.trim(),
     sets:[...r.querySelectorAll(".set")].map(d=>{const o={charge:numv(d.querySelector(".sc").value),reps:numv(d.querySelector(".sr").value)};if(d.classList.contains("warm"))o.ech=true;return o}).filter(hasVal),
     repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked||false,note:r.querySelector(".exnote").value.trim()
@@ -1710,6 +1725,51 @@ let cmpRaf=0;const cmpSoon=()=>{cancelAnimationFrame(cmpRaf);cmpRaf=requestAnima
 $("#typeChips").addEventListener("change",cmpSoon);
 $("#typeChips").addEventListener("change",syncExField);
 $("#addEx").onclick=()=>addExRow().querySelector("input").focus();
+/* ===== Mode guidé : un exercice (ou un superset) à la fois, validé puis enregistré au fil de la séance ===== */
+let liveId=null,liveStart=null,guideOn=true;try{guideOn=localStorage.getItem("bald-guide")!=="0"}catch(e){}
+function gBlocks(rows){const B=[];rows.forEach((r,i)=>{const prev=i>0&&rows[i-1].querySelector(".ssb").checked;if(prev&&B.length)B[B.length-1].push(r);else B.push([r])});return B}
+function gSets(r){return [...r.querySelectorAll(".set")].map(d=>({c:numv(d.querySelector(".sc").value),r:numv(d.querySelector(".sr").value)})).filter(x=>x.c!=null||x.r!=null)}
+function guide(){
+  const box=$("#exRows"),bar=$("#guideBar");if(!box||!bar)return;const rows=[...box.children];
+  rows.forEach(r=>{r.classList.remove("g-done","g-cur","g-next","g-later");r.querySelectorAll(":scope>.g-sum,:scope>.g-prev,:scope>.g-val").forEach(x=>x.remove())});
+  const active=sessMode==="plan"&&!$("#exField").hidden&&rows.length>1;
+  bar.hidden=!active;$("#addEx").hidden=false;box.classList.toggle("guided",active&&guideOn);
+  if(!active)return;
+  $("#guideAll").textContent=guideOn?"Voir tous les exercices":"Un exercice à la fois";
+  if(!guideOn){$("#guideTxt").textContent=`${rows.filter(r=>r.dataset.done==="1").length} / ${rows.length} exercices validés`;return}
+  const B=gBlocks(rows),ci=B.findIndex(b=>b.some(r=>r.dataset.done!=="1"));
+  B.forEach((b,k)=>b.forEach((r,j)=>{
+    const nom=r.querySelector(".nm").value.trim()||"Exercice";
+    if(r.dataset.done==="1"){r.classList.add("g-done");const S=gSets(r);
+      r.insertAdjacentHTML("afterbegin",`<button type="button" class="g-sum" aria-label="Modifier ${esc(nom)}"><span class="ck">✓</span><b>${esc(nom)}</b><span>${S.length?S.map(x=>`${x.r??"–"}${x.c!=null?` × ${fmtNum(x.c)} kg`:""}`).join(" · "):"aucune série notée"}</span><em>Modifier</em></button>`);
+      r.querySelector(".g-sum").onclick=()=>{b.forEach(x=>delete x.dataset.done);guide();saveDraft();setTimeout(()=>r.scrollIntoView({block:"start",behavior:"smooth"}),30)}}
+    else if(k===ci)r.classList.add("g-cur");
+    else if(k===ci+1){r.classList.add("g-next");const n=r.querySelectorAll(".set").length,rp=+r.querySelector(".rp").value,f=r.querySelector(".set .sr"),reps=f&&(f.value||(f.placeholder!=="reps"?f.placeholder:""));
+      r.insertAdjacentHTML("afterbegin",`<div class="g-prev">${j===0?`<span class="lab">Ensuite${b.length>1?" · superset":""}</span>`:""}<b>${esc(nom)}</b><span>${n} série${n>1?"s":""}${reps?` × ${esc(reps)} reps`:""}${rp?` · repos ${fmtMS(rp)}`:""}</span>${r.dataset.cs?`<span>${esc(r.dataset.cs)}</span>`:""}</div>`)}
+    else r.classList.add("g-later");
+  }));
+  if(ci<0){$("#guideTxt").innerHTML=`<b>Tous les exercices sont validés.</b> Vérifie la durée et l'effort ressenti, puis enregistre la séance.`;return}
+  $("#addEx").hidden=true;
+  $("#guideTxt").innerHTML=`Exercice <b>${ci+1}</b> / ${B.length}${B[ci].length>1?" · superset":""}`;
+  const last=B[ci][B[ci].length-1];last.insertAdjacentHTML("beforeend",`<button type="button" class="btn g-val">${B[ci].length>1?"Valider le superset":"Valider l'exercice"} ✓</button>`);
+  last.querySelector(".g-val").onclick=()=>gValidate(B[ci],ci+1>=B.length);
+}
+function gValidate(b,isLast){
+  b.forEach(r=>r.dataset.done="1");
+  const du=$("#sDuree");if(liveStart&&(du.value===""||du.dataset.auto)){du.value=Math.max(1,Math.round((Date.now()-liveStart)/60000));du.dataset.auto="1"}
+  const s={date:$("#sDate").value||iso(today),type:"Musculation",duree:+du.value||1,rpe:+rpeEl.value,notes:$("#sNotes").value.trim(),createdAt:Date.now(),enCours:true,exercices:readExRows([...$("#exRows").children].filter(r=>r.dataset.done==="1"))};
+  const p=pendingPlan&&findPlan(pendingPlan);if(p&&p.rec)s.rec=p.rec;
+  const old=liveId&&state.sessions.find(x=>x.id===liveId);if(old&&old.createdAt)s.createdAt=old.createdAt;
+  liveId=liveId||("live"+Date.now().toString(36));
+  const noms=b.map(r=>r.querySelector(".nm").value.trim()).filter(Boolean).join(" + ");
+  upsertSession(liveId,s).then(()=>toast(`✓ ${esc(noms)} enregistré${isLast?" · séance complète, il reste à l'enregistrer":""}`)).catch(report);
+  guide();saveDraft();
+  setTimeout(()=>{const c=$("#exRows .g-cur")||$("#sDuree");c&&c.scrollIntoView({block:isLast?"center":"start",behavior:"smooth"})},30);
+}
+$("#sDuree").addEventListener("input",e=>delete e.target.dataset.auto);
+$("#guideAll").onclick=()=>{guideOn=!guideOn;try{localStorage.setItem("bald-guide",guideOn?"1":"0")}catch(e){}guide()};
+new MutationObserver(()=>guide()).observe($("#exRows"),{childList:true});
+document.addEventListener("change",e=>{if(e.target.matches&&e.target.matches("#exRows .ssb"))guide()});
 resetExRows();syncExField();
 
 /* ---------- programme ---------- */
@@ -1879,9 +1939,9 @@ function computePRs(){
   }));
   return prs;
 }
-function newRecords(s){
+function newRecords(s,skip){
   const out=[];(s.exercices||[]).forEach(e=>{const b=bestSet(setsOf(e));if(!b)return;const k=e.nom.trim().toLowerCase();let prev=null;
-    state.sessions.forEach(x=>(x.exercices||[]).forEach(f=>{if((f.nom||"").trim().toLowerCase()!==k)return;const c=bestSet(setsOf(f));if(c&&better(c,prev))prev=c}));
+    state.sessions.forEach(x=>x.id!==skip&&(x.exercices||[]).forEach(f=>{if((f.nom||"").trim().toLowerCase()!==k)return;const c=bestSet(setsOf(f));if(c&&better(c,prev))prev=c}));
     if(prev&&better(b,prev))out.push(`${e.nom} : ${fmtNum(+b.charge)} kg × ${b.reps}`)});
   return out;
 }
@@ -1925,6 +1985,7 @@ let STORE=null; // {col(name)->{add,set,update,del,watch}, kind}
 const C=n=>STORE.col(n);
 async function addSession(s){ if(state.mode==="db"){await C("seances").add(s)} else {state.sessions.push({...s,id:uidLocal()});render()} }
 async function setSession(id,x){ if(state.mode==="db"){await C("seances").set(id,x)} else {state.sessions=state.sessions.map(y=>y.id===id?{...x,id}:y);render()} }
+async function upsertSession(id,x){ if(state.mode==="db"){await C("seances").set(id,x)} else {const has=state.sessions.some(y=>y.id===id);state.sessions=has?state.sessions.map(y=>y.id===id?{...x,id}:y):[...state.sessions,{...x,id}];render()} }
 async function delSession(id){ if(state.mode==="db"){await C("seances").del(id)} else {state.sessions=state.sessions.filter(x=>x.id!==id);render()} }
 async function addGoal(g){ if(state.mode==="db"){await C("objectifs").add(g)} else {state.goals.push({...g,id:uidLocal()});render()} }
 async function delGoal(id){ if(state.mode==="db"){await C("objectifs").del(id)} else {state.goals=state.goals.filter(x=>x.id!==id);render()} }
@@ -2875,7 +2936,7 @@ const DRAFT_K="bald-draft";
 function readForm(){
   return {mode:sessMode,plan:pendingPlan,edit:editingSession,at:Date.now(),date:$("#sDate").value,type:(document.querySelector('input[name=sType]:checked')||{}).value,duree:$("#sDuree").value,rpe:rpeEl.value,notes:$("#sNotes").value,
     distance:$("#sDist")?$("#sDist").value:"",deniv:$("#sDeniv")?$("#sDeniv").value:"",
-    ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,consigne:r.dataset.cs||undefined,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
+    live:liveId,start:liveStart,ex:[...$("#exRows").children].map(r=>({nom:r.querySelector(".nm").value,consigne:r.dataset.cs||undefined,done:r.dataset.done==="1"||undefined,repos:+r.querySelector(".rp").value||null,ss:r.querySelector(".ssb").checked,note:r.querySelector(".exnote").value,
       sets:[...r.querySelectorAll(".set")].map(d=>({charge:numv(d.querySelector(".sc").value),reps:numv(d.querySelector(".sr").value),ech:d.classList.contains("warm")||undefined,fait:d.querySelector(".rs-go").classList.contains("used")||undefined}))}))};
 }
 function hasContent(f){return f.duree||f.notes||(f.ex||[]).some(e=>e.sets.some(x=>x.reps!=null||x.charge!=null)&&e.nom)}
@@ -2885,9 +2946,10 @@ function clearDraft(){clearTimeout(draftT);try{localStorage.removeItem(DRAFT_K)}
 function resumeDraft(d){
   sessMode=d.mode||"libre";pendingPlan=d.plan&&findPlan(d.plan)?d.plan:null;editingSession=d.edit&&state.sessions.find(x=>x.id===d.edit)?d.edit:null;if(sessMode==="edit"&&!editingSession)sessMode="libre";if(sessMode==="plan"&&!pendingPlan)sessMode="libre";
   fillSessForm({date:d.date,type:d.type,duree:d.duree,rpe:d.rpe,notes:d.notes,distance:d.distance,deniv:d.deniv,exercices:d.ex});
-  [...$("#exRows").children].forEach((r,i)=>{const e=(d.ex||[])[i];if(!e)return;r.querySelector(".exnote").value=e.note||"";[...r.querySelectorAll(".set")].forEach((x,j)=>{if(e.sets[j]&&e.sets[j].fait)x.querySelector(".rs-go").classList.add("used")})});
+  liveId=d.live||null;liveStart=d.start||null;
+  [...$("#exRows").children].forEach((r,i)=>{const e=(d.ex||[])[i];if(!e)return;if(e.done)r.dataset.done="1";r.querySelector(".exnote").value=e.note||"";[...r.querySelectorAll(".set")].forEach((x,j)=>{if(e.sets[j]&&e.sets[j].fait)x.querySelector(".rs-go").classList.add("used")})});
   if(pendingPlan){const p=findPlan(pendingPlan);$("#fromPlanTxt").textContent=`Depuis le programme : ${p.titre||p.type} (${fmtDay(p.date)}). Ajuste avec ce que tu as vraiment fait.`;$("#fromPlan").hidden=false}
-  renderSessDay();toast("Séance reprise là où tu l'avais laissée");
+  guide();renderSessDay();toast("Séance reprise là où tu l'avais laissée");
 }
 ["input","change","click"].forEach(t=>document.addEventListener(t,e=>{if(e.target.closest&&e.target.closest("#sessionForm"))saveDraft()}));
 function fillSessForm(x){
@@ -2909,13 +2971,14 @@ function startFromPlan(p,stay){
   $("#exRows").innerHTML="";
   const ex=(p.exercices||[]).map(e=>({nom:e.nom,sets:setsOf(e).map(x=>({...x})),repos:e.repos||null,ss:!!e.ss,consigne:e.consigne||""}));
   (ex.length?ex:[{}]).forEach(e=>addExRow(e));
+  liveId=null;liveStart=Date.now();guide();
   $("#sNotes").value=p.notes||"";
   $("#fromPlanTxt").textContent=`Depuis le programme : ${p.titre||p.type} (${fmtDay(p.date)}). Ajuste avec ce que tu as vraiment fait.`;
   $("#fromPlan").hidden=false;cmpSoon();renderSessDay();
   if(!stay)location.hash="#seances";
   setTimeout(()=>$("#sDuree").focus(),50);
 }
-$("#fromPlanCancel").onclick=()=>{clearDraft();dismissedPlan=pendingPlan;pendingPlan=null;sessMode=null;$("#fromPlan").hidden=true;$("#sessionForm").reset();$("#sDate").value=iso(today);showRpe();resetExRows();syncExField();renderSessDay()};
+$("#fromPlanCancel").onclick=()=>{if(liveId){delSession(liveId).catch(report);liveId=null}liveStart=null;clearDraft();dismissedPlan=pendingPlan;pendingPlan=null;sessMode=null;$("#fromPlan").hidden=true;$("#sessionForm").reset();$("#sDate").value=iso(today);showRpe();resetExRows();syncExField();renderSessDay()};
 
 function confirmBtn(b,fn){
   b.onclick=()=>{
@@ -3081,10 +3144,11 @@ $("#sessionForm").addEventListener("submit",e=>{
   if(!s.date||!s.duree)return;
   if(s.type==="Musculation"){const ex=readExRows();if(ex.length)s.exercices=ex}
   if(s.type==="Course"||s.type==="Vélo"){const d=parseFloat($("#sDist").value),h=parseFloat($("#sDeniv").value);if(!isNaN(d)&&d>0)s.distance=d;if(!isNaN(h)&&h>0)s.deniv=h}
+  if(liveId&&!editingSession){const old=state.sessions.find(x=>x.id===liveId);if(old&&old.createdAt)s.createdAt=old.createdAt}
   if(editingSession){const old=state.sessions.find(x=>x.id===editingSession);if(old){s.createdAt=old.createdAt||s.createdAt;if(old.rec)s.rec=old.rec;if(old.exemple)s.exemple=true}
     const id=editingSession;setSession(id,s).then(()=>{toast("Séance modifiée");editingSession=null;sessMode=null;clearDraft();$("#sessionForm").reset();resetExRows();renderSessDay();scrollTo({top:0,behavior:"smooth"})}).catch(report);return}
-  const pp=pendingPlan;const recs=newRecords(s);const pobj=pp&&findPlan(pp);if(pobj&&pobj.rec)s.rec=pobj.rec;
-  addSession(s).then(async()=>{if(recs.length)toast(`<b>Nouveau record !</b><br>${recs.map(esc).join("<br>")}`,true);else toast("Séance enregistrée");clearDraft();$("#sDuree").value="";$("#sNotes").value="";resetExRows();$("#fromPlan").hidden=true;pendingPlan=null;sessMode=null;if(pp){donePlans.add(pp);if(!String(pp).startsWith("rec:"))await delPlan(pp)}VP=virtualPlans();renderSessDay();scrollTo({top:0,behavior:"smooth"})}).catch(report);
+  const pp=pendingPlan;const lid=liveId;const recs=newRecords(s,lid);const pobj=pp&&findPlan(pp);if(pobj&&pobj.rec)s.rec=pobj.rec;
+  (lid?upsertSession(lid,s):addSession(s)).then(async()=>{liveId=null;liveStart=null;if(recs.length)toast(`<b>Nouveau record !</b><br>${recs.map(esc).join("<br>")}`,true);else toast("Séance enregistrée");clearDraft();$("#sDuree").value="";$("#sNotes").value="";resetExRows();$("#fromPlan").hidden=true;pendingPlan=null;sessMode=null;if(pp){donePlans.add(pp);if(!String(pp).startsWith("rec:"))await delPlan(pp)}VP=virtualPlans();renderSessDay();scrollTo({top:0,behavior:"smooth"})}).catch(report);
 });
 $("#gLien").addEventListener("change",()=>{$("#gExF").hidden=$("#gLien").value!=="ex";const u=$("#gUnite");if(!u.value&&$("#gLien").value)u.value=$("#gLien").value.startsWith("mz:")?"cm":"kg"});
 $("#goalForm").addEventListener("submit",e=>{
