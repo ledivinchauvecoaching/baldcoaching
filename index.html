@@ -314,8 +314,11 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
   #view-suggestion{grid-template-columns:minmax(0,1fr)!important}
 }
 /* Minuteur de repos */
-body.has-rest{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
-.rest{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--band);color:var(--on-band);border-top:1px solid var(--rule);box-shadow:0 -8px 24px rgba(20,10,4,.25);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* --sab : marge basse ; +40px sur Netlify pour laisser la place au badge "Powered by Netlify" (bas droite) */
+:root{--sab:env(safe-area-inset-bottom,0px)}
+:root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
+body.has-rest{padding-bottom:calc(96px + var(--sab))}
+.rest{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--band);color:var(--on-band);border-top:1px solid var(--rule);box-shadow:0 -8px 24px rgba(20,10,4,.25);padding-bottom:var(--sab)}
 .rest-bar{height:4px;background:rgba(255,255,255,.12)}
 .rest-bar i{display:block;height:100%;width:0;background:var(--apricot);transition:width .2s linear}
 .rest-in{max-width:1100px;margin:0 auto;padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap}
@@ -636,7 +639,7 @@ details.newgoal summary{font-family:var(--f-display);font-weight:700;font-size:1
 .mc>h2{position:relative}
 @media (max-width:620px){
   .ph-only{display:block}
-  .wrap{gap:12px;padding-block:8px calc(84px + env(safe-area-inset-bottom,0px))}
+  .wrap{gap:12px;padding-block:8px calc(84px + var(--sab))}
   /* en-tête compact */
   .cv-band{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:4px 10px;padding:10px 12px;text-align:left}
   .cv-brand img{width:30px;height:30px}
@@ -661,14 +664,14 @@ details.newgoal summary{font-family:var(--f-display);font-weight:700;font-size:1
   .week .big small{font-size:11px;margin-left:1px}
   .banner{font-size:12.5px;padding:8px 10px}
   /* barre d'onglets en bas */
-  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;background:var(--band);border-top:1px solid var(--rule);padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);gap:0}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;background:var(--band);border-top:1px solid var(--rule);padding:0 env(safe-area-inset-right,0px) var(--sab) env(safe-area-inset-left,0px);gap:0}
   nav.tabs a{display:flex!important;flex-direction:column;align-items:center;gap:2px;background:transparent!important;border:0!important;margin:0!important;padding:8px 0 7px!important;color:#C9A994!important;font-size:9.5px!important;letter-spacing:0!important;text-transform:none;box-shadow:none!important}
   nav.tabs a .ti{display:block}
   nav.tabs a .tl{display:none}
   nav.tabs a .ts{display:block;font-family:var(--f-body);font-weight:700}
   nav.tabs a[aria-current="page"]{color:#FFFFFF!important;box-shadow:inset 0 3px 0 var(--apricot)!important}
   nav.tabs a[aria-current="page"] .ti{color:var(--apricot)}
-  .rest{bottom:calc(56px + env(safe-area-inset-bottom,0px))!important;padding-bottom:0!important}
+  .rest{bottom:calc(56px + var(--sab))!important;padding-bottom:0!important}
   body.has-rest{padding-bottom:0!important}
   /* panneaux plus denses */
   .panel{padding:14px;gap:12px}
@@ -755,7 +758,7 @@ details.newgoal summary{font-family:var(--f-display);font-weight:700;font-size:1
   .rest-acts{grid-column:3;gap:6px}
   .rest-acts .btn{padding:8px 10px;min-width:0}
   .rest-acts .ghost{padding:6px 8px}
-  body.has-rest .wrap{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+  body.has-rest .wrap{padding-bottom:calc(170px + var(--sab))}
 }
 /* Macros */
 .kpis.nk{grid-template-columns:repeat(4,minmax(0,1fr))!important}
@@ -1979,6 +1982,7 @@ function report(e){
 
 const IN_CLAUDE=!!(window.claude&&window.claude.use);
 const HOSTED=!IN_CLAUDE&&!!(window.BALD_CONFIG&&BALD_CONFIG.supabaseUrl&&BALD_CONFIG.supabaseAnonKey);
+if(!IN_CLAUDE&&/\.netlify\.app$/.test(location.hostname))document.documentElement.classList.add("badge-netlify");
 let SB=null,SB_USER=null;
 function loadScript(src){return new Promise((ok,ko)=>{const t=document.createElement("script");t.src=src;t.onload=ok;t.onerror=()=>ko(new Error("script"));document.head.appendChild(t)})}
 async function initSupabase(){
