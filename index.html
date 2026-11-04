@@ -330,6 +330,37 @@ input.nm{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%
 :root{--sab:env(safe-area-inset-bottom,0px)}
 :root.badge-netlify{--sab:calc(env(safe-area-inset-bottom,0px) + 40px)}
 #invEmail{font:inherit;padding:10px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;box-sizing:border-box;border-radius:0}
+.nday{border:1px solid var(--rule);display:flex;flex-direction:column}
+.nd-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:10px 12px;background:var(--t-lab);border-bottom:1px solid var(--line)}
+.nd-h b{font-size:15px}
+.nd-r{padding:12px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.nd-big{font-size:15px;color:var(--brown)}
+.nd-big b{font-size:32px;color:var(--accent);line-height:1;margin:0 4px}
+.nd-big.over b{color:var(--hard)}
+.nd-mac{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.nd-mac div{display:flex;flex-direction:column;gap:3px;font-size:13px}
+.nd-mac .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brown)}
+.nd-mac b{font-size:16px}
+.nd-mac .hint{font-size:12px}
+.nd-meals{list-style:none;margin:0;padding:0}
+.nd-meals li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.nd-meals li .m{display:flex;flex-direction:column;min-width:0}
+.nd-meals li .m small{color:var(--muted);font-size:12px}
+.nd-meals li .k{font-weight:700;white-space:nowrap}
+.nd-meals .nd-del{background:none;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;cursor:pointer;font-size:16px}
+.nd-empty{padding:10px 12px;color:var(--muted);font-size:14px}
+.nd-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px}
+.nd-acts .btn{flex:1;min-width:180px}
+.nd-pl{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--brown)}
+.nd-pl button{width:30px;height:30px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font:inherit;font-weight:700}
+.nadd{border:1px solid var(--accent);border-left:4px solid var(--accent);background:var(--accent-soft);padding:12px;display:flex;flex-direction:column;gap:10px}
+.nadd .ck{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.kpis.nk.nk2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#nTable .tcell.fill .tbox{background:linear-gradient(to top,color-mix(in srgb,var(--accent) 50%,var(--surface)) var(--f),var(--surface) var(--f));border-color:var(--accent)}
+#nTable .tcell.star .tbox{border-color:var(--accent);color:var(--accent);background:var(--surface);font-size:14px}
+#nTable td.dsel{background:var(--accent-soft)}
+#nTable th.dsel{box-shadow:inset 0 -3px 0 var(--accent)}
+.coach-view #nAddBtn,.coach-view .nd-del,.coach-view .nd-pl button,.coach-view #nAdd{display:none!important}
 .cnews{border:1px solid var(--rule);border-left:6px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .cnews .cn-h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brown)}
 .cnews .cn-l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
@@ -345,8 +376,8 @@ nav.tabs a .ndot{position:absolute;top:4px;right:calc(50% - 18px);min-width:16px
 .coachbar{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;background:var(--accent);color:#FFFFFF;padding:10px 14px;font-size:14px;border:1px solid var(--rule)}
 .coachbar b{font-size:15px}
 .coachbar .ghost{background:rgba(255,255,255,.15);border-color:#FFFFFF;color:#FFFFFF;padding:5px 10px}
-.coach-view .panel:has(#horsProg),.coach-view #onb,.coach-view #newGoalBox,.coach-view [data-done],.coach-view [data-del-g],.coach-view [data-gm],.coach-view [data-edit-s],.coach-view [data-del-s],.coach-view [data-sd],.coach-view [data-start],.coach-view [data-tpl],.coach-view [data-skip],.coach-view .tpl-manage,.coach-view .panel:has(#tGoalsForm),.coach-view .panel:has(#hForm),.coach-view .panel:has(#stepUrl),.coach-view .panel:has(#nGoalsForm),.coach-view .panel:has(#mzForm),.coach-view .kcalp,.coach-view .imp-btn,.coach-view #impBox,.coach-view .pal-kg,.coach-view #pAsTpl,.coach-view #tdSession .btn,.coach-view .ex-tools{display:none!important}
-.coach-view #tTable,.coach-view #nTable,.coach-view #wkDays,.coach-view #tdTrack{pointer-events:none}
+.coach-view .panel:has(#horsProg),.coach-view #onb,.coach-view #newGoalBox,.coach-view [data-done],.coach-view [data-del-g],.coach-view [data-gm],.coach-view [data-edit-s],.coach-view [data-del-s],.coach-view [data-sd],.coach-view [data-start],.coach-view [data-tpl],.coach-view [data-skip],.coach-view .tpl-manage,.coach-view .panel:has(#tGoalsForm),.coach-view .panel:has(#hForm),.coach-view .panel:has(#stepUrl),.coach-view .panel:has(#mzForm),.coach-view #hbCalc,.coach-view .imp-btn,.coach-view #impBox,.coach-view .pal-kg,.coach-view #pAsTpl,.coach-view #tdSession .btn,.coach-view .ex-tools{display:none!important}
+.coach-view #tTable,.coach-view #wkDays,.coach-view #tdTrack{pointer-events:none}
 .clcard{border:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
 .clcard+.clcard{margin-top:10px}
 .clcard .clh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -868,6 +899,15 @@ details.newgoal summary{font-family:var(--f-display);font-weight:700;font-size:1
 }
 /* Calories cibles */
 .kcalp{gap:16px}
+.hbcalc{border:1px solid var(--line)}
+.hbcalc>summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--accent);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--sunk)}
+.hbcalc>summary::after{content:"+";font-size:20px;line-height:1}
+.hbcalc[open]>summary::after{content:"−"}
+.hbcalc>summary::-webkit-details-marker{display:none}
+.hbcalc-b{padding:14px;display:flex;flex-direction:column;gap:16px}
+.hbf>summary{cursor:pointer;color:var(--accent);font-weight:700;font-size:13.5px;margin-bottom:6px}
+#coachSetNote{margin:0}
+#nGoalsForm input:disabled{background:var(--sunk);color:var(--muted);cursor:not-allowed}
 .hb-step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:6px 12px}
 .hb-n{width:28px;height:28px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700}
 .hb-step h3{margin:0;font-size:15.5px;align-self:center}
@@ -1263,30 +1303,44 @@ body.locked{overflow:hidden}
         <b id="nWeekLbl"></b>
         <button type="button" class="ghost" id="nNext" aria-label="Semaine suivante"><span class="tn-t">Suiv. </span>›</button>
       </div>
-      <div class="kpis nk" id="nKpis"></div>
-      <div class="twrap" id="nWrap"><table class="ttable" id="nTable"></table></div>
-      <div class="medit" id="mEdit" hidden>
-        <div class="tedit-h" id="mEditTitle"></div>
+      <div class="nday" id="nDay"></div>
+      <div class="nadd" id="nAdd" hidden>
+        <div class="tedit-h"><b>Ajouter un repas</b> · <span id="nAddDay"></span></div>
+        <div class="mfav"><span class="label">Mes repas favoris <span class="opt">un toucher suffit</span></span><div class="mfav-l" id="mFav"></div></div>
         <div class="mrow">
-          <label class="f"><span>Protéines (g)</span><input type="text" data-num id="mP" min="0" step="1" inputmode="decimal"></label>
-          <label class="f"><span>Glucides (g)</span><input type="text" data-num id="mG" min="0" step="1" inputmode="decimal"></label>
-          <label class="f"><span>Lipides (g)</span><input type="text" data-num id="mL" min="0" step="1" inputmode="decimal"></label>
-        </div>
-        <div class="mfav"><span class="label">Repas favoris <span class="opt">touche pour ajouter</span></span><div class="mfav-l" id="mFav"></div>
-          <details class="mfav-new" id="mFavNew"><summary>+ Enregistrer un repas favori</summary>
-            <div class="mrow mfav-f"><label class="f" style="grid-column:1/-1"><span>Nom du repas</span><input type="text" id="fNom" maxlength="40" placeholder="Ex. Petit-déj habituel"></label>
-              <label class="f"><span>Protéines (g)</span><input type="text" data-num inputmode="decimal" id="fP"></label><label class="f"><span>Glucides (g)</span><input type="text" data-num inputmode="decimal" id="fG"></label><label class="f"><span>Lipides (g)</span><input type="text" data-num inputmode="decimal" id="fL"></label></div>
-            <button type="button" class="btn" id="fSave">Enregistrer ce repas</button>
-          </details>
+          <label class="f" style="grid-column:1/-1"><span>Nom du repas <span class="opt">facultatif</span></span><input type="text" id="nNom" maxlength="40" placeholder="Ex. Déjeuner"></label>
+          <label class="f"><span>Protéines (g)</span><input type="text" data-num id="mP" inputmode="decimal"></label>
+          <label class="f"><span>Glucides (g)</span><input type="text" data-num id="mG" inputmode="decimal"></label>
+          <label class="f"><span>Lipides (g)</span><input type="text" data-num id="mL" inputmode="decimal"></label>
         </div>
         <div class="mtot" id="mTot"></div>
-        <div class="tedit-row"><button type="button" class="btn" id="mSave">Valider la journée</button><button type="button" class="ghost" id="mClear">Effacer</button><button type="button" class="ghost" id="mClose">Fermer</button></div>
+        <label class="ck"><input type="checkbox" id="nPl"> <span>★ Repas plaisir</span></label>
+        <label class="ck"><input type="checkbox" id="nFav"> <span>Garder dans mes repas favoris</span></label>
+        <div class="tedit-row"><button type="button" class="btn" id="mSave">Ajouter ce repas</button><button type="button" class="ghost" id="mClose">Annuler</button></div>
       </div>
-      <p class="hint">Touche une case protéines, glucides, lipides ou calories pour saisir les macros de la journée : les calories se calculent toutes seules (4 kcal/g pour protéines et glucides, 9 kcal/g pour les lipides).</p>
+      <div class="kpis nk nk2" id="nKpis"></div>
+      <div class="twrap" id="nWrap"><table class="ttable" id="nTable"></table></div>
+      <p class="hint">Touche un jour du tableau pour voir ses repas et en ajouter. Les cases se remplissent au fur et à mesure (✓ = cible atteinte), ★ = repas plaisir.</p>
     </div>
     <div class="cols" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-      <div class="panel kcalp" style="grid-column:1/-1">
-        <h2>Mes calories cibles</h2>
+      <div class="panel kcalp" id="nGoalsPanel" style="grid-column:1/-1">
+        <h2 id="nGoalsTitle">Mes objectifs</h2>
+        <p class="login-msg" id="coachSetNote" hidden></p>
+        <form id="nGoalsForm">
+          <div class="mtarget" id="mTarget"></div>
+          <div class="row2">
+            <div class="field"><label class="label" for="tgKcal">Calories (kcal/jour)</label><input type="text" data-num id="tgKcal" min="0" step="50" inputmode="numeric" placeholder="ex. 2600"></div>
+            <div class="field"><label class="label" for="tgRepas">Repas par jour</label><input type="text" data-num id="tgRepas" min="1" max="10" step="1" inputmode="numeric"><span class="hint">pour la règle 80/20</span></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label class="label" for="tgProt">Protéines (g/kg)</label><input type="text" data-num id="tgProt" min="0" step="0.1" inputmode="decimal"><span class="hint" id="tgProtHint"></span></div>
+            <div class="field"><label class="label" for="tgLip">Lipides (g/kg)</label><input type="text" data-num id="tgLip" min="0" step="0.1" inputmode="decimal"></div>
+          </div>
+          <p class="hint">Les protéines et les lipides se calculent sur ton dernier poids ; les glucides complètent les calories restantes. La règle 80/20 : au plus 20 % de repas plaisir, sans culpabilité.</p>
+          <button class="btn" type="submit">Enregistrer mes cibles</button>
+        </form>
+              <details class="hbcalc" id="hbCalc"><summary>Calculer mes calories pour moi</summary>
+          <div class="hbcalc-b">
         <div class="hb-step"><span class="hb-n">1</span><h3>Profil</h3><div class="hb-b">
           <div class="hb-prof">
             <div class="seg" id="hbSexe" role="group" aria-label="Sexe"><button type="button" data-s="h" aria-pressed="true">Homme</button><button type="button" data-s="f" aria-pressed="false">Femme</button></div>
@@ -1297,16 +1351,17 @@ body.locked{overflow:hidden}
           <span class="hint" id="hbPoidsHint"></span>
         </div></div>
         <div class="hb-step"><span class="hb-n">2</span><h3>Métabolisme de base (BMR)</h3><div class="hb-b">
-          <div class="hb-formula" id="hbFormula"></div>
+          <div class="hb-res"><span class="label">Ton métabolisme de base</span><b id="hbBmr">—</b><span>kcal / jour</span></div>
+          <details class="hbf"><summary>Voir le calcul</summary><div class="hb-formula" id="hbFormula"></div></details>
           <p class="hint">Ce que ton corps dépense au repos complet, sur 24 heures.</p>
         </div></div>
         <div class="hb-step"><span class="hb-n">3</span><h3>Niveau d'activité (PAL)</h3><div class="hb-b">
           <label class="f" style="max-width:420px"><span>Ton niveau d'activité</span><select id="hbPal">
-            <option value="1.2">1,2 · Sédentaire : peu ou pas de sport</option>
-            <option value="1.375">1,375 · Légèrement actif : 1 à 3 séances / semaine</option>
-            <option value="1.55">1,55 · Modérément actif : 3 à 5 séances / semaine</option>
-            <option value="1.725">1,725 · Très actif : 6 à 7 séances / semaine</option>
-            <option value="1.9">1,9 · Extrêmement actif : sport intense + métier physique</option>
+            <option value="1.2">1,2 · Sédentaire</option>
+            <option value="1.375">1,375 · Léger (1-3 séances/sem.)</option>
+            <option value="1.55">1,55 · Modéré (3-5 séances/sem.)</option>
+            <option value="1.725">1,725 · Très actif (6-7/sem.)</option>
+            <option value="1.9">1,9 · Extrême (+ métier physique)</option>
           </select></label>
           <div class="hb-res"><span class="label">Dépense journalière</span><span>BMR × PAL =</span><b id="hbTdee">—</b><span>kcal</span></div>
         </div></div>
@@ -1314,43 +1369,8 @@ body.locked{overflow:hidden}
           <div class="hb-tabs" id="hbTabs" role="tablist"></div>
           <div class="hb-goal" id="hbGoal"></div>
         </div></div>
-      </div>
-      <div class="panel">
-        <h2>Mes cibles nutrition</h2>
-        <form id="nGoalsForm">
-          <div class="row2">
-            <div class="field"><label class="label" for="tgProt">Protéines (g/kg)</label><input type="text" data-num id="tgProt" min="0" step="0.1" inputmode="decimal"><span class="hint" id="tgProtHint"></span></div>
-            <div class="field"><label class="label" for="tgRepas">Repas par jour</label><input type="text" data-num id="tgRepas" min="1" max="10" step="1" inputmode="numeric"><span class="hint">pour la règle 80/20</span></div>
-          </div>
-          <div class="row2">
-            <div class="field"><label class="label" for="tgKcal">Calories (kcal/jour) <span class="opt">saisie manuelle</span></label><input type="text" data-num id="tgKcal" min="0" step="50" inputmode="numeric" placeholder="ex. 2600"></div>
-            <div class="field"><label class="label" for="tgLip">Lipides (g/kg)</label><input type="text" data-num id="tgLip" min="0" step="0.1" inputmode="decimal"></div>
-          </div>
-          <div class="mtarget" id="mTarget"></div>
-          <p class="hint">Les protéines et les lipides se calculent sur ton dernier poids ; les glucides complètent les calories restantes. La règle 80/20 : au plus 20 % de repas plaisir, sans culpabilité.</p>
-          <button class="btn" type="submit">Enregistrer mes cibles</button>
-        </form>
-      </div>
-      <div class="panel">
-        <h2>Mensurations</h2>
-        <form id="mzForm">
-          <div class="row2">
-            <div class="field"><label class="label" for="mzDate">Date</label><input type="date" id="mzDate"></div>
-            <div class="field"><label class="label" for="mzPoids">Poids (kg)</label><input type="text" data-num id="mzPoids" min="0" step="0.1" inputmode="decimal"></div>
-          </div>
-          <span class="hint" id="mzPoidsHint" style="margin-top:-6px"></span>
-          <div class="row2">
-            <div class="field"><label class="label" for="mzTaille">Tour de taille (cm)</label><input type="text" data-num id="mzTaille" min="0" step="0.5" inputmode="decimal"></div>
-            <div class="field"><label class="label" for="mzPoitrine">Poitrine (cm)</label><input type="text" data-num id="mzPoitrine" min="0" step="0.5" inputmode="decimal"></div>
-          </div>
-          <div class="row2">
-            <div class="field"><label class="label" for="mzBras">Bras (cm)</label><input type="text" data-num id="mzBras" min="0" step="0.5" inputmode="decimal"></div>
-            <div class="field"><label class="label" for="mzCuisse">Cuisse (cm)</label><input type="text" data-num id="mzCuisse" min="0" step="0.5" inputmode="decimal"></div>
-          </div>
-          <button class="btn" type="submit">Enregistrer les mensurations</button>
-        </form>
-        <div id="mzLast"></div>
-        <p class="hint">Une mesure par semaine suffit, même jour, même heure, au même endroit.</p>
+                </div>
+        </details>
       </div>
     </div>
   </section>
@@ -1413,6 +1433,27 @@ body.locked{overflow:hidden}
           <button class="btn" type="submit">Ajouter</button>
         </form>
         <p class="hint">Elles s'ajoutent au tableau comme une case à cocher, chaque jour.</p>
+      </div>
+      <div class="panel">
+        <h2>Mensurations</h2>
+        <form id="mzForm">
+          <div class="row2">
+            <div class="field"><label class="label" for="mzDate">Date</label><input type="date" id="mzDate"></div>
+            <div class="field"><label class="label" for="mzPoids">Poids (kg)</label><input type="text" data-num id="mzPoids" min="0" step="0.1" inputmode="decimal"></div>
+          </div>
+          <span class="hint" id="mzPoidsHint" style="margin-top:-6px"></span>
+          <div class="row2">
+            <div class="field"><label class="label" for="mzTaille">Tour de taille (cm)</label><input type="text" data-num id="mzTaille" min="0" step="0.5" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="mzPoitrine">Poitrine (cm)</label><input type="text" data-num id="mzPoitrine" min="0" step="0.5" inputmode="decimal"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label class="label" for="mzBras">Bras (cm)</label><input type="text" data-num id="mzBras" min="0" step="0.5" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="mzCuisse">Cuisse (cm)</label><input type="text" data-num id="mzCuisse" min="0" step="0.5" inputmode="decimal"></div>
+          </div>
+          <button class="btn" type="submit">Enregistrer les mensurations</button>
+        </form>
+        <div id="mzLast"></div>
+        <p class="hint">Une mesure par semaine suffit, même jour, même heure, au même endroit.</p>
       </div>
     </div>
   </section>
@@ -1558,7 +1599,7 @@ window.BALD_CONFIG=window.BALD_CONFIG||{supabaseUrl:"",supabaseAnonKey:""};
 (function(){
 const TYPES=["Musculation","Course","Vélo","Mobilité","Autre"];
 const RPE_WORDS=["","Très facile","Facile","Modéré","Un peu dur","Dur","Dur","Très dur","Très dur","Extrêmement dur","Maximal"];
-const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,comments:{},mode:"loading"};
+const state={sessions:[],goals:[],plans:[],tracking:{},tset:null,comments:{},coachSet:null,mode:"loading"};
 let COACH_VIEW=null,MY_MODELES=[];
 let readOnly=false;
 let tWeek=0, tSel=null, jType="Tout", jAll=false, PRS=new Set();
@@ -2105,7 +2146,7 @@ function claudeStore(d,id){
 /* Branchement Supabase : table carnet_docs (user_id, collection, doc_id, data jsonb), protégée par RLS */
 function supabaseStore(sb,userId,opt={}){
   const T="carnet_docs",cache={},subs={};let closed=false;
-  const canWrite=n=>!opt.lecture&&(!opt.ecriture||opt.ecriture.includes(n));
+  const canWrite=(n,i)=>!opt.lecture&&(!opt.ecriture||opt.ecriture.includes(n)||opt.ecriture.includes(n+"/"+i));
   const ro=()=>{throw {code:"lecture-seule",message:"Lecture seule"}};
   const emit=n=>{(subs[n]||[]).forEach(cb=>cb({docs:Object.entries(cache[n]||{}).map(([id,data])=>({id,data})),fromCache:false}))};
   const put=(n,i,x)=>{(cache[n]=cache[n]||{})[i]=x;emit(n)};
@@ -2122,9 +2163,9 @@ function supabaseStore(sb,userId,opt={}){
     .subscribe();
   return {kind:"supabase",userId,close(){closed=true;for(const k in subs)subs[k]=[];try{sb.removeChannel(ch)}catch(e){}},col(n){return {
     async add(x){const i=newId();await this.set(i,x);return i},
-    async set(i,x){if(!canWrite(n))ro();put(n,i,x);chk(await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()}))},
+    async set(i,x){if(!canWrite(n,i))ro();put(n,i,x);chk(await sb.from(T).upsert({user_id:userId,collection:n,doc_id:i,data:x,updated_at:new Date().toISOString()}))},
     async update(i,x){const v=merge((cache[n]||{})[i],x);await this.set(i,v)},
-    async del(i){if(!canWrite(n))ro();drop(n,i);chk(await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i))},
+    async del(i){if(!canWrite(n,i))ro();drop(n,i);chk(await sb.from(T).delete().eq("user_id",userId).eq("collection",n).eq("doc_id",i))},
     watch(cb,err){(subs[n]=subs[n]||[]).push(cb);
       sb.from(T).select("doc_id,data").eq("user_id",userId).eq("collection",n).then(r=>{if(closed)return;if(r.error){err&&err({code:"unavailable",message:r.error.message});return}cache[n]={};r.data.forEach(row=>cache[n][row.doc_id]=row.data);emit(n)},e=>err&&err({code:"unavailable",message:String(e)}));
       return ()=>{subs[n]=(subs[n]||[]).filter(f=>f!==cb)}}
@@ -2277,7 +2318,8 @@ function startData(){
   C("seances").watch(sn=>{state.sessions=sn.docs.map(d=>({...d.data,id:d.id}));done(sn.fromCache);render()},fail);
   C("objectifs").watch(sn=>{state.goals=sn.docs.map(d=>({...d.data,id:d.id,mesures:[...(d.data.mesures||[])]}));done(sn.fromCache);render()},fail);
   C("tracking").watch(sn=>{const m={};sn.docs.forEach(d=>{m[d.id]={...((d.data||{}).values||{})}});state.tracking=m;done(sn.fromCache);render();if(!sn.fromCache&&!tReady){tReady=true;applySteps()}},fail);
-  C("reglages").watch(sn=>{const doc=sn.docs.find(d=>d.id==="tracking");const x=doc?doc.data:null;state.tset=x?{...JSON.parse(JSON.stringify(x)),cibles:{...DEFAULT_T.cibles,...(x.cibles||{})},habitudes:(x.habitudes||[]).map(h=>({...h})),modeles:JSON.parse(JSON.stringify(x.modeles||[]))}:null;done(sn.fromCache);render();fillTGoals()},fail);
+  C("reglages").watch(sn=>{const doc=sn.docs.find(d=>d.id==="tracking");const x=doc?doc.data:null;state.tset=x?{...JSON.parse(JSON.stringify(x)),cibles:{...DEFAULT_T.cibles,...(x.cibles||{})},habitudes:(x.habitudes||[]).map(h=>({...h})),modeles:JSON.parse(JSON.stringify(x.modeles||[]))}:null;
+    const cd=sn.docs.find(d=>d.id==="coach");state.coachSet=cd&&cd.data&&cd.data.cibles?JSON.parse(JSON.stringify(cd.data)):null;done(sn.fromCache);render();fillTGoals()},fail);
   C("commentaires").watch(sn=>{const m={};sn.docs.forEach(d=>m[d.id]=d.data);state.comments=m;if(document.body.dataset.view==="seances")journal()},()=>{});
   C("prevues").watch(sn=>{state.plans=sn.docs.map(d=>{const x=d.data;return {...x,id:d.id,exercices:(x.exercices||[]).map(e=>({...e,ref:Array.isArray(e.ref)?e.ref.map(r=>({...r})):(e.ref?{...e.ref}:null),sets:Array.isArray(e.sets)?e.sets.map(r=>({...r})):e.sets}))}});done(sn.fromCache);render()},fail);
   render();
@@ -2648,7 +2690,9 @@ function applyTheme(t){
 /* ---------- tracking ---------- */
 const DEFAULT_T={cibles:{pas:10000,eau:2.5,sommeil:8,vacuum:5,protKg:2,proteines:150,repasJour:4,lipKg:1,kcal:null,sexe:"h",age:null,taille:null,pal:1.55,objectif:"m"},habitudes:[]};
 const METRICS=[{k:"poids",nom:"Poids",u:"kg",step:0.1,free:true},{k:"pas",nom:"Nombre de pas",u:"pas",step:500},{k:"eau",nom:"Eau à boire",u:"L",step:0.25},{k:"proteines",nom:"Protéines",u:"g",step:5,nut:true,macro:true},{k:"glucides",nom:"Glucides",u:"g",step:5,nut:true,macro:true,range:true},{k:"lipides",nom:"Lipides",u:"g",step:1,nut:true,macro:true,range:true},{k:"kcal",nom:"Calories",u:"kcal",step:10,nut:true,calc:true,range:true},{k:"plaisir",nom:"Repas plaisir",u:"repas",step:1,free:true,plaisir:true,nut:true},{k:"sommeil",nom:"Sommeil",u:"h",step:0.25},{k:"vacuum",nom:"Vacuum",u:"min",step:0.5}];
-const tset=()=>state.tset||DEFAULT_T;
+const COACH_KEYS=["kcal","protKg","lipKg","repasJour"];
+const tset=()=>{const t=state.tset||DEFAULT_T,cs=state.coachSet&&state.coachSet.cibles;if(!cs)return t;
+  const c={...t.cibles};COACH_KEYS.forEach(k=>{if(cs[k]!=null)c[k]=cs[k]});return {...t,cibles:c}};
 function exampleTracking(){
   const out={};const pat=[[9200,2.5,7.5,5,1],[11400,2.75,8,5,1],[6800,1.75,6.5,0,0],[10300,3,8.25,6,1],[8100,2.25,7,4,0],[12500,2.5,9,5,1],[7400,2,7.75,0,1]];
   for(let k=10;k>=0;k--){const d=addDays(today,-k);const r=pat[(k*3)%7];out[iso(d)]={pas:r[0],eau:r[1],sommeil:r[2],vacuum:r[3],h1:!!r[4],proteines:[150,165,120,160,140,170,135][(k*3)%7],glucides:[280,320,250,300,260,340,270][(k*3)%7],lipides:[70,80,65,75,90,72,68][(k*3)%7],plaisir:[0,1,2,0,1,0,1][(k*3)%7],exemple:true};if(k===10)out[iso(d)].mensu={taille:86,poitrine:104,bras:37,cuisse:58};if(k===3)out[iso(d)].mensu={taille:85,poitrine:104.5,bras:37.5,cuisse:58.5};if(k%7!==3)out[iso(d)].poids=Math.round((78.9-(10-k)*0.06+((k*7)%5-2)*0.15)*10)/10}
@@ -2683,6 +2727,7 @@ function macroTargetHint(){
 function protHint(){macroTargetHint();const w=lastWeight(),k=parseFloat($("#tgProt").value)||2;$("#tgProtHint").textContent=w?`soit ${fmtNum(Math.round(k*w/5)*5)} g/jour pour ${fmtNum(w)} kg`:"note ton poids pour calculer la cible"}
 function renderTracking(){
   const m0=addDays(monday(today),7*tWeek),days=[...Array(7)].map((_,j)=>iso(addDays(m0,j))),tIso=iso(today);
+  if(!nDaySel||!days.includes(nDaySel))nDaySel=days.includes(tIso)?tIso:days[6];
   const lbl=tWeek===0?`Cette semaine · du ${fmtShort(m0)} au ${fmtShort(addDays(m0,6))}`:`Semaine du ${fmtShort(m0)} au ${fmtShort(addDays(m0,6))}`;
   $("#tWeekLbl").textContent=lbl;$("#nWeekLbl").textContent=lbl;
   $("#tNext").disabled=tWeek>=0;$("#nNext").disabled=tWeek>=0;
@@ -2691,14 +2736,20 @@ function renderTracking(){
   const c=tset().cibles;
   const all=[...METRICS.map(m=>({...m,metric:true,cible:targetOf(m)})),...tset().habitudes.map(x=>({k:x.id,nom:x.nom,metric:false}))];
   const build=(rows,title)=>{
-  let h=`<colgroup><col class="c-lab">${days.map(()=>'<col>').join("")}<col class="c-score"></colgroup><thead><tr><th class="lab">${title}</th>${days.map((d,j)=>`<th class="${d===tIso?"today":""}">${L[j]}<small>${parse(d).getDate()}</small></th>`).join("")}<th class="score">Score</th></tr></thead><tbody>`;
+  let h=`<colgroup><col class="c-lab">${days.map(()=>'<col>').join("")}<col class="c-score"></colgroup><thead><tr><th class="lab">${title}</th>${days.map((d,j)=>`<th class="${d===tIso?"today":""}${title==="Nutrition"&&nDaySel===d?" dsel":""}">${L[j]}<small>${parse(d).getDate()}</small></th>`).join("")}<th class="score">Score</th></tr></thead><tbody>`;
   rows.forEach(r=>{
     let ok=0;const vals=[];
     const cells=days.map(d=>{
       const v=(state.tracking[d]||{})[r.k];const fut=d>tIso;
       const done=r.metric?hit(r,v):!!v;if(done&&!fut)ok++;if(r.metric&&v!=null&&v!=="")vals.push(+v);
       const part=r.metric&&v!=null&&v!==""&&!done;
-      const sel=(tSel&&tSel.d===d&&tSel.k===r.k)||(mSel===d&&(r.macro||r.calc));
+      const sel=tSel&&tSel.d===d&&tSel.k===r.k;
+      if(r.nut){/* nutrition : case remplie selon le % de la cible, ★ pour les repas plaisir */
+        const has=v!=null&&v!=="",dsel=nDaySel===d;let cls="",sty="",box="",val="";
+        if(r.plaisir){if(has&&+v>0){cls=" star";box="★";val=+v>1?String(+v):""}else if(has){val="0"}}
+        else if(has){const t=targetOf(r);if(done&&t!=null){cls=" ok";box="✓"}else if(t){cls=" fill";sty=` style="--f:${Math.max(8,Math.min(100,Math.round(+v/t*100)))}%"`}else{cls=" ok";box="✓"}val=compact(r.k,+v)}
+        return `<td class="${d===tIso?"today":""}${dsel?" dsel":""}"><button type="button" class="tcell${cls}" data-d="${d}" data-k="${esc(r.k)}" ${fut?"disabled":""} aria-label="${esc(r.nom)}, ${esc(fmtDay(d))}${has?" : "+fmtNum(+v)+" "+r.u:""}"${sty}><span class="tbox">${box}</span>${val?`<span class="tval">${val}</span>`:""}</button></td>`;
+      }
       return `<td class="${d===tIso?"today":""}"><button type="button" class="tcell${done?" ok":""}${part?" part":""}${sel?" sel":""}" data-d="${d}" data-k="${esc(r.k)}" ${fut?"disabled":""} aria-label="${esc(r.nom)}, ${esc(fmtDay(d))}${r.metric&&v!=null?" : "+fmtNum(+v)+" "+r.u:""}${done?", fait":""}"><span class="tbox">${done?"✓":""}</span>${r.metric&&v!=null&&v!==""?`<span class="tval">${compact(r.k,+v)}</span>`:""}</button></td>`;
     }).join("");
     const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
@@ -2718,7 +2769,10 @@ function renderTracking(){
   h+=`</tbody>`;return h};
   $("#tTable").innerHTML=build(all.filter(r=>!r.nut),"Habitudes quotidiennes");
   $("#nTable").innerHTML=build(all.filter(r=>r.nut),"Nutrition");
-  document.querySelectorAll("#tTable .tcell,#nTable .tcell").forEach(b=>b.onclick=()=>tClick(b.dataset.d,b.dataset.k));
+  document.querySelectorAll("#tTable .tcell").forEach(b=>b.onclick=()=>tClick(b.dataset.d,b.dataset.k));
+  document.querySelectorAll("#nTable .tcell").forEach(b=>b.onclick=()=>{nDaySel=b.dataset.d;renderTracking();$("#nDay").scrollIntoView({block:"nearest",behavior:"smooth"})});
+  if(!nDaySel||!days.includes(nDaySel))nDaySel=days.includes(tIso)?tIso:days[6];
+  renderNDay();
   renderNutKpis(days,tIso,elapsed);
   // editor
   const ed=$("#tEdit");
@@ -2742,59 +2796,101 @@ function renderNutKpis(days,tIso,elapsed){
   const tot=pl.reduce((a,b)=>a+b,0),cap=(+c.repasJour||4)*(elapsed||7),pc=Math.round(tot/cap*100);
   const ka=avg("kcal");
   $("#nKpis").innerHTML=
-    kpi("Calories aujourd'hui",kc!=null?`${fmtNum(+kc)}`:"—",kt?`sur ${fmtNum(kt)} kcal`:"kcal · cible à définir",kc!=null&&kt?bar(+kc,kt):"")+
-    `<div class="kpi"><span class="label">Macros aujourd'hui</span>${mac}</div>`+
     kpi("Moyenne de la semaine",ka!=null?fmtNum(ka):"—",ka!=null?`kcal/jour · protéines ${fmtNum(avg("proteines")||0)} g`:"pas encore de saisie")+
     kpi("Règle 80/20",pl.length?`${pc} %`:"—",pl.length?`${tot} repas plaisir sur ${cap}`:"note tes repas plaisir",pl.length?`<span class="delta ${pc<=20?"up":"down"}">${pc<=20?"✓ Dans les clous":"À surveiller"}</span>`:"");
 }
-let mSel=null;
-function openMacro(d){setTimeout(renderFav,0);
-  mSel=d;tSel=null;const v=state.tracking[d]||{};
-  $("#mP").value=v.proteines??"";$("#mG").value=v.glucides??"";$("#mL").value=v.lipides??"";
-  $("#mEdit").hidden=false;$("#tEdit").hidden=true;renderMacroEd();renderTracking();
-  $("#mEdit").scrollIntoView({block:"nearest",behavior:"smooth"});setTimeout(()=>$("#mP").focus(),50);
+let mSel=null,nDaySel=null;
+/* ---------- objectifs fixés par le coach ---------- */
+function coachSetUI(){
+  const note=$("#coachSetNote"),cs=state.coachSet,form=$("#nGoalsForm");if(!note||!form)return;
+  const ids=["#tgKcal","#tgProt","#tgLip","#tgRepas"],btn=form.querySelector('button[type=submit]');
+  const dt=cs&&cs.date?" ("+fmtShort(parse(cs.date))+")":"";
+  if(COACH_VIEW){note.hidden=false;note.className="login-msg";
+    note.innerHTML=cs?`🎯 Objectifs fixés par toi${esc(dt)} · modifie-les puis envoie : ${esc(COACH_VIEW.nom)} les verra tout de suite. <button type="button" class="ghost" id="coachSetDel" style="margin-left:6px">Lui rendre la main</button>`:`🎯 Fixe ici les objectifs nutrition de ${esc(COACH_VIEW.nom)} : ils remplaceront les siens.`;
+    ids.forEach(i=>$(i).disabled=false);btn.hidden=false;btn.textContent=`Envoyer à ${COACH_VIEW.nom}`;
+    const del=$("#coachSetDel");if(del)confirmBtn(del,async()=>{await C("reglages").del("coach");state.coachSet=null;render();toast("Objectifs retirés : il peut à nouveau les régler lui-même")});
+    if(!cs){const c=tset().cibles;$("#tgKcal").value=c.kcal??"";$("#tgProt").value=c.protKg??2;$("#tgLip").value=c.lipKg??1;$("#tgRepas").value=c.repasJour??4}
+    else{$("#tgKcal").value=cs.cibles.kcal??"";$("#tgProt").value=cs.cibles.protKg??2;$("#tgLip").value=cs.cibles.lipKg??1;$("#tgRepas").value=cs.cibles.repasJour??4}
+    return}
+  if(cs){note.hidden=false;note.className="login-msg";note.innerHTML=`🎯 <b>Objectifs fixés par ton coach</b>${esc(dt)} · pour les changer, parles-en avec lui.`;
+    ids.forEach(i=>$(i).disabled=true);btn.hidden=true;const c=tset().cibles;$("#tgKcal").value=c.kcal??"";$("#tgProt").value=c.protKg;$("#tgLip").value=c.lipKg;$("#tgRepas").value=c.repasJour;
+    const ap=$("#hbApply");if(ap)ap.hidden=true}
+  else{note.hidden=true;ids.forEach(i=>$(i).disabled=false);btn.hidden=false;btn.textContent="Enregistrer mes cibles"}
 }
+
+/* ---------- nutrition : repas du jour ---------- */
+function dayMeals(v){
+  if(Array.isArray(v.repas))return v.repas;
+  if(v.proteines!=null||v.glucides!=null||v.lipides!=null)return [{id:"base",n:"Saisie de la journée",p:+v.proteines||0,g:+v.glucides||0,l:+v.lipides||0,base:true}];
+  return [];
+}
+function recompute(cur,meals){
+  const r=n=>Math.round(n*10)/10;
+  cur.repas=meals;
+  if(meals.length){cur.proteines=r(meals.reduce((a,m)=>a+(+m.p||0),0));cur.glucides=r(meals.reduce((a,m)=>a+(+m.g||0),0));cur.lipides=r(meals.reduce((a,m)=>a+(+m.l||0),0));cur.kcal=kcalOf(cur.proteines,cur.glucides,cur.lipides)}
+  else{delete cur.proteines;delete cur.glucides;delete cur.lipides;delete cur.kcal;delete cur.repas}
+  const pl=meals.filter(m=>m.pl).length+(+cur.plaisirHors||0);
+  if(meals.length||cur.plaisirHors!=null)cur.plaisir=pl;else delete cur.plaisir;
+  return cur;
+}
+function dayCur(d){const v=state.tracking[d]||{};const cur=JSON.parse(JSON.stringify(v));delete cur.exemple;
+  if(!Array.isArray(cur.repas)&&cur.plaisir!=null&&cur.plaisirHors==null)cur.plaisirHors=+cur.plaisir||0;return cur}
+function addMeal(d,m){const cur=dayCur(d);const meals=dayMeals(cur).map(x=>({...x}));meals.push({id:"m"+Date.now().toString(36),...m});return saveDay(d,recompute(cur,meals))}
+function delMeal(d,id){const cur=dayCur(d);return saveDay(d,recompute(cur,dayMeals(cur).filter(x=>x.id!==id)))}
+function setPlaisirHors(d,delta){const cur=dayCur(d);cur.plaisirHors=Math.max(0,(+cur.plaisirHors||0)+delta);return saveDay(d,recompute(cur,dayMeals(cur)))}
+function renderNDay(){
+  const d=nDaySel,box=$("#nDay");if(!d||!box)return;
+  const v=state.tracking[d]||{},T=k=>targetOf({k}),tIso=iso(today),meals=dayMeals(v);
+  const kc=v.kcal!=null?+v.kcal:0,kt=T("kcal"),past=d<tIso;
+  const lab=d===tIso?"Aujourd'hui":fmtDay(d);
+  let big;
+  if(kt){const rest=kt-kc;big=rest>=0?`<div class="nd-big">Il te reste<b class="num">${fmtNum(rest)}</b>kcal${past?"":" à manger"}</div>`:`<div class="nd-big over"><b class="num">+${fmtNum(-rest)}</b>kcal au-dessus de ta cible</div>`}
+  else big=`<div class="nd-big"><b class="num">${fmtNum(kc)}</b>kcal · <a href="#nutrition" id="nGoGoals">fixe ta cible de calories</a></div>`;
+  const bar=(x,t)=>t?`<span class="bar"><i style="width:${Math.min(100,x/t*100).toFixed(0)}%"></i></span>`:"";
+  const mac=[["proteines","Protéines"],["glucides","Glucides"],["lipides","Lipides"]].map(([k,l])=>{const x=+v[k]||0,t=T(k);const rest=t!=null?Math.round(t-x):null;
+    return `<div><span class="l">${l}</span><b class="num">${rest==null?fmtNum(x)+" g":rest>=0?"reste "+fmtNum(rest)+" g":"+"+fmtNum(-rest)+" g"}</b><span class="hint num">${fmtNum(x)}${t!=null?" / "+fmtNum(t):""} g</span>${bar(x,t)}</div>`}).join("");
+  const pl=+v.plaisir||0;
+  box.innerHTML=`<div class="nd-h"><b>${esc(lab)}</b><span class="hint">${meals.length?meals.length+" repas · "+fmtNum(kc)+" kcal":"rien de noté"}${kt?" · cible "+fmtNum(kt)+" kcal":""}</span></div>
+    <div class="nd-r">${big}${kt?bar(kc,kt):""}<div class="nd-mac">${mac}</div></div>
+    ${meals.length?`<ul class="nd-meals">${meals.map(m=>`<li><span class="m"><b>${m.pl?"★ ":""}${esc(m.n||"Repas")}</b><small>P ${fmtNum(+m.p||0)} · G ${fmtNum(+m.g||0)} · L ${fmtNum(+m.l||0)}</small></span><span class="k num">${fmtNum(kcalOf(m.p,m.g,m.l))} kcal</span><button type="button" class="nd-del" data-mdel="${esc(m.id)}" aria-label="Retirer ${esc(m.n||"ce repas")}">×</button></li>`).join("")}</ul>`:`<div class="nd-empty">Aucun repas noté ${d===tIso?"aujourd'hui":"ce jour-là"}.</div>`}
+    <div class="nd-acts">${d<=tIso?`<button type="button" class="btn" id="nAddBtn">+ Ajouter un repas</button>`:""}<span class="nd-pl">★ Repas plaisir : <b class="num">${pl}</b>${d<=tIso?`<button type="button" data-pl="-1" aria-label="Un repas plaisir de moins">−</button><button type="button" data-pl="1" aria-label="Un repas plaisir de plus">+</button>`:""}</span></div>`;
+  const ab=$("#nAddBtn");if(ab)ab.onclick=()=>openAdd(d);
+  const gg=$("#nGoGoals");if(gg)gg.onclick=e=>{e.preventDefault();const h=$("#nGoalsTitle");if(h){openPanel(h);h.scrollIntoView({behavior:"smooth",block:"start"})}};
+  box.querySelectorAll("[data-mdel]").forEach(b=>confirmBtn(b,()=>delMeal(d,b.dataset.mdel).catch(report)));
+  box.querySelectorAll("[data-pl]").forEach(b=>b.onclick=()=>{const cur=+(state.tracking[d]||{}).plaisir||0;if(+b.dataset.pl<0&&!cur)return;setPlaisirHors(d,+b.dataset.pl).catch(report)});
+}
+function openAdd(d){mSel=d;["#nNom","#mP","#mG","#mL"].forEach(id=>$(id).value="");$("#nPl").checked=false;$("#nFav").checked=false;
+  $("#nAddDay").textContent=d===iso(today)?"aujourd'hui":fmtDay(d);$("#nAdd").hidden=false;$("#nDay").after($("#nAdd"));renderFav();renderMacroEd();
+  $("#nAdd").scrollIntoView({block:"nearest",behavior:"smooth"});setTimeout(()=>$("#mP").focus(),60)}
+function closeAdd(){mSel=null;$("#nAdd").hidden=true}
 function renderMacroEd(){
-  if(!mSel){$("#mEdit").hidden=true;return}
-  const n=id=>{const v=$(id).value.trim();return v===""||isNaN(+v)?null:+v};
-  const p=n("#mP"),g=n("#mG"),l=n("#mL"),T=k=>targetOf({k});
-  $("#mEditTitle").innerHTML=`<b>Macros</b> · ${esc(fmtDay(mSel))}`;
-  const any=p!=null||g!=null||l!=null,k=kcalOf(p,g,l),kt=T("kcal");
+  const n=id=>{const v=$(id).value.trim().replace(",",".");return v===""||isNaN(+v)?null:+v};
+  const p=n("#mP"),g=n("#mG"),l=n("#mL"),any=p!=null||g!=null||l!=null,k=kcalOf(p,g,l);
   const seg=(v,f,cls)=>k?`<i class="${cls}" style="width:${((v||0)*f/k*100).toFixed(1)}%"></i>`:"";
-  $("#mTot").innerHTML=any?`<div class="mt-top"><b class="num">${fmtNum(k)} kcal</b>${kt?`<span class="hint">cible ${fmtNum(kt)} kcal · ${k>=kt?"+":"−"}${fmtNum(Math.abs(k-kt))}</span>`:""}</div>
-    <div class="msplit">${seg(p,4,"sp")}${seg(g,4,"sg")}${seg(l,9,"sl")}</div>
-    <div class="mleg"><span><i class="sp"></i>Protéines ${fmtNum((p||0)*4)} kcal</span><span><i class="sg"></i>Glucides ${fmtNum((g||0)*4)} kcal</span><span><i class="sl"></i>Lipides ${fmtNum((l||0)*9)} kcal</span></div>`:'<span class="hint">Saisis tes grammes : les calories s\'affichent ici.</span>';
+  $("#mTot").innerHTML=any?`<div class="mt-top"><b class="num">${fmtNum(k)} kcal</b><span class="hint">calculées automatiquement</span></div><div class="msplit">${seg(p,4,"sp")}${seg(g,4,"sg")}${seg(l,9,"sl")}</div>`:'<span class="hint">Saisis les grammes : les calories se calculent toutes seules (4 kcal/g protéines et glucides, 9 kcal/g lipides).</span>';
 }
 ["#mP","#mG","#mL"].forEach(id=>$(id).addEventListener("input",renderMacroEd));
 function renderFav(){
   const R=tset().repas||[];
-  $("#mFav").innerHTML=R.length?R.map(r=>`<span class="fchip"><button type="button" data-fav="${esc(r.id)}"><b>+ ${esc(r.nom)}</b><small>${fmtNum(kcalOf(r.p,r.g,r.l))} kcal · P${fmtNum(r.p)} G${fmtNum(r.g)} L${fmtNum(r.l)}</small></button><button type="button" class="fdel" data-fdel="${esc(r.id)}" aria-label="Supprimer ${esc(r.nom)}">×</button></span>`).join(""):`<span class="hint">Aucun repas enregistré pour l'instant.</span>`;
-  $("#mFav").querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>{const r=R.find(x=>x.id===b.dataset.fav);if(!r)return;const add=(id,v)=>{const c=parseFloat($(id).value)||0;$(id).value=Math.round((c+(+v||0))*10)/10};add("#mP",r.p);add("#mG",r.g);add("#mL",r.l);renderMacroEd();toast(`${esc(r.nom)} ajouté`)});
+  $("#mFav").innerHTML=R.length?R.map(r=>`<span class="fchip"><button type="button" data-fav="${esc(r.id)}"><b>+ ${esc(r.nom)}</b><small>${fmtNum(kcalOf(r.p,r.g,r.l))} kcal · P${fmtNum(r.p)} G${fmtNum(r.g)} L${fmtNum(r.l)}</small></button><button type="button" class="fdel" data-fdel="${esc(r.id)}" aria-label="Supprimer ${esc(r.nom)}">×</button></span>`).join(""):`<span class="hint">Pas encore de favori : coche « Garder dans mes repas favoris » en ajoutant un repas.</span>`;
+  $("#mFav").querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>{const r=R.find(x=>x.id===b.dataset.fav);if(!r||!mSel)return;const d=mSel;
+    addMeal(d,{n:r.nom,p:+r.p||0,g:+r.g||0,l:+r.l||0}).then(()=>toast(`${esc(r.nom)} ajouté · ${fmtNum(kcalOf(r.p,r.g,r.l))} kcal`)).catch(report);closeAdd()});
   $("#mFav").querySelectorAll("[data-fdel]").forEach(b=>confirmBtn(b,()=>saveTSet({repas:(tset().repas||[]).filter(x=>x.id!==b.dataset.fdel)})));
 }
-$("#fSave").onclick=()=>{
-  const nom=$("#fNom").value.trim(),n=id=>{const v=parseFloat($(id).value);return isNaN(v)?0:v};
-  if(!nom){$("#fNom").focus();return}
-  let P=n("#fP"),G=n("#fG"),L=n("#fL");
-  if(!P&&!G&&!L){P=n("#mP");G=n("#mG");L=n("#mL")}
-  if(!P&&!G&&!L){toast("Indique au moins une valeur");return}
-  saveTSet({repas:[...(tset().repas||[]),{id:"r"+Date.now().toString(36),nom,p:P,g:G,l:L}]}).then(()=>{["#fNom","#fP","#fG","#fL"].forEach(id=>$(id).value="");$("#mFavNew").open=false;toast(`Repas « ${esc(nom)} » enregistré`)}).catch(report);
-};
 $("#mSave").onclick=()=>{
-  if(!mSel)return;const d=mSel;const n=id=>{const v=$(id).value.trim();return v===""||isNaN(+v)?null:+v};
-  const cur={...(state.tracking[d]||{})};delete cur.exemple;
-  const p=n("#mP"),g=n("#mG"),l=n("#mL");
-  [["proteines",p],["glucides",g],["lipides",l]].forEach(([k,v])=>{if(v==null)delete cur[k];else cur[k]=v});
-  if(p!=null||g!=null||l!=null)cur.kcal=kcalOf(p,g,l);else delete cur.kcal;
-  mSel=null;$("#mEdit").hidden=true;saveDay(d,cur).then(()=>toast(cur.kcal!=null?`${fmtNum(cur.kcal)} kcal enregistrées`:"Macros effacées")).catch(report);renderTracking();
+  if(!mSel)return;const d=mSel;const n=id=>{const v=$(id).value.trim().replace(",",".");return v===""||isNaN(+v)?0:Math.max(0,+v)};
+  const m={n:$("#nNom").value.trim()||"Repas",p:n("#mP"),g:n("#mG"),l:n("#mL")};if($("#nPl").checked)m.pl=true;
+  if(!m.p&&!m.g&&!m.l&&!m.pl){toast("Indique au moins une valeur");$("#mP").focus();return}
+  const fav=$("#nFav").checked&&(m.p||m.g||m.l);
+  closeAdd();
+  addMeal(d,m).then(()=>{toast(`${esc(m.n)} ajouté · ${fmtNum(kcalOf(m.p,m.g,m.l))} kcal`);if(fav)return saveTSet({repas:[...(tset().repas||[]),{id:"r"+Date.now().toString(36),nom:m.n,p:m.p,g:m.g,l:m.l}]})}).catch(report);
 };
-$("#mClear").onclick=()=>{["#mP","#mG","#mL"].forEach(id=>$(id).value="");renderMacroEd()};
-$("#mClose").onclick=()=>{mSel=null;$("#mEdit").hidden=true;renderTracking()};
-['#mP','#mG','#mL'].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#mSave").click()}}));
+$("#mClose").onclick=closeAdd;
+["#mP","#mG","#mL","#nNom"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#mSave").click()}}));
 function tClick(d,k){
   const m=METRICS.find(x=>x.k===k);
-  if(m&&(m.macro||m.calc)){openMacro(d);return}
-  mSel=null;$("#mEdit").hidden=true;const cur={...(state.tracking[d]||{})};
+  if(m&&m.nut){nDaySel=d;if(location.hash!=="#nutrition")location.hash="#nutrition";else renderTracking();return}
+  const cur={...(state.tracking[d]||{})};
   if(!m){cur[k]=!cur[k];if(!cur[k])delete cur[k];tSel=null;saveDay(d,cur).catch(report);return}
   tSel={d,k};renderTracking();
   const v=cur[k];$("#tEditVal").value=v??"";$("#tEditVal").focus();
@@ -2814,6 +2910,10 @@ $("#tNext").onclick=$("#nNext").onclick=()=>{if(tWeek<0){tWeek++;tSel=null;rende
 $("#tgProt").addEventListener("input",protHint);$("#tgLip").addEventListener("input",macroTargetHint);$("#tgKcal").addEventListener("input",macroTargetHint);
 $("#nGoalsForm").addEventListener("submit",e=>{
   e.preventDefault();const t=tset();const n=(id,def)=>{const v=parseFloat($(id).value);return isNaN(v)?def:v};
+  if(COACH_VIEW){const kv=parseFloat($("#tgKcal").value);
+    const cib={kcal:isNaN(kv)||kv<=0?null:Math.round(kv),protKg:n("#tgProt",2),lipKg:n("#tgLip",1),repasJour:Math.max(1,Math.round(n("#tgRepas",4)))};
+    C("reglages").set("coach",{cibles:cib,at:Date.now(),date:iso(today)}).then(()=>{state.coachSet={cibles:cib,at:Date.now(),date:iso(today)};render();toast(`Objectifs envoyés à ${esc(COACH_VIEW.nom)}`)}).catch(report);return}
+  if(state.coachSet)return;
   saveTSet({...t,cibles:{...t.cibles,protKg:n("#tgProt",t.cibles.protKg??2),repasJour:Math.max(1,Math.round(n("#tgRepas",t.cibles.repasJour??4))),lipKg:n("#tgLip",t.cibles.lipKg??1),kcal:(()=>{const v=parseFloat($("#tgKcal").value);return isNaN(v)||v<=0?null:Math.round(v)})(),kcalSource:(()=>{const v=parseFloat($("#tgKcal").value);return !isNaN(v)&&v>0&&Math.round(v)!==+t.cibles.kcal?"manuel":t.cibles.kcalSource||null})()},habitudes:t.habitudes.map(x=>({...x}))}).then(()=>{const b=e.target.querySelector(".btn");b.textContent="Cibles enregistrées";setTimeout(()=>b.textContent="Enregistrer mes cibles",1800)}).catch(report);
 });
 $("#tGoalsForm").addEventListener("submit",e=>{
@@ -2882,7 +2982,7 @@ function renderHB(){
   const r=hbCalc(),F=hbSexe==="f"?[447.593,9.247,3.098,4.330]:[88.362,13.397,4.799,5.677];
   $("#hbFormula").innerHTML=`Harris-Benedict (révisée, Roza &amp; Shizgal 1984), ${hbSexe==="f"?"femme":"homme"} :<br>BMR = ${f1(F[0])} + ${f1(F[1])} × poids + ${f1(F[2])} × taille − ${f1(F[3])} × âge`+
     (r.bmr!=null?`<br>&nbsp;&nbsp;&nbsp;&nbsp;= ${f1(F[0])} + ${f1(F[1])} × ${fmtNum(r.W)} + ${f1(F[2])} × ${fmtNum(r.H)} − ${f1(F[3])} × ${fmtNum(r.A)}<br>&nbsp;&nbsp;&nbsp;&nbsp;= <b>${fmtNum(Math.round(r.bmr))} kcal</b>`:`<br><span class="hint">Renseigne ton âge, ta taille et ton poids pour lancer le calcul.</span>`);
-  $("#hbTdee").textContent=r.tdee!=null?fmtNum(Math.round(r.tdee)):"—";
+  $("#hbTdee").textContent=r.tdee!=null?fmtNum(Math.round(r.tdee)):"—";$("#hbBmr").textContent=r.bmr!=null?fmtNum(Math.round(r.bmr)):"—";
   $("#hbTabs").innerHTML=HB_MODES.map(([k,nom,pc])=>`<button type="button" role="tab" data-o="${k}" aria-selected="${k===hbObj}">${nom}<small>${pc}</small></button>`).join("");
   $("#hbTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{hbObj=b.dataset.o;renderHB()});
   const mode=HB_MODES.find(x=>x[0]===hbObj)||HB_MODES[0];
@@ -3230,7 +3330,7 @@ function renderOnb(){
   el.innerHTML=`<h2>Bien démarrer</h2><div class="onb-p"><span class="hint">${n} étape${n>1?"s":""} sur 3</span><span class="bar"><i style="width:${n/3*100}%"></i></span></div>
     <ol class="onb-l">${steps.map(([t,d,h,ok],i)=>`<li class="${ok?"ok":""}"><span class="onb-n">${ok?"✓":i+1}</span><div><b>${t}</b><span class="hint">${d}</span></div>${ok?"":`<a class="btn" href="${h}" data-onb="${h}">Y aller</a>`}</li>`).join("")}</ol>
     <button type="button" class="ghost" id="onbHide">Masquer ce guide</button>`;
-  el.querySelectorAll("[data-onb]").forEach(a=>a.addEventListener("click",()=>{if(a.dataset.onb==="#nutrition")setTimeout(()=>{const h=document.querySelector(".kcalp>h2");if(h){openPanel(h);h.scrollIntoView({block:"start",behavior:"smooth"})}},80);if(a.dataset.onb==="#programme")setTimeout(()=>{const w=$("#wkEdit");w.open=true;w.dataset.user="1"},80)}));
+  el.querySelectorAll("[data-onb]").forEach(a=>a.addEventListener("click",()=>{if(a.dataset.onb==="#nutrition")setTimeout(()=>{const h=document.querySelector("#nGoalsTitle");const hc=$("#hbCalc");if(hc)hc.open=true;if(h){openPanel(h);h.scrollIntoView({block:"start",behavior:"smooth"})}},80);if(a.dataset.onb==="#programme")setTimeout(()=>{const w=$("#wkEdit");w.open=true;w.dataset.user="1"},80)}));
   $("#onbHide").onclick=()=>{try{localStorage.setItem("bald-onb-hide","1")}catch(e){}el.hidden=true};
 }
 function renderToday(){renderOnb();
@@ -3262,7 +3362,7 @@ function renderToday(){renderOnb();
   }).join("");
   $("#tdTrack").querySelectorAll("[data-tk]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.tk;
-    const mm=METRICS.find(m=>m.k===k);if(mm&&(mm.macro||mm.calc)){tWeek=0;location.hash="#nutrition";setTimeout(()=>openMacro(tIso),60)}else if(mm){tWeek=0;location.hash=mm.nut?"#nutrition":"#tracking";setTimeout(()=>{tClick(tIso,k);const ed=$("#tEdit");ed&&ed.scrollIntoView({block:"center",behavior:"smooth"})},60)}
+    const mm=METRICS.find(m=>m.k===k);if(mm&&mm.nut){tWeek=0;nDaySel=tIso;location.hash="#nutrition";setTimeout(()=>{if(mm.macro||mm.calc)openAdd(tIso);else $("#nDay").scrollIntoView({block:"center",behavior:"smooth"})},80)}else if(mm){tWeek=0;location.hash=mm.nut?"#nutrition":"#tracking";setTimeout(()=>{tClick(tIso,k);const ed=$("#tEdit");ed&&ed.scrollIntoView({block:"center",behavior:"smooth"})},60)}
     else tClick(tIso,k);
   });
 }
@@ -3282,8 +3382,8 @@ function render(){
 }
 function renderView(v){
   if(v==="accueil"){renderToday();goals()}
-  else if(v==="tracking"){renderTracking()}
-  else if(v==="nutrition"){renderTracking();renderMz();mzPrefill();protHint();hbFill();if(!$("#mEdit").hidden)renderFav()}
+  else if(v==="tracking"){renderTracking();renderMz();mzPrefill()}
+  else if(v==="nutrition"){renderTracking();coachSetUI();protHint();hbFill();if(!$("#nAdd").hidden)renderFav()}
   else if(v==="programme"){renderWeek();renderTpl();renderPlans()}
   else if(v==="seances"){if(!sessMode)renderSessDay();chart();journal();cmpSoon()}
   else if(v==="bilan"){renderBilan()}
@@ -3343,7 +3443,7 @@ grabSteps();
 document.addEventListener("input",e=>{const t=e.target;if(!t.matches||!t.matches("input[data-num]"))return;const v=t.value,c=v.replace(/,/g,".").replace(/[^0-9.\-]/g,"").replace(/(\..*)\./g,"$1");if(c!==v){const pos=t.selectionStart;t.value=c;try{t.setSelectionRange(pos,pos)}catch(_){}}},true);
 
 /* ---------- panneaux repliables sur téléphone ---------- */
-const MC_TITLES=["Mes calories cibles","Mes cibles quotidiennes","Synchroniser mes pas","Habitudes personnalisées","Mes cibles nutrition","Mensurations","Planifier une séance","Comment ça marche","Progression par exercice"];
+const MC_TITLES=["Mes objectifs","Mes cibles quotidiennes","Synchroniser mes pas","Habitudes personnalisées","Mensurations","Planifier une séance","Comment ça marche","Progression par exercice"];
 const isPhone=()=>window.matchMedia("(max-width:620px)").matches;
 document.querySelectorAll(".panel>h2").forEach(h=>{
   if(!MC_TITLES.includes(h.textContent.trim()))return;
@@ -3408,7 +3508,7 @@ $("#invForm").addEventListener("submit",async e=>{e.preventDefault();if(ROLE!=="
   finally{btn.disabled=false}});
 function resetCarnet(){
   if(STORE&&STORE.close)STORE.close();
-  state.sessions=[];state.goals=[];state.plans=[];state.tracking={};state.tset=null;state.comments={};state.mode="loading";
+  state.sessions=[];state.goals=[];state.plans=[];state.tracking={};state.tset=null;state.comments={};state.coachSet=null;state.mode="loading";
   sessMode=null;pendingPlan=null;editingSession=null;donePlans.clear();VP=[];
 }
 function openClient(c){
@@ -3416,7 +3516,7 @@ function openClient(c){
   if(!COACH_VIEW)MY_MODELES=JSON.parse(JSON.stringify((tset().modeles)||[]));
   resetCarnet();COACH_VIEW={id:c.id,nom:c.nom||c.email||"Client"};
   document.body.classList.add("coach-view");$("#coachBar").hidden=false;$("#coachBarName").textContent=COACH_VIEW.nom;
-  STORE=supabaseStore(SB,c.id,{ecriture:["prevues","commentaires"]});startData();
+  STORE=supabaseStore(SB,c.id,{ecriture:["prevues","commentaires","reglages/coach"]});startData();
   location.hash="#accueil";route();scrollTo({top:0});
 }
 function closeClient(){
@@ -3427,27 +3527,28 @@ function closeClient(){
 $("#coachBack").onclick=closeClient;
 
 /* ---------- nouveautés du coach (côté client) ---------- */
-const NEWS_SEEN_AT={com:0,prog:0};
+const NEWS_SEEN_AT={com:0,prog:0,obj:0};
 function seenKey(){return "bald-vu-"+(SB_USER?SB_USER.id:"x")}
-function getSeen(){try{return {com:0,prog:0,...JSON.parse(localStorage.getItem(seenKey())||"{}")}}catch(e){return {com:0,prog:0}}}
+function getSeen(){try{return {com:0,prog:0,obj:0,...JSON.parse(localStorage.getItem(seenKey())||"{}")}}catch(e){return {com:0,prog:0,obj:0}}}
 function newsCounts(){
-  if(ROLE!=="client"||COACH_VIEW)return {com:0,prog:0};
+  if(ROLE!=="client"||COACH_VIEW)return {com:0,prog:0,obj:0};
   const sn=getSeen();
   const com=Object.values(state.comments||{}).filter(c=>c&&c.at&&c.at>sn.com).length;
   const prog=(state.plans||[]).filter(p=>p.coach&&(p.createdAt||0)>sn.prog&&p.date>=iso(today)).length;
-  return {com,prog};
+  const cs=state.coachSet,obj=cs&&cs.at&&cs.at>sn.obj?1:0;
+  return {com,prog,obj};
 }
 function markSeen(v){
-  if(ROLE!=="client"||COACH_VIEW)return;const sn=getSeen(),k=v==="seances"?"com":v==="programme"?"prog":null;if(!k)return;
+  if(ROLE!=="client"||COACH_VIEW)return;const sn=getSeen(),k=v==="seances"?"com":v==="programme"?"prog":v==="nutrition"?"obj":null;if(!k)return;
   NEWS_SEEN_AT[k]=sn[k];sn[k]=Date.now();try{localStorage.setItem(seenKey(),JSON.stringify(sn))}catch(e){}
   setTimeout(coachNews,0);
 }
 function coachNews(){
   const n=newsCounts(),box=$("#coachNews");if(!box)return;
-  [["seances",n.com],["programme",n.prog]].forEach(([t,c])=>{const a=$("#tab-"+t);if(!a)return;let d=a.querySelector(".ndot");if(c){if(!d){d=document.createElement("i");d.className="ndot";a.appendChild(d)}d.textContent=c;a.setAttribute("aria-label",a.textContent.trim()+" ("+c+" nouveau"+(c>1?"x":"")+")")}else if(d){d.remove();a.removeAttribute("aria-label")}});
-  if(!n.com&&!n.prog){box.hidden=true;return}
+  [["seances",n.com],["programme",n.prog],["nutrition",n.obj]].forEach(([t,c])=>{const a=$("#tab-"+t);if(!a)return;let d=a.querySelector(".ndot");if(c){if(!d){d=document.createElement("i");d.className="ndot";a.appendChild(d)}d.textContent=c;a.setAttribute("aria-label",a.textContent.trim()+" ("+c+" nouveau"+(c>1?"x":"")+")")}else if(d){d.remove();a.removeAttribute("aria-label")}});
+  if(!n.com&&!n.prog&&!n.obj){box.hidden=true;return}
   box.hidden=false;
-  box.innerHTML=`<span class="cn-h">Du nouveau de ton coach</span>${n.prog?`<div class="cn-l"><span>📅 ${n.prog} séance${n.prog>1?"s":""} programmée${n.prog>1?"s":""} pour toi</span><a class="btn" href="#programme">Voir</a></div>`:""}${n.com?`<div class="cn-l"><span>💬 ${n.com} commentaire${n.com>1?"s":""} sur tes séances</span><a class="btn" href="#seances">Lire</a></div>`:""}`;
+  box.innerHTML=`<span class="cn-h">Du nouveau de ton coach</span>${n.prog?`<div class="cn-l"><span>📅 ${n.prog} séance${n.prog>1?"s":""} programmée${n.prog>1?"s":""} pour toi</span><a class="btn" href="#programme">Voir</a></div>`:""}${n.com?`<div class="cn-l"><span>💬 ${n.com} commentaire${n.com>1?"s":""} sur tes séances</span><a class="btn" href="#seances">Lire</a></div>`:""}${n.obj?`<div class="cn-l"><span>🎯 Nouveaux objectifs nutrition</span><a class="btn" href="#nutrition">Voir</a></div>`:""}`;
 }
 
 /* ---------- tableau de bord coach ---------- */

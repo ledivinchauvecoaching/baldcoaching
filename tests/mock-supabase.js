@@ -13,9 +13,11 @@
   const isMember=u=>!coachMode()||isCoach(u)||links().some(l=>l.client_id===u&&l.actif);
   const coaches=(c,cl)=>coachMode()&&isCoach(c)&&links().some(l=>l.client_id===cl&&l.coach_id===c&&l.actif);
   const COACH_W=["prevues","commentaires"];
+  const coachDoc=r=>r.collection==="reglages"&&r.doc_id==="coach";
+  const coachW=r=>COACH_W.includes(r.collection)||(coachMode()&&coachDoc(r));
   const canRead=(u,r)=>r.user_id===u||coaches(u,r.user_id);
-  const canWrite=(u,r)=>(r.user_id===u&&isMember(u))||(COACH_W.includes(r.collection)&&coaches(u,r.user_id));
-  const canDel=(u,r)=>r.user_id===u||(COACH_W.includes(r.collection)&&coaches(u,r.user_id));
+  const canWrite=(u,r)=>(r.user_id===u&&isMember(u)&&!(coachMode()&&coachDoc(r)))||(coachW(r)&&coaches(u,r.user_id));
+  const canDel=(u,r)=>(r.user_id===u&&!(coachMode()&&coachDoc(r)))||(coachW(r)&&coaches(u,r.user_id));
   let authCb=null;
   function q(table){
     const st={op:"select",filters:[],row:null};

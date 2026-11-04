@@ -22,13 +22,18 @@ with sync_playwright() as p:
     pg.click('#tab-tracking');pg.locator('#tTable .tcell[data-k="poids"]:not([disabled])').last.click();pg.fill('#tEditVal','');pg.type('#tEditVal','77,6');ok("virgule convertie",pg.input_value('#tEditVal')=="77.6",pg.input_value('#tEditVal'));pg.click('#tEditSave');pg.wait_for_timeout(150)
     # nutrition favs + macros
     pg.click('#tab-nutrition');pg.locator('#nTable .tcell[data-k="glucides"]:not([disabled])').last.click();pg.wait_for_timeout(150)
-    pg.fill('#mP','');pg.fill('#mG','');pg.fill('#mL','');pg.locator('[data-fav="r1"]').click();pg.locator('[data-fav="r3"]').click();pg.wait_for_timeout(100)
-    ok("repas favoris additionnés",pg.input_value('#mP')=="80" and pg.input_value('#mG')=="140",pg.input_value('#mP')+"/"+pg.input_value('#mG'))
+    k0=pg.locator('#nDay .nd-meals li').count()
+    pg.click('#nAddBtn');pg.wait_for_timeout(150);pg.locator('[data-fav="r1"]').click();pg.wait_for_timeout(250)
+    pg.click('#nAddBtn');pg.wait_for_timeout(150);pg.locator('[data-fav="r3"]').click();pg.wait_for_timeout(250)
+    t=pg.inner_text('#nDay')
+    ok("repas favoris ajoutés au jour",pg.locator('#nDay .nd-meals li').count()==k0+2 and 'Petit-déj habituel' in t and 'Riz poulet' in t,f"{k0}→{pg.locator('#nDay .nd-meals li').count()}")
+    ok("« Il te reste » affiché",'reste' in t.lower())
     pg.locator('#view-nutrition .panel').first.screenshot(path='/home/claude/rendus/v38-favoris.png')
-    pg.click('#mSave');pg.wait_for_timeout(200)
+    pg.click('#nAddBtn');pg.wait_for_timeout(150);pg.fill('#nNom','Collation');pg.fill('#mP','20');pg.fill('#mG','30');pg.fill('#mL','10');pg.click('#mSave');pg.wait_for_timeout(250)
     ok("kcal calculées",kcal:=pg.locator('#nTable td.today .tcell[data-k="kcal"]').inner_text().replace("\n"," "),kcal)
-    pg.click('.kcalp>h2') if pg.locator('.kcalp.collapsed').count() else None
-    ok("BMR Harris-Benedict",'1 818' in pg.inner_text('#hbFormula') or '1 810' in pg.inner_text('#hbFormula') or 'kcal' in pg.inner_text('#hbFormula'))
+    pg.click('#nGoalsTitle') if pg.locator('#nGoalsPanel.collapsed').count() else None
+    pg.evaluate("document.querySelector('#hbCalc').open=true");pg.wait_for_timeout(150)
+    ok("BMR Harris-Benedict",pg.inner_text('#hbBmr')!="—",pg.inner_text('#hbBmr'))
     # programme
     pg.click('#tab-programme');pg.wait_for_timeout(200)
     ok("semaine type affichée",pg.locator('.cal-c.rec').count()>=2)

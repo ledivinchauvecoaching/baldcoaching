@@ -31,7 +31,8 @@ with sync_playwright() as p:
     pg.click('#sessionForm button[type=submit]');pg.wait_for_timeout(300)
     # nutrition : repas favori
     pg.evaluate("location.hash='#nutrition'");pg.wait_for_timeout(200);pg.locator('#nTable .tcell[data-k="glucides"]:not([disabled])').last.click();pg.wait_for_timeout(150)
-    pg.click('#mFavNew summary');pg.fill('#fNom',X);pg.fill('#fP','10');pg.click('#fSave');pg.wait_for_timeout(200);pg.locator('.fchip [data-fav]').last.click();pg.wait_for_timeout(150)
+    pg.click('#nAddBtn');pg.wait_for_timeout(150);pg.fill('#nNom',X);pg.fill('#mP','10');pg.check('#nFav');pg.click('#mSave');pg.wait_for_timeout(300)
+    pg.click('#nAddBtn');pg.wait_for_timeout(150);pg.locator('.fchip [data-fav]').last.click();pg.wait_for_timeout(250)
     # parcourir tous les écrans pour déclencher les rendus
     for v in ['accueil','tracking','programme','seances','nutrition','bilan']:
         pg.evaluate(f"location.hash='#{v}'");pg.wait_for_timeout(250)

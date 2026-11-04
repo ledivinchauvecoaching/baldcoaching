@@ -20,6 +20,8 @@ Application de suivi (séances, programme, tracking, nutrition, bilan) : une seu
 
 4. **Inscription sur invitation** : colle `supabase/03_inscription_sur_invitation.sql` et **Run**, puis *Authentication › Auth Hooks › Before User Created* : type **Postgres**, schéma `public`, fonction `hook_inscription_sur_invitation`. Un nouveau compte (Google ou lien e-mail) n'est alors créé que si son adresse a une invitation en cours ; le lien d'invitation ne fonctionne que pour cette adresse.
 
+5. **Objectifs nutrition fixés par le coach** : colle `supabase/04_objectifs_coach.sql` et **Run**. Le coach peut alors écrire un seul document chez son client (`reglages/coach` : calories, protéines, lipides, repas par jour) ; le client le lit sans pouvoir le modifier.
+
 Tant que ce script n'est pas exécuté, l'appli fonctionne comme avant (chacun son carnet, sans espace coach).
 
 ## Développement

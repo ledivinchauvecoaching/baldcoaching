@@ -91,6 +91,15 @@ try:
     pp=[r for r in db(pg) if r['user_id']=='paul' and r['collection']=='prevues']
     ok("séance programmée dans le carnet de Paul",len(pp)==1 and pp[0]['data'].get('coach') and pp[0]['data'].get('titre')=='UPPER')
     pg.screenshot(path='/home/claude/rendus/v50-vue-coach-programme.png')
+    # objectifs nutrition fixés par le coach
+    pg.evaluate("location.hash='#nutrition'");pg.wait_for_timeout(500)
+    h=pg.locator('#nGoalsTitle')
+    if pg.evaluate("document.querySelector('#nGoalsPanel').classList.contains('collapsed')"):h.click();pg.wait_for_timeout(200)
+    ok("vue coach : panneau Mes objectifs disponible",pg.is_visible('#tgKcal') and 'Envoyer' in pg.inner_text('#nGoalsForm button[type=submit]'))
+    pg.fill('#tgKcal','2400');pg.fill('#tgProt','2,2');pg.click('#nGoalsForm button[type=submit]');pg.wait_for_timeout(500)
+    cs=[r for r in db(pg) if r['user_id']=='paul' and r['collection']=='reglages' and r['doc_id']=='coach']
+    ok("objectifs enregistrés chez Paul",len(cs)==1 and cs[0]['data']['cibles']['kcal']==2400,str(cs[0]['data']['cibles'] if cs else ''))
+    pg.locator('#nGoalsPanel').screenshot(path='/home/claude/rendus/v54-coach-objectifs.png')
     # écriture interdite : tracking de Paul
     n0=len(db(pg));pg.evaluate("location.hash='#tracking'");pg.wait_for_timeout(300)
     r=pg.evaluate("async()=>{const sb=supabase.createClient();const a=await sb.from('carnet_docs').upsert({user_id:'paul',collection:'seances',doc_id:'faux',data:{}});return a.error&&a.error.message}")
@@ -105,9 +114,17 @@ try:
     pg.screenshot(path='/home/claude/rendus/v52-tableau-de-bord.png',full_page=True)
     # notifications chez Paul
     as_user(pg,PAUL,'#accueil');pg.wait_for_timeout(400)
-    ok("Paul : encart « Du nouveau de ton coach »",pg.is_visible('#coachNews') and 'commentaire' in pg.inner_text('#coachNews') and 'programmée' in pg.inner_text('#coachNews'),pg.inner_text('#coachNews').replace('\n',' | ') if pg.is_visible('#coachNews') else '')
+    ok("Paul : encart « Du nouveau de ton coach »",pg.is_visible('#coachNews') and 'commentaire' in pg.inner_text('#coachNews') and 'programmée' in pg.inner_text('#coachNews') and 'objectifs' in pg.inner_text('#coachNews'),pg.inner_text('#coachNews').replace('\n',' | ') if pg.is_visible('#coachNews') else '')
     ok("Paul : pastilles sur Séance et Prog.",pg.locator('#tab-seances .ndot').count()==1 and pg.locator('#tab-programme .ndot').count()==1)
     pg.screenshot(path='/home/claude/rendus/v52-client-nouveautes.png')
+    pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(400)
+    pg.evaluate("location.hash='#nutrition'");pg.wait_for_timeout(500)
+    if pg.evaluate("document.querySelector('#nGoalsPanel').classList.contains('collapsed')"):pg.click('#nGoalsTitle');pg.wait_for_timeout(200)
+    ok("Paul : objectifs du coach affichés et verrouillés",'fixés par ton coach' in pg.inner_text('#coachSetNote') and pg.is_disabled('#tgKcal') and pg.input_value('#tgKcal')=='2400')
+    ok("Paul : « Il te reste » calculé sur 2 400 kcal",'2 400' in pg.inner_text('#nDay').replace('\u202f',' ').replace('\xa0',' '),pg.inner_text('#nDay .nd-h'))
+    pg.locator('#nGoalsPanel').screenshot(path='/home/claude/rendus/v54-client-objectifs.png')
+    r=pg.evaluate("async()=>{const sb=supabase.createClient();const a=await sb.from('carnet_docs').upsert({user_id:'paul',collection:'reglages',doc_id:'coach',data:{cibles:{kcal:5000}}});return a.error&&a.error.message}")
+    ok("Paul ne peut pas modifier les objectifs du coach",bool(r))
     pg.evaluate("location.hash='#seances'");pg.wait_for_timeout(400)
     ok("commentaire marqué « Nouveau »",pg.locator('#journal .tag-new').count()==1)
     pg.evaluate("location.hash='#accueil'");pg.wait_for_timeout(300)

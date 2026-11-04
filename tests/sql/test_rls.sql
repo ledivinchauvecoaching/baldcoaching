@@ -104,3 +104,24 @@ reset role; set role anon; select pg_temp.as_user('');
 select count(*) from public.carnet_docs;
 \echo T34 anon mon_statut (attendu ERREUR)
 select public.mon_statut();
+-- ===== migration 04 : objectifs fixés par le coach =====
+reset role; update public.coaching set actif=true; set role authenticated;
+select pg_temp.as_user(:'C');
+\echo T35 coach fixe les objectifs de Paul (attendu INSERT 0 1)
+insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'P','reglages','coach','{"cibles":{"kcal":2400}}');
+\echo T36 coach ecrit reglages/tracking de Paul (attendu ERREUR)
+insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'P','reglages','tracking','{}');
+select pg_temp.as_user(:'P');
+\echo T37 Paul lit les objectifs du coach (attendu 1)
+select count(*) from public.carnet_docs where user_id=:'P' and collection='reglages' and doc_id='coach';
+\echo T38 Paul modifie les objectifs du coach (attendu UPDATE 0)
+update public.carnet_docs set data='{"cibles":{"kcal":5000}}' where user_id=:'P' and collection='reglages' and doc_id='coach';
+\echo T39 Paul supprime les objectifs du coach (attendu DELETE 0)
+delete from public.carnet_docs where user_id=:'P' and collection='reglages' and doc_id='coach';
+\echo T40 Paul cree son propre reglages/coach chez Lea (attendu ERREUR)
+insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'L','reglages','coach','{}');
+\echo T41 Paul ecrit ses propres reglages/tracking (attendu INSERT 0 1)
+insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'P','reglages','tracking','{"cibles":{}}');
+select pg_temp.as_user(:'L');
+\echo T42 Lea fixe des objectifs a Paul (attendu ERREUR)
+insert into public.carnet_docs(user_id,collection,doc_id,data) values (:'P','reglages','coach2','{}');
