@@ -15,7 +15,7 @@ with sync_playwright() as p:
     pg.goto('file:///tmp/claude-0/page.html');pg.wait_for_timeout(500);pg.click('.theme-sw [data-th="light"]')
     ok("accueil par défaut",pg.inner_text('#pageTitle').upper()=="ACCUEIL")
     ok("6 onglets en bas",pg.locator('nav.tabs a').count()==6)
-    ok("suggestion dans l'en-tête",pg.locator('header .sugg-btn').count()==1)
+    ok("suggestion dans l'en-tête",pg.locator('header #tab-suggestion').count()==1)
     ok("bandeau sans UA","UA" not in pg.inner_text('.week'),pg.inner_text('.week').replace("\n"," "))
     ok("objectif lié squat",pg.locator('.goal',has_text='Squat à 100 kg').locator('.gauto').count()==1)
     # tracking + comma
@@ -88,7 +88,7 @@ with sync_playwright() as p:
     ok("palier +2,5 kg appliqué",pv==['32.5','32.5','32.5'],str(pv))
     pg.click('#pCancel') if pg.is_visible('#pCancel') else None
     # suggestion via header
-    pg.click('header .sugg-btn');pg.wait_for_timeout(150);ok("page suggestion",pg.inner_text('#pageTitle').upper()=="SUGGESTION")
+    pg.click('header #tab-suggestion');pg.wait_for_timeout(150);ok("page suggestion",pg.inner_text('#pageTitle').upper()=="SUGGESTION")
     # onboarding (empty data)
     src=open('/tmp/claude-0/page.html').read()
     a='const b=$("#banner");b.hidden=false;b.classList.add("demo");';assert src.count(a)==1
