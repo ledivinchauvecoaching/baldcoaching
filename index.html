@@ -1211,7 +1211,7 @@ body.locked{overflow:hidden}
     <div class="cv-band">
       <div class="cv-tools">
         <span class="acct-w" id="acctW" hidden><button type="button" class="sugg-btn acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><b class="ini" id="acctIni" aria-hidden="true"></b><span id="acctName">Se connecter</span></button>
-          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><a class="btn" href="#clients" id="acctClients" hidden style="text-align:center;text-decoration:none">Mes clients</a><span class="hint" id="acctCoach" hidden style="margin:0">Suivi par @bald.coaching</span><button type="button" class="ghost" id="acctInstall" hidden>📲 Installer l'appli</button><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
+          <div class="acct-menu" id="acctMenu" hidden><span class="acct-who" id="acctWho"></span><span class="acct-mail" id="acctMail"></span><a class="btn" href="#clients" id="acctClients" hidden style="text-align:center;text-decoration:none">Mes clients</a><span class="hint" id="acctCoach" hidden style="margin:0">Suivi par @bald.coaching</span><button type="button" class="ghost" id="acctInstall" hidden>📲 Installer l'appli</button><button type="button" class="ghost" id="acctPush" hidden>🔔 Activer les notifications</button><button type="button" class="ghost" id="logout">Se déconnecter</button></div></span>
   <a class="sugg-btn" id="tab-suggestion" href="#suggestion" title="Une idée, une remarque ?" aria-label="Suggestion"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span>Suggestion</span></a>
       </div>
       <div class="theme-sw" role="group" aria-label="Apparence">
@@ -1640,6 +1640,7 @@ body.locked{overflow:hidden}
   <!-- OBJECTIFS -->
   <section id="view-accueil" hidden style="display:flex;flex-direction:column;gap:16px">
     <div class="cnews" id="coachNews" hidden></div>
+    <div class="cnews" id="pushAsk" hidden><div class="cn-l"><span>🔔 Active les notifications pour être prévenu des nouveautés de ton suivi.</span><span style="display:flex;gap:6px"><button type="button" class="btn" id="pushAskGo">Activer</button><button type="button" class="ghost" id="pushAskNo">Non merci</button></span></div></div>
     <div class="panel onb" id="onb" hidden></div>
     <div class="today-grid">
       <div class="panel"><h2>Séance du jour</h2><div id="tdSession"></div></div>
@@ -2463,7 +2464,8 @@ function firstName(u){
 function acctHeader(){
   const w=$("#acctW");if(!w)return;if(!HOSTED){w.hidden=true;return}
   w.hidden=false;document.body.classList.add("has-acct");const b=$("#acctBtn"),menu=$("#acctMenu");
-  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctInstall").hidden=isStandalone();$("#acctInstall").onclick=()=>{menu.hidden=true;maybeInstall(true)};$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
+  if(SB_USER){$("#acctName").textContent=firstName(SB_USER);b.classList.add("on");b.title="Mon compte";b.setAttribute("aria-label","Mon compte : "+firstName(SB_USER));$("#acctMail").textContent=SB_USER.email||"";$("#acctInstall").hidden=isStandalone();$("#acctInstall").onclick=()=>{menu.hidden=true;maybeInstall(true)};
+    pushUI();$("#acctPush").onclick=()=>{menu.hidden=true;pushEnable()};$("#acctClients").hidden=ROLE!=="coach";$("#acctCoach").hidden=ROLE!=="client";$("#acctIni").textContent=firstName(SB_USER).charAt(0);$("#acctWho").textContent="Bonjour "+firstName(SB_USER)+" !";
     b.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;b.setAttribute("aria-expanded",String(!menu.hidden))};
     $("#logout").onclick=async()=>{clearDraft();try{["bald-last-user","bald-off-"+SB_USER.id].forEach(k=>localStorage.removeItem(k))}catch(e){}try{await SB.auth.signOut()}catch(e){}location.reload()}}
   else{$("#acctName").textContent="Se connecter";b.classList.remove("on");b.title="Se connecter";b.setAttribute("aria-label","Se connecter");menu.hidden=true;
@@ -2471,6 +2473,26 @@ function acctHeader(){
 }
 document.addEventListener("click",e=>{const m=$("#acctMenu");if(m&&!m.hidden&&!e.target.closest("#acctW")){m.hidden=true;$("#acctBtn").setAttribute("aria-expanded","false")}});
 function showAccount(){acctHeader();setTimeout(maybeInstall,1500)}
+/* ---------- notifications push ---------- */
+const pushOK=()=>HOSTED&&!!(window.BALD_CONFIG&&BALD_CONFIG.vapidPublicKey)&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+function b64u(s){const p="=".repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function pushUI(){const b=$("#acctPush");if(!b)return;const ios=devKind().startsWith("ios");
+  if(!HOSTED||!(window.BALD_CONFIG&&BALD_CONFIG.vapidPublicKey)){b.hidden=true;return}
+  if(!pushOK()){b.hidden=!ios;b.textContent="🔔 Notifications : installe d'abord l'appli";return}
+  b.hidden=false;let on=false;try{const r=await navigator.serviceWorker.getRegistration();const sub=r&&await r.pushManager.getSubscription();on=!!sub&&Notification.permission==="granted"}catch(e){}
+  b.textContent=on?"🔕 Couper les notifications":"🔔 Activer les notifications";b.dataset.on=on?"1":""}
+async function pushEnable(){
+  if(!pushOK()){if(devKind().startsWith("ios")){toast("Sur iPhone, installe d'abord l'appli sur l'écran d'accueil, puis ouvre-la depuis l'icône pour activer les notifications.",true);maybeInstall(true)}else toast("Les notifications ne sont pas disponibles sur ce navigateur.");return}
+  const b=$("#acctPush");
+  try{const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+    if(b&&b.dataset.on){if(sub){await SB.from("abonnements_push").delete().eq("endpoint",sub.endpoint);await sub.unsubscribe()}toast("Notifications coupées sur cet appareil");pushUI();return}
+    const perm=await Notification.requestPermission();if(perm!=="granted"){toast("Notifications refusées : tu peux les autoriser plus tard dans les réglages du téléphone.");return}
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(BALD_CONFIG.vapidPublicKey)});
+    const j=sub.toJSON();const r=await SB.from("abonnements_push").upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth});if(r&&r.error)throw r.error;
+    toast(`<b>Notifications activées</b><br>${ROLE==="coach"?"Tu seras prévenu quand un client envoie son bilan.":"Tu seras prévenu quand ton coach commente ou programme une séance."}`,true);pushUI();
+  }catch(e){toast("L'activation n'a pas abouti. Réessaie dans un instant.")}
+}
+
 /* ---------- « Installe l'appli » (une fois par appareil) ---------- */
 let instEvt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();instEvt=e});
 const INST_K="bald-install";
@@ -2485,7 +2507,7 @@ function maybeInstall(force){
   const share=`<span class="ico" aria-label="bouton Partager"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>`;
   const dots=`<span class="ico" aria-label="menu">⋮</span>`;
   let h;
-  if(k==="ios")h=`<p style="margin:0">En 3 gestes, l'appli s'ouvre comme une vraie application, en plein écran :</p><ol><li><span>Touche ${share} <b>Partager</b>, en bas de Safari.</span></li><li><span>Fais défiler et choisis <b>« Sur l'écran d'accueil »</b>.</span></li><li><span>Touche <b>Ajouter</b> : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol><p class="note">Ouvre ensuite toujours l'appli depuis cette icône, et connecte-toi une fois <b>avec Google</b> à l'intérieur : sur iPhone, l'appli installée ne partage pas la connexion de Safari.</p>`;
+  if(k==="ios")h=`<p style="margin:0">En 3 gestes, l'appli s'ouvre comme une vraie application, en plein écran :</p><ol><li><span>Touche ${share} <b>Partager</b>, en bas de Safari.</span></li><li><span>Fais défiler et choisis <b>« Sur l'écran d'accueil »</b>.</span></li><li><span>Touche <b>Ajouter</b> : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol><p class="note">Ouvre ensuite toujours l'appli depuis cette icône, et connecte-toi une fois <b>avec Google</b> à l'intérieur : sur iPhone, l'appli installée ne partage pas la connexion de Safari. Dans l'appli installée, active aussi <b>🔔 les notifications</b> depuis le menu de ton compte.</p>`;
   else if(k==="ios-autre")h=`<ol><li><span>Touche ${share} <b>Partager</b> (en haut à droite ou en bas selon le navigateur).</span></li><li><span>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</span></li></ol><p class="note">Si l'option n'apparaît pas, ouvre ce site dans <b>Safari</b> et recommence. Connecte-toi ensuite une fois avec Google dans l'appli installée.</p>`;
   else if(k==="android")h=instEvt?`<p style="margin:0">Ajoute l'appli à ton écran d'accueil : elle s'ouvrira en plein écran, comme une vraie application.</p><button type="button" class="btn" id="instGo">📲 Installer BaldCoaching</button>`:`<ol><li><span>Touche ${dots} <b>le menu</b>, en haut à droite de Chrome.</span></li><li><span>Choisis <b>« Installer l'application »</b> (ou « Ajouter à l'écran d'accueil »).</span></li><li><span>Confirme : l'icône <b>BaldCoaching</b> apparaît sur ton écran.</span></li></ol>`;
   else h=`<p style="margin:0">Sur ton téléphone, ouvre <b>${esc(location.host)}</b> puis :</p><ol><li><span><b>iPhone</b> : Safari › ${share} Partager › « Sur l'écran d'accueil ».</span></li><li><span><b>Android</b> : Chrome › ${dots} › « Installer l'application ».</span></li></ol>${instEvt?`<button type="button" class="btn" id="instGo">Installer sur cet ordinateur</button>`:""}`;
@@ -3671,7 +3693,10 @@ function renderTodayNut(){
   el.innerHTML=`<div class="tdn">${big}${kt?bar(kc,kt):""}<div class="nd-mac">${mac}</div><button type="button" class="btn" id="tdNutAdd">+ Ajouter un repas</button></div>`;
   $("#tdNutAdd").onclick=()=>{tWeek=0;nDaySel=d;location.hash="#nutrition";setTimeout(()=>openAdd(d),120)};
 }
-function renderToday(){renderOnb();renderTodayNut();
+function renderPushAsk(){const el=$("#pushAsk");if(!el)return;let no=false;try{no=!!localStorage.getItem("bald-push-ask")}catch(e){}
+  el.hidden=!(pushOK()&&SB_USER&&!COACH_VIEW&&(isStandalone()||devKind()==="android")&&Notification.permission==="default"&&!no);
+  $("#pushAskGo").onclick=()=>{el.hidden=true;pushEnable()};$("#pushAskNo").onclick=()=>{el.hidden=true;try{localStorage.setItem("bald-push-ask","1")}catch(e){}}}
+function renderToday(){renderOnb();renderTodayNut();renderPushAsk();
   const tIso=iso(today);
   const pl=allPlans().filter(x=>!donePlans.has(x.id)).sort((a,b)=>a.date.localeCompare(b.date));
   const p=pl.find(x=>x.date===tIso)||pl.find(x=>x.date<tIso)||pl.find(x=>x.date>tIso);

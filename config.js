@@ -7,5 +7,7 @@ window.BALD_CONFIG = {
   supabaseUrl: "https://eeuyskeovxjviqslbpth.supabase.co",
   supabaseAnonKey: "sb_publishable_h5C-AqX7CDaqdN4N3014eA_wiGNgnGg",
   // Bouton "Continuer avec Google" : passer à true une fois Google activé dans Supabase
-  google: true
+  google: true,
+  // Notifications push : clé PUBLIQUE (la clé privée va uniquement dans les secrets Supabase)
+  vapidPublicKey: "BCmTBHw0g8wcpeXHLjM39rISHFE9KUKg_YP0VXNfP26IzbgOcHx5IyH1ltiTswTFiehJsE8idH2dlSvtXFvH79A"
 };

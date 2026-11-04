@@ -22,6 +22,10 @@ Application de suivi (séances, programme, tracking, nutrition, bilan) : une seu
 
 5. **Objectifs nutrition fixés par le coach** : colle `supabase/04_objectifs_coach.sql` et **Run**. Le coach peut alors écrire un seul document chez son client (`reglages/coach` : calories, protéines, lipides, repas par jour) ; le client le lit sans pouvoir le modifier.
 
+6. **Bilan hebdomadaire + photos** : `supabase/05_bilans_photos.sql` (collection `bilans`, espace de stockage privé `photos`).
+7. **Notifications push** : `supabase/06_notifications.sql`, puis la fonction `supabase/functions/notifier` (Edge Functions), ses secrets `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`, et un Database Webhook sur `carnet_docs` (INSERT, UPDATE) vers cette fonction.
+8. **Sauvegarde** : secrets GitHub `SUPABASE_SERVICE_ROLE_KEY` et `BACKUP_PASSPHRASE` (workflow `Sauvegarde`, lundi et jeudi). Déchiffrer : `openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in sauvegarde-AAAA-MM-JJ.json.enc -out sauvegarde.json`.
+
 Tant que ce script n'est pas exécuté, l'appli fonctionne comme avant (chacun son carnet, sans espace coach).
 
 ## Développement

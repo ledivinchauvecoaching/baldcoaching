@@ -25,10 +25,10 @@ jobs:
           PGUSER: postgres
         run: |
           set -e
-          for t in test_rls test_hook test_photos; do
+          for t in test_rls test_hook test_photos test_push; do
             psql -q -c "drop database if exists t" && psql -q -c "create database t"
             psql -d t -q -f tests/sql/supabase_min.sql >/dev/null 2>&1
-            for m in schema 02_espace_coach 03_inscription_sur_invitation 04_objectifs_coach 05_bilans_photos; do
+            for m in schema 02_espace_coach 03_inscription_sur_invitation 04_objectifs_coach 05_bilans_photos 06_notifications; do
               psql -d t -q -v ON_ERROR_STOP=1 -f supabase/$m.sql >/dev/null
             done
             echo "== $t"; psql -d t -f tests/sql/$t.sql 2>&1 | python3 outils/verifier_sql.py
