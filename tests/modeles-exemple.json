@@ -1,0 +1,747 @@
+[
+ {
+  "id": "mx1",
+  "nom": "QUADS MOLLETS",
+  "titre": "QUADS MOLLETS",
+  "type": "Musculation",
+  "notes": "",
+  "exercices": [
+   {
+    "nom": "Leg extension (machine)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 20
+     },
+     {
+      "charge": null,
+      "reps": 20
+     }
+    ],
+    "repos": 60,
+    "ss": false,
+    "consigne": "20 reps · tempo rapide · Série de pré-fatigue"
+   },
+   {
+    "nom": "Hack squats",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": 180,
+    "ss": false,
+    "consigne": "10-15 reps · Série en lourd"
+   },
+   {
+    "nom": "Goblet squats (Squat lourd avec un haltère devant soi)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "12-15 reps · Série en lourd"
+   },
+   {
+    "nom": "Leg extension unilatéral",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "12-15 reps · Bien gérer la fatigue"
+   },
+   {
+    "nom": "Abducteur machine",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     }
+    ],
+    "repos": 60,
+    "ss": false,
+    "consigne": "15-20 reps · Attention à bien faire une montée en gamme"
+   },
+   {
+    "nom": "Extensions mollets debout",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     }
+    ],
+    "repos": 60,
+    "ss": false,
+    "consigne": "15-20 reps · Faire sur la smith"
+   }
+  ]
+ },
+ {
+  "id": "mx2",
+  "nom": "DOS TRICEPS",
+  "titre": "DOS TRICEPS",
+  "type": "Musculation",
+  "notes": "",
+  "exercices": [
+   {
+    "nom": "Rowing à un bras avec haltère",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "8-12 reps · tempo lent · Main en pronation"
+   },
+   {
+    "nom": "Rowing unilatéral à la poulie",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "10-15 reps · tempo lent · Rowing poulie basse prise neutre coudes serrés"
+   },
+   {
+    "nom": "Tirage poitrine prise serrée",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "10-15 reps · Bien étirer la position"
+   },
+   {
+    "nom": "Pull-over à la poulie haute bras tendus",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "12-18 reps · Se concentrer sur la contraction côté gauche"
+   },
+   {
+    "nom": "Extensions triceps au-dessus de la tête à la poulie avec corde",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "10-15 reps · tempo lent · Bien serrer les coudes"
+   },
+   {
+    "nom": "Extensions triceps à la poulie avec barre en V",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "12-15 reps · Bien serrer les coudes"
+   },
+   {
+    "nom": "Crunch à la poulie haute avec corde",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     }
+    ],
+    "repos": 60,
+    "ss": false,
+    "consigne": "15-20 reps · Garder le dos droit pour solliciter les lombaires"
+   },
+   {
+    "nom": "Relevé de buste dos droit (lombaires)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": 60,
+    "ss": false,
+    "consigne": "8-12 reps · Surcharge progressive obligatoire"
+   }
+  ]
+ },
+ {
+  "id": "mx3",
+  "nom": "PECS BICEPS",
+  "titre": "PECS BICEPS",
+  "type": "Musculation",
+  "notes": "",
+  "exercices": [
+   {
+    "nom": "Développé incliné à la barre guidée",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "8-12 reps"
+   },
+   {
+    "nom": "Développé assis à la machine (Chest Press)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Écartés à la machine (Pec Deck)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": 120,
+    "ss": false,
+    "consigne": "8-12 reps"
+   },
+   {
+    "nom": "Curl incliné aux haltères (paumes écartées vers l'extérieur)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "10-15 reps"
+   },
+   {
+    "nom": "Curl à la poulie basse / à la barre droite",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "8-12 reps"
+   },
+   {
+    "nom": "Curl marteau en travers du corps (Pinwheel curl)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Élévations postérieures à la machine Pec Dec (Oiseau inversé)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": 90,
+    "ss": false,
+    "consigne": "12-15 reps"
+   }
+  ]
+ },
+ {
+  "id": "mx4",
+  "nom": "ISCHIO FESSIERS",
+  "titre": "ISCHIO FESSIERS",
+  "type": "Musculation",
+  "notes": "",
+  "exercices": [
+   {
+    "nom": "Hip thrust à la barre guidée",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "8-12 reps"
+   },
+   {
+    "nom": "Soulevé de terre roumain (RDL)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Leg curl assis (machine)",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps · Serrer les fessiers pour accentuer la contraction de l'ischio"
+   },
+   {
+    "nom": "Kickback fessier à la poulie, en appui sur un banc",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Adducteur machine",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Extensions mollets debout",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     },
+     {
+      "charge": null,
+      "reps": 15
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "15-20 reps"
+   }
+  ]
+ },
+ {
+  "id": "mx5",
+  "nom": "UPPER",
+  "titre": "UPPER",
+  "type": "Musculation",
+  "notes": "",
+  "exercices": [
+   {
+    "nom": "Élévations latérales à la poulie basse derrière le dos",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     },
+     {
+      "charge": null,
+      "reps": 10
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "10-15 reps"
+   },
+   {
+    "nom": "Haussements d'épaules à la barre guidée",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps"
+   },
+   {
+    "nom": "Extensions triceps au-dessus de la tête",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": null,
+    "ss": true,
+    "consigne": "8-12 reps · Superset triceps"
+   },
+   {
+    "nom": "Curl à la barre EZ",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "8-12 reps · Superset triceps"
+   },
+   {
+    "nom": "Curl incliné aux haltères alterné",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": true,
+    "consigne": "12-15 reps · Superset biceps"
+   },
+   {
+    "nom": "Extensions triceps à la poulie avec corde",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps · Superset biceps"
+   },
+   {
+    "nom": "Tirage vertical avec poignée en V",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": null,
+    "ss": true,
+    "consigne": "8-12 reps · Superset pecs"
+   },
+   {
+    "nom": "Écartés à la poulie pour les pectoraux",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 8
+     },
+     {
+      "charge": null,
+      "reps": 8
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "8-12 reps · Superset pecs"
+   },
+   {
+    "nom": "Crunch à la poulie haute avec corde",
+    "sets": [
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     },
+     {
+      "charge": null,
+      "reps": 12
+     }
+    ],
+    "repos": null,
+    "ss": false,
+    "consigne": "12-15 reps"
+   }
+  ]
+ }
+]

@@ -672,6 +672,7 @@ td.ref .schip b{color:var(--brown);font-weight:600}
   .ptable tr:last-child{border-bottom:0}
   .ptable td{display:contents}
   .ptable td:first-child b{grid-column:1/-1}
+  .ptable td:first-child .pt-cs{grid-column:1/-1;margin-top:-2px}
   .ptable td[data-l]::before{content:attr(data-l);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;align-self:center}
 }
 .ptable th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
@@ -681,6 +682,20 @@ td.ref .schip b{color:var(--brown);font-weight:600}
 .delta.up{color:var(--easy)}
 .delta.down{color:var(--hard)}
 .plan .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.p-week{margin:14px 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--brown);border:0;padding:0}
+.p-week:first-child{margin-top:0}
+.p-sum{display:flex;flex-direction:column;gap:3px;font-size:14px}
+.p-sum .delta{margin-left:4px}
+.p-ex{margin:0;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.p-tog{align-self:flex-start;background:none;border:0;padding:0;color:var(--accent);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:underline}
+.plan.now{border-left:5px solid var(--accent)}
+.pt-cs{display:block;font-size:11.5px;color:var(--muted);font-style:italic;font-weight:400;margin-top:2px}
+.plan .acts .ghost{padding:6px 10px;font-size:13px}
+.ghost-strong{background:var(--surface);border:1px solid var(--accent);color:var(--accent);font-weight:700}
+.wk-sum{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.wk-sum li{display:flex;gap:8px;align-items:baseline;font-size:13.5px;border:1px solid var(--line);padding:6px 8px;background:var(--surface)}
+.wk-sum li b{font-size:11.5px;text-transform:uppercase;color:var(--brown);min-width:28px}
+.wk-sum li.off{color:var(--muted);background:none}
 .plan .acts .btn{padding:8px 12px}
 .fromplan{display:flex;justify-content:space-between;gap:8px;align-items:center;background:var(--accent-soft);padding:8px 12px;font-size:14px}
 /* ===== DA @bald.coaching ===== */
@@ -1517,6 +1532,7 @@ body.locked{overflow:hidden}
     <div class="panel wk-panel" id="wkPanel" style="grid-column:1/-1">
       <h2>Ma semaine type</h2>
       <div class="cal" id="cal"></div>
+      <ul class="wk-sum" id="wkSum"></ul>
       <label class="pal-kg"><span class="label">Palier de charge</span><select id="palSel"><option value="0.5">+0,5 kg</option><option value="1">+1 kg</option><option value="1.25">+1,25 kg</option><option value="2">+2 kg</option><option value="2.5">+2,5 kg</option><option value="5">+5 kg</option></select><span class="hint">ajouté quand toutes les séries de travail sont réussies</span></label>
       <details class="wk-edit" id="wkEdit">
         <summary>Choisir la séance de chaque jour</summary>
@@ -2122,6 +2138,7 @@ function renderWeek(){
   $("#wkHint").innerHTML=M.length?"La séance choisie se programme automatiquement chaque semaine ce jour-là, avec la surcharge progressive calculée sur ta dernière performance.":"Pour commencer, crée tes séances types (Séance 1, Push, Legs…) avec le formulaire « Planifier une séance », puis « Enregistrer comme modèle ». Tu pourras ensuite les placer ici.";
   $("#wkDays").querySelectorAll("select").forEach(sel=>sel.onchange=()=>{const t=tset();const S={...(t.semaine||{})};if(sel.value)S[sel.dataset.wd]=sel.value;else delete S[sel.dataset.wd];saveTSet({semaine:S,semaineDepuis:t.semaineDepuis||iso(today)}).then(()=>toast(sel.value?`${WK.find(w=>w[0]===sel.dataset.wd)[1]} : ${esc(sel.options[sel.selectedIndex].text)} chaque semaine`:`${WK.find(w=>w[0]===sel.dataset.wd)[1]} : repos`)).catch(report)});
   const n=Object.values(S).filter(Boolean).length;
+  $("#wkSum").innerHTML=n?WK.map(([k,nom])=>{const m=M.find(x=>x.id===S[k]);return `<li class="${m?"":"off"}"><b>${esc(nom.slice(0,3))}.</b><span>${m?esc(m.nom):"Repos"}</span></li>`}).join(""):"";
   $("#wkEdit").querySelector("summary").textContent=n?`Modifier ma semaine type (${n} séance${n>1?"s":""} / semaine)`:"Choisir la séance de chaque jour";
   if(!$("#wkEdit").dataset.user)$("#wkEdit").open=n===0;
   // calendar: 2 weeks from this Monday
@@ -2137,7 +2154,7 @@ function renderWeek(){
   }
   $("#cal").innerHTML=h+`</div><div class="cal-leg"><span><i class="lg rec"></i>Semaine type</span><span><i class="lg one"></i>Séance ponctuelle</span><span><i class="lg dn"></i>Réalisée</span></div>`;
   $("#cal").querySelectorAll(".cal-c").forEach(b=>b.onclick=()=>{
-    if(b.dataset.cp){const card=document.querySelector(`.plan[data-pid="${CSS.escape(b.dataset.cp)}"]`);if(card){card.scrollIntoView({block:"center",behavior:"smooth"});card.classList.add("flash");setTimeout(()=>card.classList.remove("flash"),1200)}return}
+    if(b.dataset.cp){if(!document.querySelector(`.plan[data-pid="${CSS.escape(b.dataset.cp)}"]`)){plAll=true;renderPlans()}const card=document.querySelector(`.plan[data-pid="${CSS.escape(b.dataset.cp)}"]`);if(card){card.scrollIntoView({block:"center",behavior:"smooth"});card.classList.add("flash");setTimeout(()=>card.classList.remove("flash"),1200)}return}
     if(b.dataset.cd>=tIso){resetPlanForm();$("#pDate").value=b.dataset.cd;const h=$("#planFormTitle");openPanel(h);h.scrollIntoView({block:"start",behavior:"smooth"});toast(`Planifier une séance le ${fmtDay(b.dataset.cd).toLowerCase()}`)}
   });
 }
@@ -3221,6 +3238,7 @@ function relDay(d){
   if(n===0)return ["Aujourd'hui",""];if(n===1)return ["Demain",""];
   if(n>1)return [`Dans ${n} jours`,""];return [`Prévue il y a ${-n} j`,"late"];
 }
+let plAll=false;const openPlans=new Set();
 function renderPlans(){
   const el=$("#plans");
   const LIST=allPlans().filter(x=>!donePlans.has(x.id));
@@ -3228,7 +3246,12 @@ function renderPlans(){
     el.innerHTML=state.mode==="loading"?`<div class="empty"><p>Chargement…</p></div>`:`<div class="empty"><p>Rien de prévu pour l'instant. Planifie ta prochaine séance avec le formulaire : ajoute tes exercices, le repère de la dernière fois se remplit tout seul.</p></div>`;
     return;
   }
-  el.innerHTML=LIST.sort((a,b)=>a.date.localeCompare(b.date)||(a.createdAt||0)-(b.createdAt||0)).map((p,idx)=>{
+  const SORTED=LIST.sort((a,b)=>a.date.localeCompare(b.date)||(a.createdAt||0)-(b.createdAt||0));
+  const lim=iso(addDays(today,6)),shown=plAll?SORTED:SORTED.filter((p,i)=>p.date<=lim||i<3),more=SORTED.length-shown.length;
+  const m0=iso(monday(today)),m1=iso(addDays(monday(today),7)),m2=iso(addDays(monday(today),14));
+  const wkLab=d=>d<m0?"En retard":d<m1?"Cette semaine":d<m2?"Semaine prochaine":"Semaine du "+fmtShort(monday(parse(d)));
+  let lastW=null;
+  el.innerHTML=shown.map(p=>{
     const [rel,cls]=relDay(p.date);
     const tPass=[],tPrev=[];
     const rows=(p.exercices||[]).map(e=>{
@@ -3238,20 +3261,27 @@ function renderPlans(){
       const pv=vol(setsOf(e)),pa=lp?vol(lp.sets):null;
       tPass.push(pa);tPrev.push(pv);
       const d=`<span class="cmp"><b>${fmtVol(pv)}</b>${pa?`<span class="hint">vs ${fmtVol(pa)} passée</span>${dPct(pv,pa)}`:`<span class="hint">pas de séance passée</span>`}</span>`;
-      return `<tr><td><b>${esc(e.nom)}</b></td><td class="ref num" data-l="Repère"><span>${refTxt}</span></td><td class="num" data-l="Prévu">${d}</td></tr>`;
+      return `<tr><td><b>${esc(e.nom)}</b>${e.consigne?`<small class="pt-cs">${esc(e.consigne)}</small>`:""}</td><td class="ref num" data-l="Repère"><span>${refTxt}</span></td><td class="num" data-l="Prévu">${d}</td></tr>`;
     }).join("");
-    const compactCard=idx>=3;
+    const nEx=(p.exercices||[]).length,nSer=(p.exercices||[]).reduce((a,e)=>a+setsOf(e).filter(x=>!x.ech).length,0);
+    const A=sumKg(tPass),B=sumKg(tPrev);
     const recTag=p.virtual?'<span class="rectag">Semaine type</span>':(p.rec?'<span class="rectag">Semaine type · modifiée</span>':"");
-    const acts=`<div class="acts"><button class="btn" data-start="${esc(p.id)}">Faire cette séance</button><button class="ghost" data-edit="${esc(p.id)}">Modifier</button>${p.virtual?`<button class="ghost" data-skip="${esc(p.rec)}">Passer cette fois</button>`:`${(p.exercices||[]).length&&!p.rec?`<button class="ghost" data-tpl="${esc(p.id)}">Enregistrer comme modèle</button>`:""}<button class="ghost" data-del-p="${esc(p.id)}">Supprimer</button>`}</div>`;
-    if(compactCard)return `<article class="plan compact" data-pid="${esc(p.id)}"><div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div><div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.coach?`<span class="tag-coach">${COACH_VIEW?"Programmée par toi":"Par ton coach"}</span>`:""}</div>${(p.exercices||[]).length?`<p class="hint" style="margin:0">${p.exercices.map(e=>esc(e.nom)).join(" · ")}</p>`:""}${acts}</article>`;
-    return `<article class="plan" data-pid="${esc(p.id)}">
+    const isToday=p.date<=iso(today),open=openPlans.has(p.id);
+    const sum=nEx?`<div class="p-sum"><span><b>${nEx}</b> exercice${nEx>1?"s":""} · <b>${nSer}</b> série${nSer>1?"s":""}</span>${B?`<span>Prévu <b>${fmtVol(B)}</b>${A?` <span class="hint">vs ${fmtVol(A)} la dernière fois</span>${dPct(B,A)}`:""}</span>`:""}</div><p class="p-ex">${(p.exercices||[]).map(e=>esc(e.nom)).join(" · ")}</p>`:`<p class="hint" style="margin:0">Aucun exercice détaillé.</p>`;
+    const more2=`${p.virtual?`<button class="ghost" data-skip="${esc(p.rec)}">Passer cette fois</button>`:`${nEx&&!p.rec?`<button class="ghost" data-tpl="${esc(p.id)}">Enregistrer comme modèle</button>`:""}<button class="ghost" data-del-p="${esc(p.id)}">Supprimer</button>`}`;
+    let head="";const w=wkLab(p.date);if(w!==lastW){head=`<h3 class="p-week">${esc(w)}</h3>`;lastW=w}
+    return head+`<article class="plan${open?" open":""}${isToday?" now":""}" data-pid="${esc(p.id)}">
       <div class="ph"><span class="when">${esc(fmtDay(p.date))}</span><span class="rel ${cls}">${rel}</span></div>
       <div class="meta" style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><b>${esc(p.titre||p.type)}</b>${p.titre?`<span>· ${esc(p.type)}</span>`:""}${recTag}${p.coach?`<span class="tag-coach">${COACH_VIEW?"Programmée par toi":"Par ton coach"}</span>`:""}${p.exemple?'<span class="tag-ex">exemple</span>':""}</div>
-      ${rows?`<div class="ptable"><table><thead><tr><th>Exercice</th><th>Repère · kg × reps</th><th>Prévu · charge totale</th></tr></thead><tbody>${rows}</tbody>${totRow(tPass,tPrev)}</table></div>`:""}
+      ${sum}
+      ${nEx?`<button type="button" class="p-tog" data-ptog="${esc(p.id)}" aria-expanded="${open}">${open?"Masquer le détail":"Voir le détail exercice par exercice"}</button>`:""}
+      ${open&&rows?`<div class="ptable"><table><thead><tr><th>Exercice</th><th>Repère · kg × reps</th><th>Prévu · charge totale</th></tr></thead><tbody>${rows}</tbody>${totRow(tPass,tPrev)}</table></div>`:""}
       ${p.notes?`<p class="notes" style="margin:0;color:var(--muted);font-size:14px">${esc(p.notes)}</p>`:""}
-      ${acts}
+      <div class="acts">${isToday?`<button class="btn" data-start="${esc(p.id)}">Faire cette séance</button>`:""}<button class="${isToday?"ghost":"btn ghost-strong"}" data-edit="${esc(p.id)}">Modifier</button>${more2}</div>
     </article>`;
-  }).join("");
+  }).join("")+(more?`<button type="button" class="ghost jmore" id="plMore">Voir les ${more} séance${more>1?"s":""} suivante${more>1?"s":""}</button>`:(plAll&&SORTED.length>3?`<button type="button" class="ghost jmore" id="plLess">Afficher seulement les 7 prochains jours</button>`:""));
+  el.querySelectorAll("[data-ptog]").forEach(b=>b.onclick=()=>{const id=b.dataset.ptog;openPlans.has(id)?openPlans.delete(id):openPlans.add(id);renderPlans()});
+  const pm=$("#plMore");if(pm)pm.onclick=()=>{plAll=true;renderPlans()};const pl=$("#plLess");if(pl)pl.onclick=()=>{plAll=false;renderPlans();$("#plans").scrollIntoView({block:"start",behavior:"smooth"})};
   el.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>startFromPlan(findPlan(b.dataset.start)));
   el.querySelectorAll("[data-tpl]").forEach(b=>b.onclick=()=>{const p=findPlan(b.dataset.tpl);if(p)saveAsTpl(p).catch(report)});
   el.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editPlan(findPlan(b.dataset.edit)));
